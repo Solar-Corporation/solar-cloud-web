@@ -10,6 +10,9 @@
     "build:ts": "nest build",
     "build:rust": "napi build --release",
     "format": "prettier --write \\\\\\\"src/**/*.ts\\\\\\\" \\\\\\\"test/**/*.ts\\\\\\\"",
+    "dev:next": "next dev",
+    "build:next": "next build",
+    "start:next": "next start",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -22,6 +25,9 @@
     "test:e2e": "jest --config test/jest-e2e.json"
   },
   "dependencies": {
+    "next": "13.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "@nestjs/common": "^9.1.6",
     "@nestjs/core": "^9.1.6",
     "@nestjs/platform-express": "^9.1.6",
@@ -31,6 +37,8 @@
     "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
+    "@types/react": "18.0.24",
+    "@types/react-dom": "18.0.8",
     "@napi-rs/cli": "^2.12.0",
     "@nestjs/cli": "^9.1.5",
     "@nestjs/schematics": "^9.0.3",
