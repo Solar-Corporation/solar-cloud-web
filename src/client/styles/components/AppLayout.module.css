@@ -1,0 +1,28 @@
+.main {
+    margin: var(--space-l) var(--space-xl) 0 var(--space-xl);
+    display: flex;
+    gap: var(--space-l);
+}
+
+.navbar {
+    width: 240px;
+    margin-top: var(--space-xs);
+}
+
+.fixed {
+    position: fixed;
+    top: var(--space-m);
+    left: var(--space-xl);
+}
+
+.filler {
+    width: 240px;
+}
+
+.container {
+    width: calc(100vw - (var(--space-xl)*2 + var(--space-l) + 240px));
+    min-height: calc(100vh - (60px + var(--space-l)));
+    background: var(--color-bg-default);
+    box-shadow: var(--shadow-modal);
+    border-radius: var(--space-xs) var(--space-xs) 0 0;
+}
