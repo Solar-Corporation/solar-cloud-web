@@ -1,0 +1,26 @@
+.main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: calc(100% - var(--space-4xl)*2);
+    height: calc(100vh - var(--space-4xl)*2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4xl);
+    padding: var(--space-2xl);
+    background: var(--color-bg-default);
+    box-shadow: var(--shadow-modal);
+    border-radius: 8px;
+}
+
+.image {
+    height: calc(100vh * 0.2);
+    width: 100%;
+}
