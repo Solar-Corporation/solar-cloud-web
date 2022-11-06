@@ -20,7 +20,7 @@
 
 .search {
     margin-left: var(--space-l);
-    width: calc((100vw - (var(--space-xl)*2 + var(--space-l) + 240px)) / 2);
+    width: calc((100vw - (var(--space-xl) * 2 + var(--space-l) + 240px)) / 2);
 }
 
 .links {

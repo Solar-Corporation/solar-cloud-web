@@ -20,7 +20,7 @@
 }
 
 .container {
-    width: calc(100vw - (var(--space-xl)*2 + var(--space-l) + 240px));
+    width: calc(100vw - (var(--space-xl) * 2 + var(--space-l) + 240px));
     min-height: calc(100vh - (60px + var(--space-l)));
     background: var(--color-bg-default);
     box-shadow: var(--shadow-modal);
