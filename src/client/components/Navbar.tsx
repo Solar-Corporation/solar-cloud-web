@@ -29,7 +29,7 @@ export const Navbar: FC<NavbarProps> = ({ links }) => {
           }
         >
           {link.icon}
-          {link.title}
+          <span className={styles.itemTitle}>{link.title}</span>
         </Link>
       ))}
     </div>
