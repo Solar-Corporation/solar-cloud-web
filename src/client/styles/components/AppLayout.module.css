@@ -1,6 +1,7 @@
 .main {
     margin: var(--space-l) var(--space-xl) 0 var(--space-xl);
     display: flex;
+    flex-direction: row;
     gap: var(--space-l);
 }
 
@@ -9,14 +10,11 @@
     margin-top: var(--space-xs);
 }
 
-.fixed {
-    position: fixed;
-    top: var(--space-m);
-    left: var(--space-xl);
-}
-
-.filler {
-    width: 240px;
+.navbarSticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: var(--space-xl);
+    width: 100%;
 }
 
 .container {
