@@ -1,0 +1,11 @@
+.main {
+    font-weight: 500;
+    line-height: 24px;
+    background: var(--color-calendula-gold);
+    border-color: var(--color-calendula-gold);
+}
+
+.main:hover, .main:active, .main:focus {
+    background: var(--color-calendula-gold-light);
+    border-color: var(--color-calendula-gold-light);
+}
