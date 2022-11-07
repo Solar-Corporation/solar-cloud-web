@@ -1,7 +1,7 @@
 import { DeleteOutlined, FileOutlined, HistoryOutlined } from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
 import styles from '../../styles/components/CloudLayout.module.css';
-import { AppLayout } from '../AppLayout';
+import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
 import { ButtonUpload } from '../UI/ButtonUpload';
 
@@ -18,7 +18,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
   ];
 
   return (
-    <AppLayout
+    <Layout
       title={title}
       navbar={
         <div className={styles.navbar}>
@@ -28,6 +28,6 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
       }
     >
       {children}
-    </AppLayout>
+    </Layout>
   );
 };

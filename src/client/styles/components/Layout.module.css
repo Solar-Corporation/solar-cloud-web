@@ -10,7 +10,7 @@
     margin-top: var(--space-xs);
 }
 
-.navbarSticky {
+.sticky {
     position: -webkit-sticky;
     position: sticky;
     top: var(--space-xl);

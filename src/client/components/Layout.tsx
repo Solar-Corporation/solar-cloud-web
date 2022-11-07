@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { FC, ReactNode } from 'react';
-import styles from '../styles/components/AppLayout.module.css';
+import styles from '../styles/components/Layout.module.css';
 import { Header } from './Header';
 
 interface AppLayoutProps {
@@ -9,7 +9,7 @@ interface AppLayoutProps {
   children: ReactNode;
 }
 
-export const AppLayout: FC<AppLayoutProps> = ({ title, navbar, children }) => {
+export const Layout: FC<AppLayoutProps> = ({ title, navbar, children }) => {
   return (
     <>
       <Head>
@@ -20,7 +20,7 @@ export const AppLayout: FC<AppLayoutProps> = ({ title, navbar, children }) => {
       <Header />
       <main className={styles.main}>
         <div className={styles.navbar}>
-          <div className={styles.navbarSticky}>{navbar}</div>
+          <div className={styles.sticky}>{navbar}</div>
         </div>
         <div className={styles.container}>{children}</div>
       </main>
