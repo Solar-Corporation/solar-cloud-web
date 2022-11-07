@@ -4,6 +4,7 @@ import styles from '../../styles/components/CloudLayout.module.css';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
 import { ButtonUpload } from '../UI/ButtonUpload';
+import { CloudInfoSpace } from './InfoSpace';
 
 interface CloudLayoutProps {
   title: string;
@@ -20,12 +21,13 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
   return (
     <Layout
       title={title}
-      navbar={
-        <div className={styles.navbar}>
+      sidebarTop={
+        <div className={styles.sidebar}>
           <ButtonUpload />
           <Navbar links={links} />
         </div>
       }
+      sidebarBottom={<CloudInfoSpace />}
     >
       {children}
     </Layout>

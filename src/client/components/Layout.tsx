@@ -5,11 +5,12 @@ import { Header } from './Header';
 
 interface AppLayoutProps {
   title: string;
-  navbar: ReactNode;
+  sidebarTop?: ReactNode;
+  sidebarBottom?: ReactNode;
   children: ReactNode;
 }
 
-export const Layout: FC<AppLayoutProps> = ({ title, navbar, children }) => {
+export const Layout: FC<AppLayoutProps> = ({ title, sidebarTop, sidebarBottom, children }) => {
   return (
     <>
       <Head>
@@ -19,9 +20,13 @@ export const Layout: FC<AppLayoutProps> = ({ title, navbar, children }) => {
       </Head>
       <Header />
       <main className={styles.main}>
-        <div className={styles.navbar}>
-          <div className={styles.sticky}>{navbar}</div>
-        </div>
+        {
+          (sidebarTop || sidebarBottom) &&
+          <div className={styles.sidebar}>
+            {sidebarTop && <div className={styles.stickyTop}>{sidebarTop}</div>}
+            {sidebarBottom && <div className={styles.stickyBottom}>{sidebarBottom}</div>}
+          </div>
+        }
         <div className={styles.container}>{children}</div>
       </main>
     </>
