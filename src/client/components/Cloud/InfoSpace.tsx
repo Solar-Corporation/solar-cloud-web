@@ -1,7 +1,7 @@
+import { Progress } from 'antd';
 import { FC } from 'react';
 import styles from '../../styles/components/CloudInfoSpace.module.css';
 import { ButtonIncrease } from '../UI/ButtonIncrease';
-import { Progress } from 'antd';
 
 export const CloudInfoSpace: FC = () => {
   return (

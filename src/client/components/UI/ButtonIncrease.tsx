@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import { Button } from 'antd';
-import styles from '../../styles/components/ButtonIncrease.module.css';
 import { ShoppingOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { FC } from 'react';
+import styles from '../../styles/components/ButtonIncrease.module.css';
 
 export const ButtonIncrease: FC = () => {
   return (
