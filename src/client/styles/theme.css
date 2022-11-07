@@ -1,6 +1,6 @@
 html {
     /* Colors */
-    --color-white: #FFF;
+    --color-white: #ffffff;
     --color-black: #202020;
     --color-black-dark: #151515;
     --color-gray: #292929;
@@ -10,6 +10,7 @@ html {
     --color-calendula-gold-light: #f3cc62;
     --color-sunset-orange: #e89a3c;
     --color-sunset-orange-light: #f3b765;
+    --color-red: #d32029;
     --color-gradient: linear-gradient(to right, #e8b339, #cb2b83);
     /*radial-gradient(167.57% 167.57% at 48.5% 142.48%, #e8b339 36.42%, #cb2b83 85.35%);*/
 
