@@ -19,6 +19,9 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
   const links: INavbarItem[] = [
     { icon: <HistoryOutlined />, title: 'Недавние', href: '/cloud/recent' },
     { icon: <FileOutlined />, title: 'Все файлы', href: '/cloud' },
+    { icon: <FileOutlined />, title: 'Пункт меню', href: '/' },
+    { icon: <FileOutlined />, title: 'Пункт меню', href: '/' },
+    { icon: <FileOutlined />, title: 'Пункт меню', href: '/' },
     { icon: <DeleteOutlined />, title: 'Корзина', href: '/cloud/trash' },
   ];
 
@@ -31,7 +34,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
           <Navbar links={links} />
         </div>
       }
-      sidebarBottom={<CloudInfoSpace />}
+      sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
     >
       {children}
     </Layout>
