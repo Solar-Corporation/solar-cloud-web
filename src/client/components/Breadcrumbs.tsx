@@ -11,10 +11,10 @@ export interface IBreadcrumbsItem {
 
 interface BreadcrumbsProps {
 	links: IBreadcrumbsItem[];
-	controls?: ReactNode;
+	actions?: ReactNode;
 }
 
-export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, controls }) => {
+export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 	const router = useRouter();
 
 	return (
@@ -35,9 +35,9 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, controls }) => {
 					{(index !== links.length - 1) && <RightOutlined className={styles.separator} />}
 				</>
 			)}
-			{controls && <>
+			{actions && <>
         <RightOutlined />
-				{controls}
+				{actions}
       </>}
 		</div>
 	);

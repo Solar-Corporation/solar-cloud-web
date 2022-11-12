@@ -9,7 +9,7 @@ interface PageHeadingProps {
 export const PageHeading: FC<PageHeadingProps> = ({ links, actions }) => {
 	return (
 		<div>
-			<Breadcrumbs links={links} controls={actions} />
+			<Breadcrumbs links={links} actions={actions} />
 		</div>
 	);
 };
