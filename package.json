@@ -38,6 +38,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
+    "nestjs-i18n": "^9.2.2",
     "next": "13.0.2",
     "passport-jwt": "^4.0.0",
     "pg": "^8.8.0",
