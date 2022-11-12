@@ -4,15 +4,17 @@ import { RouteNames } from '../../router';
 import styles from '../../styles/components/CloudLayout.module.css';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
+import { PageHeading, PageHeadingProps } from '../PageHeading';
 import { ButtonUpload } from '../UI/ButtonUpload';
 import { CloudInfoSpace } from './InfoSpace';
 
 interface CloudLayoutProps {
 	title: string;
+	headingOptions: PageHeadingProps;
 	children: ReactNode;
 }
 
-export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
+export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, children }) => {
 	const links: INavbarItem[] = [
 		{ icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
 		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.CLOUD },
@@ -32,6 +34,13 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
 			}
 			sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
 		>
+			<PageHeading
+				links={headingOptions.links}
+				actions={headingOptions.actions}
+				floatControls={headingOptions.floatControls}
+				constControls={headingOptions.constControls}
+				sticky={headingOptions.sticky}
+			/>
 			{children}
 		</Layout>
 	);

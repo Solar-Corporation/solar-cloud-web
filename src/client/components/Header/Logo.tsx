@@ -8,7 +8,7 @@ import styles from '../../styles/components/Header.module.css';
 export const HeaderLogo: FC = () => {
 	return (
 		<Link href={RouteNames.CLOUD}>
-			<Image src={Logo} alt="" className={styles.logo} />
+			<Image src={Logo} alt="" className={styles.logo} priority />
 		</Link>
 	);
 };
