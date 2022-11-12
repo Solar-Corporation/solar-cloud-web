@@ -1,5 +1,6 @@
 import { DeleteOutlined, FileOutlined, HistoryOutlined, StarOutlined, TagsOutlined } from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
+import { RouteNames } from '../../router';
 import styles from '../../styles/components/CloudLayout.module.css';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
@@ -13,11 +14,11 @@ interface CloudLayoutProps {
 
 export const CloudLayout: FC<CloudLayoutProps> = ({ title, children }) => {
 	const links: INavbarItem[] = [
-		{ icon: <HistoryOutlined />, title: 'Недавние', href: '/cloud/recent' },
-		{ icon: <FileOutlined />, title: 'Все файлы', href: '/cloud' },
-		{ icon: <StarOutlined />, title: 'Избранное', href: '/cloud/marked' },
-		{ icon: <TagsOutlined />, title: 'Теги', href: '/cloud/tags' },
-		{ icon: <DeleteOutlined />, title: 'Корзина', href: '/cloud/trash' }
+		{ icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
+		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.CLOUD },
+		{ icon: <StarOutlined />, title: 'Избранное', href: RouteNames.MARKED },
+		{ icon: <TagsOutlined />, title: 'Теги', href: RouteNames.TAGS },
+		{ icon: <DeleteOutlined />, title: 'Корзина', href: RouteNames.TRASH }
 	];
 
 	return (
