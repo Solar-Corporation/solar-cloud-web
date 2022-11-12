@@ -24,8 +24,8 @@
       "esnext"
     ],
     "allowJs": true,
-    "strict": true,
-    "noEmit": true,
+    "strict": false,
+    "noEmit": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -37,6 +37,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "test",
+    "dist",
+    "**/*spec.ts"
   ]
 }
