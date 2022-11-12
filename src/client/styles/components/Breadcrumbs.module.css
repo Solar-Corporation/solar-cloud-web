@@ -1,0 +1,22 @@
+.container {
+    font-size: 16px;
+    height: 32px;
+    display: flex;
+    gap: var(--space-xs);
+    align-items: center;
+}
+
+.item {
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 16px;
+    transition: color 0.15s;
+    -webkit-transition: color 0.15s;
+}
+
+.separator {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.item_active, .item:active, .item:hover {
+    color: var(--color-white);
+}
