@@ -17,7 +17,7 @@ export const Navbar: FC<NavbarProps> = ({ links }) => {
   const router = useRouter();
 
   return (
-    <div className={styles.main}>
+    <div className={styles.container}>
       {links.map((link, index) => (
         <Link
           key={index}
