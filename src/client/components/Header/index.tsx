@@ -7,21 +7,21 @@ import { HeaderLogo } from './Logo';
 import { HeaderSearch } from './Search';
 
 export const Header: FC = () => {
-  const links: IHeaderLink[] = [
-    { icon: <QuestionOutlined />, title: 'Справка' },
-    { icon: <SettingOutlined />, title: 'Настройки', href: '/cloud/settings' }
-  ];
+	const links: IHeaderLink[] = [
+		{ icon: <QuestionOutlined />, title: 'Справка' },
+		{ icon: <SettingOutlined />, title: 'Настройки', href: '/cloud/settings' },
+	];
 
-  return (
-    <header className={styles.container}>
-      <div className={styles.side}>
-        <HeaderLogo />
-        <HeaderSearch />
-      </div>
-      <div className={styles.side}>
-        <HeaderLinks links={links} />
-        <HeaderAvatar />
-      </div>
-    </header>
-  );
+	return (
+		<header className={styles.container}>
+			<div className={styles.side}>
+				<HeaderLogo />
+				<HeaderSearch />
+			</div>
+			<div className={styles.side}>
+				<HeaderLinks links={links} />
+				<HeaderAvatar />
+			</div>
+		</header>
+	);
 };

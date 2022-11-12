@@ -5,9 +5,9 @@ import Logo from '../../img/logo.svg';
 import styles from '../../styles/components/Header.module.css';
 
 export const HeaderLogo: FC = () => {
-  return (
-    <Link href="/cloud">
-      <Image src={Logo} alt="" className={styles.logo} />
-    </Link>
-  );
+	return (
+		<Link href="/cloud">
+			<Image src={Logo} alt="" className={styles.logo} />
+		</Link>
+	);
 };
