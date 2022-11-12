@@ -45,7 +45,7 @@ export const HeaderLinks: FC<HeaderLinksProps> = ({ links }) => {
 						icon={link.icon}
 						onClick={() => handleClick(link.action)}
 					/>
-				),
+				)
 			)}
 		</div>
 	);

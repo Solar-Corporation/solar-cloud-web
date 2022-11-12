@@ -22,10 +22,10 @@ export const Layout: FC<AppLayoutProps> = ({ title, sidebarTop, sidebarBottom, c
 			<main className={styles.main}>
 				{
 					(sidebarTop || sidebarBottom) &&
-					<div className={styles.sidebar}>
+          <div className={styles.sidebar}>
 						{sidebarTop && <div className={styles.stickyTop}>{sidebarTop}</div>}
 						{sidebarBottom && <div className={styles.stickyBottom}>{sidebarBottom}</div>}
-					</div>
+          </div>
 				}
 				<div className={styles.container}>{children}</div>
 			</main>
