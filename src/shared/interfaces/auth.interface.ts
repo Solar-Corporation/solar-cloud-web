@@ -1,7 +1,10 @@
 import { Transaction } from 'sequelize';
+import { RegistrationUserDto } from '../../server/auth/dto';
 import { JwtToken } from '../types/auth.type';
 
 export interface IAuth<T> {
+	registration(registrationUserDto: RegistrationUserDto, transaction: Transaction): Promise<JwtToken>;
+
 	login(
 		loginOptions: T,
 		transaction: Transaction,
