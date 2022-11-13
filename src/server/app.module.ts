@@ -5,10 +5,12 @@ import config from './config/app.config';
 
 @Module({
 	imports: [
-		AuthModule,
+		ConfigModule.forRoot(),
 		ConfigModule.forRoot({
 			load: [config],
-		})],
+		}),
+		AuthModule,
+	],
 })
 export class AppModule {
 }
