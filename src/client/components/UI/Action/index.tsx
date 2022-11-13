@@ -1,21 +1,20 @@
-import { FC } from 'react';
-import { ActionCreate } from './types/Create';
+import { Button } from 'antd';
+import { FC, ReactNode } from 'react';
 
-export enum Action {
-	NULL,
-	CREATE
+interface ActionTypeProps {
+	icon: ReactNode;
+	title: string;
+	onClick: () => void;
+	children?: never;
 }
 
-interface ActionListProps {
-	list: Action[];
-}
-
-export const ActionList: FC<ActionListProps> = ({ list }) => {
+export const Action: FC<ActionTypeProps> = ({ icon, title, onClick }) => {
 	return (
-		<>
-			{list?.map((type, index) => [
-				type === Action.CREATE && <ActionCreate key={index} />
-			])}
-		</>
+		<Button
+			type="primary"
+			icon={icon}
+			title={title}
+			onClick={onClick}
+		/>
 	);
 };

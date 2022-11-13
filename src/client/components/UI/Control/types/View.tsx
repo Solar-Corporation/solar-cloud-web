@@ -1,6 +1,6 @@
 import { TableOutlined } from '@ant-design/icons';
 import { FC } from 'react';
-import { ControlType } from '../Type';
+import { Control } from '../index';
 
 export const ControlView: FC = () => {
 	const handleClick = () => {
@@ -8,7 +8,7 @@ export const ControlView: FC = () => {
 	};
 
 	return (
-		<ControlType
+		<Control
 			icon={<TableOutlined />}
 			title="Вид"
 			onClick={handleClick}

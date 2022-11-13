@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { FC } from 'react';
-import { ActionType } from '../Type';
+import { Action } from '../index';
 
 export const ActionCreate: FC = () => {
 	const handleClick = () => {
@@ -8,7 +8,7 @@ export const ActionCreate: FC = () => {
 	};
 
 	return (
-		<ActionType
+		<Action
 			icon={<PlusOutlined />}
 			title='Создать'
 			onClick={handleClick}

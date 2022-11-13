@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import styles from '../styles/components/Breadcrumbs.module.css';
-import { Action, ActionList } from './UI/Action';
+import { Action, ActionList } from './UI/Action/List';
 
 export interface IBreadcrumbsItem {
 	title: string;

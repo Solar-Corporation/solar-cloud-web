@@ -1,24 +1,20 @@
-import { FC } from 'react';
-import { ControlInfo } from './types/Info';
-import { ControlView } from './types/View';
+import { Button } from 'antd';
+import { FC, ReactNode } from 'react';
 
-export enum Control {
-	NULL,
-	INFO,
-	VIEW
+interface ControlTypeProps {
+	icon: ReactNode;
+	title: string;
+	onClick: () => void;
+	children?: never;
 }
 
-interface ActionListProps {
-	list: Control[];
-}
-
-export const ControlList: FC<ActionListProps> = ({ list }) => {
+export const Control: FC<ControlTypeProps> = ({ icon, title, onClick }) => {
 	return (
-		<>
-			{list?.map((type, index) => [
-				type === Control.INFO && <ControlInfo key={index} />,
-				type === Control.VIEW && <ControlView key={index} />
-			])}
-		</>
+		<Button
+			type="ghost"
+			icon={icon}
+			title={title}
+			onClick={onClick}
+		/>
 	);
 };

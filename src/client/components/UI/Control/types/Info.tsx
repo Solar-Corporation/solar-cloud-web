@@ -1,6 +1,6 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { FC } from 'react';
-import { ControlType } from '../Type';
+import { Control } from '../index';
 
 export const ControlInfo: FC = () => {
 	const handleClick = () => {
@@ -8,7 +8,7 @@ export const ControlInfo: FC = () => {
 	};
 
 	return (
-		<ControlType
+		<Control
 			icon={<InfoCircleOutlined />}
 			title="Показать свойства"
 			onClick={handleClick}
