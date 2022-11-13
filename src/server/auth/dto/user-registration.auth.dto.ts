@@ -1,28 +1,16 @@
 import { Type } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsNotEmptyObject, IsString, MinLength, ValidateNested } from 'class-validator';
-
-export class FullNameDto {
-	@IsString()
-	@IsNotEmpty()
-	firstName?: string;
-
-	@IsString()
-	@IsNotEmpty()
-	middleName?: string;
-
-	@IsString()
-	@IsNotEmpty()
-	lastName?: string;
-}
+import { IsEmail, IsHash, IsNotEmpty, IsNotEmptyObject, IsString, MinLength, ValidateNested } from 'class-validator';
+import { FullNameDto } from '../../user/dto/user.dto';
 
 export class RegistrationUserDto {
 	@IsEmail()
 	email: string = '';
 
 	@IsString()
+	@IsHash('sha256')
 	@IsNotEmpty()
 	@MinLength(8)
-	password?: string;
+	password: string = '';
 
 	@IsNotEmpty()
 	@IsNotEmptyObject()
