@@ -1,5 +1,5 @@
 .container {
-    font-size: 16px;
+    font-size: 18px;
     height: 32px;
     display: flex;
     gap: var(--space-xs);
@@ -8,12 +8,13 @@
 
 .item {
     color: rgba(255, 255, 255, 0.6);
-    line-height: 16px;
+    line-height: 18px;
     transition: color 0.15s;
     -webkit-transition: color 0.15s;
 }
 
 .separator {
+    font-size: 16px;
     color: rgba(255, 255, 255, 0.6);
 }
 

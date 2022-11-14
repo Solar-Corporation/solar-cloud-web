@@ -33,4 +33,5 @@
     background: var(--color-bg-default);
     box-shadow: var(--shadow-modal);
     border-radius: var(--space-xs) var(--space-xs) 0 0;
+    padding: 10px 12px 24px 12px;
 }

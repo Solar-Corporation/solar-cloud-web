@@ -61,4 +61,7 @@
     /* Selection */
     --color-bg-selection: rgba(255, 255, 255, 0.1);
     --color-typo-selection: var(--color-white);
+
+    /* Divider */
+    --color-divider: rgba(255, 255, 255, 0.2);
 }
