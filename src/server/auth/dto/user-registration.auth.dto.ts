@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsEmail, IsHash, IsNotEmpty, IsNotEmptyObject, IsString, MinLength, ValidateNested } from 'class-validator';
 import { FullNameDto } from '../../user/dto/user.dto';
 
-export class RegistrationUserDto {
+export class UserRegistrationDto {
 	@IsEmail()
 	email: string = '';
 
