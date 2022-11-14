@@ -50,7 +50,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",
     "ts-node-dev": "^2.0.0",
-    "ua-parser-js": "^1.0.32"
+    "ua-parser-js": "^1.0.32",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.12.0",
