@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { UserModule } from '../user/user.module';
+import { AuthDatabaseService } from './auth-database.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
@@ -25,7 +26,7 @@ import { TokenService } from './token.service';
 		UserModule,
 	],
 	controllers: [AuthController],
-	providers: [AuthService, JwtAuthGuard, TokenService],
+	providers: [AuthService, JwtAuthGuard, TokenService, AuthDatabaseService],
 	exports: [AuthService, JwtModule],
 })
 export class AuthModule {

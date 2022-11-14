@@ -2,10 +2,11 @@ import { Body, Controller, Delete, Get, Post, Req, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { Transaction } from 'sequelize';
+import { UAParser } from 'ua-parser-js';
 import { JwtToken } from '../../shared/types/auth.type';
 import { SequelizeConnect } from '../database/database-connect';
 import { AuthService } from './auth.service';
-import { EmailLoginDto, RegistrationUserDto } from './dto';
+import { DeviceDataDto, EmailLoginDto, RegistrationUserDto } from './dto';
 
 @Controller({ version: '1' })
 export class AuthController {
@@ -17,10 +18,16 @@ export class AuthController {
 	}
 
 	@Post('registration')
-	async registration(@Body() registrationUserDto: RegistrationUserDto, @Res({ passthrough: true }) res: Response): Promise<JwtToken> {
+	async registration(@Body() registrationUserDto: RegistrationUserDto, @Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<JwtToken> {
 		const transaction: Transaction = await SequelizeConnect.transaction();
 		try {
-			const tokens = await this.authService.registration(registrationUserDto, transaction);
+			const { headers, socket } = req;
+			const deviceData: DeviceDataDto = {
+				deviceIp: (headers['x-forwarded-for']) ? (headers['x-forwarded-for']).toString() : socket.remoteAddress || '',
+				deviceUa: UAParser(headers['user-agent']),
+			};
+
+			const tokens = await this.authService.registration(registrationUserDto, deviceData, transaction);
 
 			const refreshMaxAgeInSeconds = Number(this.configService.get<number>('auth.refreshExpiresIn'));
 			const milliseconds = 1000;
