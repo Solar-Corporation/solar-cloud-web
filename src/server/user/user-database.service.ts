@@ -17,4 +17,9 @@ export class UserDatabaseService {
 			{ transaction: transaction });
 		return userId[0][0].add_user;
 	}
+
+	async getUserByEmail(email: string): Promise<UserAuthDto> {
+		const userAuthDto: any = await SequelizeConnect.query(`SELECT user_data.get_user_by_email('${email}')`);
+		return userAuthDto[0][0].get_user_by_email;
+	}
 }
