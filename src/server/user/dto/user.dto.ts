@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
 	IsDate,
 	IsEmail,
+	IsHash,
 	IsNotEmpty,
 	IsNotEmptyObject,
 	IsNumber,
@@ -55,4 +56,10 @@ export class UserDto {
 	@IsNotEmpty()
 	@IsDate()
 	updateAt?: Date;
+}
+
+export class UserAuthDto extends UserDto {
+	@IsNotEmpty()
+	@IsHash('sha256')
+	password: string = '';
 }
