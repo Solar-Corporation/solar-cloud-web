@@ -1,4 +1,4 @@
-CREATE FUNCTION add_user(user_data jsonb) RETURNS jsonb
+CREATE OR REPLACE FUNCTION add_user(user_data jsonb) RETURNS jsonb
 	LANGUAGE plpgsql
 AS
 $$

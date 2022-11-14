@@ -1,4 +1,4 @@
-CREATE FUNCTION add_jwt(jwt_data jsonb) RETURNS integer
+CREATE OR REPLACE FUNCTION add_jwt(jwt_data jsonb) RETURNS integer
 	LANGUAGE plpgsql
 AS
 $$
