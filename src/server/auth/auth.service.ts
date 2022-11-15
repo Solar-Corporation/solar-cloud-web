@@ -66,6 +66,10 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 	 * @return {Promise<void>}
 	 */
 	async logout(refreshToken: string, transaction: Transaction): Promise<void> {
+		const isExist = await this.authDatabaseService.checkToken(refreshToken);
+		if (!isExist)
+			throw new NotFoundException(ErrorsConfig.sessionNotFound.message, ErrorsConfig.sessionNotFound.message);
+
 		await this.authDatabaseService.deleteAuth(refreshToken, transaction);
 	}
 
