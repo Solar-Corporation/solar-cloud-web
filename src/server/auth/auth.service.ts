@@ -22,6 +22,13 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 	) {
 	}
 
+	/**
+	 * Метод для регистрации пользователя в системе.
+	 * @param {UserRegistrationDto} registrationUserDto - данные пользователя, которые необходимы для регистрации.
+	 * @param {DeviceDataDto} deviceDataDto - данные устройства пользователя.
+	 * @param {Transaction} transaction - транзакция БД.
+	 * @returns {Promise<JwtToken>} - токены авторизации при успешной регистрации.
+	 */
 	async registration(
 		registrationUserDto: UserRegistrationDto,
 		deviceDataDto: DeviceDataDto,
@@ -39,6 +46,13 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		return await this.createTokens(userDto, deviceDataDto, transaction);
 	}
 
+	/**
+	 * Метод авторизации пользователя в системе.
+	 * @param {EmailLoginDto} emailLoginDto - данные пользователя, которые необходимы для авторизации.
+	 * @param {DeviceDataDto} deviceDataDto - данные устройства пользователя.
+	 * @param {Transaction} transaction - транзакция БД.
+	 * @returns {Promise<JwtToken>} - токены при успешной авторизации.
+	 */
 	async login(
 		emailLoginDto: EmailLoginDto,
 		deviceDataDto: DeviceDataDto,
@@ -46,7 +60,7 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 	): Promise<JwtToken> {
 		const isUserExist = await this.userDataBaseService.checkEmail(emailLoginDto.email);
 		if (!isUserExist)
-			throw new NotFoundException(ErrorsConfig.notFound.message, ErrorsConfig.notFound.message);
+			throw new NotFoundException(ErrorsConfig.emailNotFound.message, ErrorsConfig.emailNotFound.message);
 
 		const userAuthDto = await this.userDataBaseService.getUserByEmail(emailLoginDto.email);
 
@@ -60,9 +74,9 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 	}
 
 	/**
-	 *
-	 * @param refreshToken
-	 * @param {} transaction
+	 * Метод удаления авторизации пользователя.
+	 * @param refreshToken - refresh токен из cookie.
+	 * @param {Transaction} transaction - транзакция БД.
 	 * @return {Promise<void>}
 	 */
 	async logout(refreshToken: string, transaction: Transaction): Promise<void> {
@@ -74,9 +88,9 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 	}
 
 	/**
-	 *
-	 * @param {string} refreshToken
-	 * @return {Promise<JwtToken>}
+	 * Метод обновления токена доступа.
+	 * @param {string} refreshToken - refresh токен из cookie.
+	 * @returns {Promise<JwtToken>} - токены авторизации.
 	 */
 	async refresh(
 		refreshToken: string,
@@ -94,6 +108,14 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		};
 	}
 
+	/**
+	 * Метод для генерации пары токенов авторизации (access и refresh).
+	 * @param {UserDto} userDto - данные пользователя. Будут помещены в payload ткена.
+	 * @param {DeviceDataDto} deviceDataDto - данные устройства пользователя.
+	 * @param {Transaction} transaction - транзакция БД.
+	 * @returns {Promise<JwtToken>} - токены авторизации.
+	 * @private
+	 */
 	private async createTokens(
 		userDto: UserDto,
 		deviceDataDto: DeviceDataDto,
