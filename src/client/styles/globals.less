@@ -1,4 +1,5 @@
-@import "~antd/dist/antd.dark.less";
+@import "~antd/dist/antd.dark";
+@import "./variables";
 @import "./theme.css";
 
 @primary-color: @magenta-base;
@@ -6,10 +7,9 @@
 @primary-color-active: @magenta-7;
 @primary-color-outline: fade(@magenta-base, @outline-fade);
 
-
-@body-background: var(--color-bg-secondary);
+@body-background: @secondary;
 @font-family: Roboto, serif;
-@border-radius-base: var(--control-radius);
+@border-radius-base: @space-2xs;
 
 body {
   overflow: overlay;
