@@ -1,0 +1,68 @@
+@import '../variables';
+
+.container {
+  width: 100%;
+  height: @header-height;
+  background: @default;
+  padding: 0 @space-xl 0 @space-xl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.side {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: @sidebar-width;
+  height: 32px;
+}
+
+.search {
+  margin-left: @space-l;
+  width: calc(@container-width / 2);
+}
+
+.links {
+  display: flex;
+  gap: @space-xs;
+  margin-right: @space-m;
+}
+
+.link {
+  border-radius: 50%;
+}
+
+.avatar {
+  position: relative;
+  background: @gradient;
+  padding: @space-3xs;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.avatarOverlay {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: background-color 0.15s;
+  -webkit-transition: background-color 0.15s;
+}
+
+.avatar span {
+  transition: color 0.15s;
+  -webkit-transition: color 0.15s;
+}
+
+.avatar:hover .avatarOverlay {
+  background-color: @control-default-bg-secondary;
+}
+
+.avatar:hover span {
+  color: @control-default-typo-secondary;
+}

@@ -1,11 +1,11 @@
 @import "~antd/dist/antd.dark";
 @import "./variables";
-@import "./theme.css";
+//@import "./theme.css";
 
-@primary-color: @magenta-base;
-@primary-color-hover: @magenta-7;
-@primary-color-active: @magenta-7;
-@primary-color-outline: fade(@magenta-base, @outline-fade);
+@primary-color: @magenta-primary;
+@primary-color-hover: @magenta-secondary;
+@primary-color-active: @magenta-secondary;
+@primary-color-outline: fade(@magenta-primary, @outline-fade);
 
 @body-background: @secondary;
 @font-family: Roboto, serif;
@@ -13,6 +13,16 @@
 
 body {
   overflow: overlay;
+}
+
+.ant-btn-primary {
+  background: @magenta-primary;
+  border-color: @magenta-primary;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:active, .ant-btn-primary:focus {
+  background: @magenta-secondary;
+  border-color: @magenta-secondary;
 }
 
 ::-webkit-scrollbar {

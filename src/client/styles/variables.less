@@ -1,19 +1,33 @@
+// Colors
 @default: #292929;
 @secondary: #202020;
+@magenta-primary: #cb2b83;
+@magenta-secondary: #e0529c;
+//@magenta-secondary: #a02669;
+@gold-primary: #e8b339;
+@gold-secondary: #f3cc62;
+@orange-primary: #e89a3c;
+@orange-secondary: #f3b765;
+@gradient: linear-gradient(to right, @gold-primary, @magenta-primary);
+
 @transparent-1: rgba(255, 255, 255, 0.1);
 @transparent-2: rgba(255, 255, 255, 0.2);
+@transparent-2-5: rgba(255, 255, 255, 0.25);
 @transparent-3: rgba(255, 255, 255, 0.3);
 @transparent-4: rgba(255, 255, 255, 0.4);
 @transparent-5: rgba(255, 255, 255, 0.5);
 @transparent-6: rgba(255, 255, 255, 0.6);
 @transparent-7: rgba(255, 255, 255, 0.7);
+@transparent-7-5: rgba(255, 255, 255, 0.75);
 @transparent-8: rgba(255, 255, 255, 0.8);
 @transparent-9: rgba(255, 255, 255, 0.9);
 
+// Shadows
 @shadow-group: 0px 2px 2px rgba(0, 0, 0, 0.08), 0px 2px 12px rgba(0, 0, 0, 0.32);
 @shadow-layer: 0px 4px 4px rgba(0, 0, 0, 0.08), 0px 8px 24px rgba(0, 0, 0, 0.32);
 @shadow-modal: 0px 8px 8px rgba(0, 0, 0, 0.08), 0px 12px 28px rgba(0, 0, 0, 0.32);
 
+// Spaces
 @space-3xs: 2px;
 @space-2xs: 4px;
 @space-xs: 8px;
@@ -27,5 +41,13 @@
 @space-5xl: 72px;
 @space-6xl: 96px;
 
+// Sizes
 @sidebar-width: 240px;
 @container-width: calc(100vw - (@space-xl * 2 + @space-l + @sidebar-width));
+@header-height: 60px;
+
+// Control
+@control-default-bg-primary: @secondary;
+@control-default-bg-secondary: @transparent-1;
+@control-default-typo-primary: @transparent-2-5;
+@control-default-typo-secondary: @transparent-7-5;
