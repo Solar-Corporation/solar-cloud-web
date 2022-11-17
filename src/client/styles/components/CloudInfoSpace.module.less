@@ -1,0 +1,36 @@
+@import '../variables';
+
+.container {
+  padding: @space-s @space-m @space-xs @space-m;
+  border-radius: @border-radius-base;
+  background: @control-ghost-bg-primary;
+  color: @control-ghost-typo-primary;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.container:hover {
+  background: @control-ghost-bg-secondary;
+  color: @control-ghost-typo-secondary;
+}
+
+.title {
+  margin-bottom: @space-xs;
+  font-size: 16px;
+}
+
+.titleText {
+  margin-left: 6px;
+}
+
+.info {
+  line-height: 28px;
+  height: 28px;
+}
+
+.space {
+  font-size: 28px;
+}
