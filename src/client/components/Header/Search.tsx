@@ -1,6 +1,6 @@
 import { Input } from 'antd';
 import { FC, useState } from 'react';
-import styles from '../../styles/components/Header.module.css';
+import styles from '../../styles/components/Header.module.less';
 
 export const HeaderSearch: FC = () => {
 	const [value, setValue] = useState('');

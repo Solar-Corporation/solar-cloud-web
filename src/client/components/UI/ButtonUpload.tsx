@@ -1,7 +1,7 @@
 import { CloudUploadOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { FC } from 'react';
-import styles from '../../styles/components/ButtonUpload.module.css';
+import styles from '../../styles/components/ButtonUpload.module.less';
 
 export const ButtonUpload: FC = () => {
 	return (
