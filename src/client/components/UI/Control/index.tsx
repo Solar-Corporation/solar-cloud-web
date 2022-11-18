@@ -1,5 +1,6 @@
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { FC, ReactNode } from 'react';
+import { tooltipShowDelay } from '../../../utils';
 
 interface ControlTypeProps {
 	icon: ReactNode;
@@ -10,11 +11,16 @@ interface ControlTypeProps {
 
 export const Control: FC<ControlTypeProps> = ({ icon, title, onClick }) => {
 	return (
-		<Button
-			type="ghost"
-			icon={icon}
+		<Tooltip
 			title={title}
-			onClick={onClick}
-		/>
+			placement="bottom"
+			mouseEnterDelay={tooltipShowDelay}
+		>
+			<Button
+				type="ghost"
+				icon={icon}
+				onClick={onClick}
+			/>
+		</Tooltip>
 	);
 };

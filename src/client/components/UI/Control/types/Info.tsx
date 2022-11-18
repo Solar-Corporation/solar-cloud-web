@@ -10,7 +10,7 @@ export const ControlInfo: FC = () => {
 	return (
 		<Control
 			icon={<InfoCircleOutlined />}
-			title="Показать свойства"
+			title="Свойства"
 			onClick={handleClick}
 		/>
 	);
