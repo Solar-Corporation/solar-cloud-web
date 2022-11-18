@@ -4,7 +4,7 @@ import { RouteNames } from '../../router';
 import styles from '../../styles/components/CloudLayout.module.less';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
-import { PageHeading, PageHeadingProps } from '../PageHeading';
+import { PageHeadingProps } from '../PageHeading';
 import { ButtonUpload } from '../UI/ButtonUpload';
 import { CloudInfoSpace } from './InfoSpace';
 
@@ -33,14 +33,8 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, child
 				</div>
 			}
 			sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
+			headingOptions={headingOptions}
 		>
-			<PageHeading
-				links={headingOptions.links}
-				actions={headingOptions.actions}
-				floatControls={headingOptions.floatControls}
-				constControls={headingOptions.constControls}
-				sticky={headingOptions.sticky}
-			/>
 			{children}
 		</Layout>
 	);

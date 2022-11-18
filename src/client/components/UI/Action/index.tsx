@@ -1,5 +1,6 @@
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { FC, ReactNode } from 'react';
+import { tooltipShowDelay } from '../../../utils';
 
 interface ActionTypeProps {
 	icon: ReactNode;
@@ -10,11 +11,16 @@ interface ActionTypeProps {
 
 export const Action: FC<ActionTypeProps> = ({ icon, title, onClick }) => {
 	return (
-		<Button
-			type="primary"
-			icon={icon}
+		<Tooltip
 			title={title}
-			onClick={onClick}
-		/>
+			placement="bottom"
+			mouseEnterDelay={tooltipShowDelay}
+		>
+			<Button
+				type="primary"
+				icon={icon}
+				onClick={onClick}
+			/>
+		</Tooltip>
 	);
 };

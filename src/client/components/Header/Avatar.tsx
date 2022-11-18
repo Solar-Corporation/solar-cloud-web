@@ -1,13 +1,19 @@
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
+import { Avatar, Tooltip } from 'antd';
 import { FC } from 'react';
 import styles from '../../styles/components/Header.module.less';
+import { tooltipShowDelay } from '../../utils';
 
 export const HeaderAvatar: FC = () => {
 	return (
-		<div className={styles.avatar} title="Профиль">
-			<Avatar size="large" icon={<UserOutlined />} />
-			<div className={styles.avatarOverlay} />
-		</div>
+		<Tooltip
+			title="Профиль"
+			mouseEnterDelay={tooltipShowDelay}
+		>
+			<div className={styles.avatar}>
+				<Avatar size="large" icon={<UserOutlined />} />
+				<div className={styles.avatarOverlay} />
+			</div>
+		</Tooltip>
 	);
 };
