@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
-import styles from '../../styles/components/Header.module.css';
+import styles from '../../styles/components/Header.module.less';
 
 export interface IHeaderLink {
 	icon: ReactNode;

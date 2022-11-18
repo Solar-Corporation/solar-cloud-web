@@ -1,7 +1,7 @@
 import { DeleteOutlined, FileOutlined, HistoryOutlined, StarOutlined, TagsOutlined } from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
 import { RouteNames } from '../../router';
-import styles from '../../styles/components/CloudLayout.module.css';
+import styles from '../../styles/components/CloudLayout.module.less';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
 import { PageHeading, PageHeadingProps } from '../PageHeading';

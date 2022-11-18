@@ -1,7 +1,7 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 import { FC } from 'react';
-import styles from '../../styles/components/Header.module.css';
+import styles from '../../styles/components/Header.module.less';
 
 export const HeaderAvatar: FC = () => {
 	return (

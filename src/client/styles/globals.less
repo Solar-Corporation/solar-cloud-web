@@ -1,0 +1,88 @@
+@import "~antd/dist/antd.dark";
+@import "./variables";
+//@import "./theme.css";
+
+@primary-color: @transparent-2;
+@primary-color-hover: @transparent-3;
+@primary-color-active: @transparent-3;
+@primary-color-outline: fade(@primary-color, @outline-fade);
+
+@body-background: @secondary;
+@font-family: Roboto, serif;
+@input-bg: @secondary;
+@input-border-color: transparent;
+@input-hover-border-color: transparent;
+
+body {
+  overflow: overlay;
+}
+
+.ant-avatar {
+  background: @control-default-bg-primary;
+  color: @control-default-typo-primary;
+}
+
+.ant-btn-primary {
+  background: @magenta-primary;
+  border-color: @magenta-primary;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:active, .ant-btn-primary:focus {
+  background: @magenta-secondary;
+  border-color: @magenta-secondary;
+}
+
+.ant-btn-default {
+  background: @control-default-bg-primary;
+  color: @control-default-typo-primary;
+  border: none;
+}
+
+.ant-btn-default:hover, .ant-btn-default:active, .ant-btn-default:focus {
+  background: @control-default-bg-secondary;
+  color: @control-default-typo-secondary;
+  border: none;
+}
+
+.ant-btn-ghost {
+  background: @control-ghost-bg-primary;
+  color: @control-ghost-typo-primary;
+  border: none;
+}
+
+.ant-btn-ghost:hover, .ant-btn-ghost:active, .ant-btn-ghost:focus {
+  background: @control-ghost-bg-secondary;
+  color: @control-ghost-typo-secondary;
+  border: none;
+}
+
+.ant-input:focus {
+  box-shadow: none;
+}
+
+.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary) {
+  color: @control-default-typo-primary;
+}
+
+.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):hover,
+.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):active,
+.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):focus {
+  color: @control-default-typo-secondary;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  margin-block: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: @transparent-1-5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: @transparent-2-5;
+}

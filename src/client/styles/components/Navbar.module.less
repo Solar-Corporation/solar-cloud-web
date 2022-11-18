@@ -1,0 +1,38 @@
+@import '../variables';
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: @space-3xs;
+}
+
+.item {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: @space-2xl;
+    padding: @space-xs 10px @space-xs 10px;
+    font-size: 16px;
+    line-height: 16px;
+    gap: @space-xs;
+    color: @transparent-5;
+    border-radius: @border-radius-base;
+    transition: all 0.15s;
+    -webkit-transition: all 0.15s;
+}
+
+.itemTitle {
+    margin-left: @space-xs;
+}
+
+.item:active, .item:hover {
+    color: @transparent-7;
+    background: @transparent-0-5;
+}
+
+.item_active, .item_active:active, .item_active:hover {
+    font-weight: 500;
+    color: @gold-primary;
+    background: @transparent-1;
+}
