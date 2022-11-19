@@ -54,15 +54,17 @@
   -webkit-transition: background-color 0.15s;
 }
 
-.avatar span {
-  transition: color 0.15s;
-  -webkit-transition: color 0.15s;
-}
-
-.avatar:hover .avatarOverlay {
-  background-color: @control-default-bg-secondary;
-}
-
-.avatar:hover span {
-  color: @control-default-typo-secondary;
+.avatar {
+  span {
+    transition: color 0.15s;
+    -webkit-transition: color 0.15s;
+  }
+  &:hover {
+    span {
+      color: @control-default-typo-secondary;
+    }
+  }
+  &:hover .avatarOverlay {
+    background-color: @control-default-bg-secondary;
+  }
 }
