@@ -42,11 +42,11 @@ export const HeaderLinks: FC<HeaderLinksProps> = ({ links }) => {
 					</Link>
 				) : (
 					<Tooltip
+						key={index}
 						title={link.title}
 						mouseEnterDelay={tooltipShowDelay}
 					>
 						<Button
-							key={index}
 							type="default"
 							shape="circle"
 							size="large"
