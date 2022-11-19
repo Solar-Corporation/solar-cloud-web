@@ -2,7 +2,7 @@ import { RightOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
-import styles from '../styles/components/Breadcrumbs.module.css';
+import styles from '../styles/components/Breadcrumbs.module.less';
 import { Action, ActionList } from './UI/Action/List';
 
 export interface IBreadcrumbsItem {

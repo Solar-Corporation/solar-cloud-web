@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import styles from '../styles/components/PageHeading.module.css';
+import styles from '../styles/components/PageHeading.module.less';
 import { Breadcrumbs, IBreadcrumbsItem } from './Breadcrumbs';
 import { Action } from './UI/Action/List';
 import { Control, ControlList } from './UI/Control/List';

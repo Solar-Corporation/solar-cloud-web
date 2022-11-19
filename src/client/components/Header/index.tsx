@@ -1,7 +1,7 @@
 import { QuestionOutlined, SettingOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { RouteNames } from '../../router';
-import styles from '../../styles/components/Header.module.css';
+import styles from '../../styles/components/Header.module.less';
 import { HeaderAvatar } from './Avatar';
 import { HeaderLinks, IHeaderLink } from './Links';
 import { HeaderLogo } from './Logo';
