@@ -4,10 +4,10 @@ AS
 $$
 DECLARE
 	result_user jsonb;
-	user_row    user_data.email_user_auth;
+	user_row    user_data.email_user;
 BEGIN
 	SELECT *
-	FROM user_data.email_user_auth
+	FROM user_data.email_user
 	WHERE (email_value = user_email)
 	INTO user_row;
 
@@ -20,7 +20,7 @@ BEGIN
 		                                                            'middleName', user_row.user_middle_name,
 		                                                            'lastName', user_row.user_last_name))
 		       || JSONB_BUILD_OBJECT('createAt', user_row.create_at)
-		       || JSONB_BUILD_OBJECT('createAt', user_row.update_at)
+		       || JSONB_BUILD_OBJECT('updateAt', user_row.update_at)
 	INTO result_user;
 	RETURN result_user;
 END
