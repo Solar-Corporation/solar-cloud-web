@@ -1,6 +1,5 @@
 @import "~antd/dist/antd.dark";
 @import "./variables";
-//@import "./theme.css";
 
 @primary-color: @transparent-2;
 @primary-color-hover: @transparent-3;
@@ -18,6 +17,20 @@ body {
   overflow: overlay;
 }
 
+a {
+  color: @magenta-primary;
+  &:hover, &:active {
+    color: @magenta-secondary;
+  }
+}
+
+.ant-typography a {
+  color: @magenta-primary;
+  &:hover, &:active {
+    color: @magenta-secondary;
+  }
+}
+
 .ant-avatar {
   background: @control-default-bg-primary;
   color: @control-default-typo-primary;
@@ -26,35 +39,30 @@ body {
 .ant-btn-primary {
   background: @magenta-primary;
   border-color: @magenta-primary;
-}
-
-.ant-btn-primary:hover, .ant-btn-primary:active, .ant-btn-primary:focus {
-  background: @magenta-secondary;
-  border-color: @magenta-secondary;
+  &:hover, &:active, &:focus {
+    background: @magenta-secondary;
+    border-color: @magenta-secondary;
+  }
 }
 
 .ant-btn-default {
   background: @control-default-bg-primary;
   color: @control-default-typo-primary;
   border: none;
-}
-
-.ant-btn-default:hover, .ant-btn-default:active, .ant-btn-default:focus {
-  background: @control-default-bg-secondary;
-  color: @control-default-typo-secondary;
-  border: none;
+  &:hover, &:active, &:focus {
+    background: @control-default-bg-secondary;
+    color: @control-default-typo-secondary;
+  }
 }
 
 .ant-btn-ghost {
   background: @control-ghost-bg-primary;
   color: @control-ghost-typo-primary;
   border: none;
-}
-
-.ant-btn-ghost:hover, .ant-btn-ghost:active, .ant-btn-ghost:focus {
-  background: @control-ghost-bg-secondary;
-  color: @control-ghost-typo-secondary;
-  border: none;
+  &:hover, &:active, &:focus {
+    background: @control-ghost-bg-secondary;
+    color: @control-ghost-typo-secondary;
+  }
 }
 
 .ant-input:focus {
@@ -69,6 +77,24 @@ body {
 .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):active,
 .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):focus {
   color: @control-default-typo-secondary;
+}
+
+.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+  border-color: @secondary;
+  box-shadow: none;
+}
+
+input {
+  &:-webkit-autofill {
+    &, &:hover, &:focus, &:active {
+      transition-delay: 3600s;
+      transition-property: background-color, color;
+    }
+  }
+}
+
+.ant-input-prefix {
+  margin-right: @space-xs;
 }
 
 ::-webkit-scrollbar {
