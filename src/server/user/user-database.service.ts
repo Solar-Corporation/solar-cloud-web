@@ -22,4 +22,9 @@ export class UserDatabaseService {
 		const userAuthDto: any = await SequelizeConnect.query(`SELECT user_data.get_user_by_email('${email}')`);
 		return userAuthDto[0][0].get_user_by_email;
 	}
+
+	async getUserById(id: number): Promise<UserDto> {
+		const userDto: any = await SequelizeConnect.query(`SELECT user_data.get_user_by_id(${id})`);
+		return userDto[0][0].get_user_by_id;
+	}
 }
