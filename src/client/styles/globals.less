@@ -66,8 +66,11 @@ a {
   }
 }
 
-.ant-input:focus {
-  box-shadow: none;
+.ant-input {
+  &:focus {
+    box-shadow: none;
+    border-color: transparent;
+  }
 }
 
 .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary) {
