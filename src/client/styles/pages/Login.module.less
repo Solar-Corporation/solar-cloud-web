@@ -1,0 +1,69 @@
+@import '../variables';
+
+.main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  background: @default;
+  width: 360px;
+  padding: @space-2xl;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: @shadow-modal;
+}
+
+.form {
+  width: 100%;
+}
+
+.logo {
+  width: 100%;
+  height: 40px;
+  margin: @space-m 0 @space-2xl 0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 300;
+  margin-bottom: @space-l;
+}
+
+.password {
+  margin-bottom: @space-m;
+  font-size: 12px;
+}
+
+.passwordInput {
+  margin-bottom: @space-xs - @space-3xs;
+}
+
+.control {
+  margin-bottom: 0;
+}
+
+.button {
+  margin-bottom: @space-xs - @space-3xs;
+  background: @orange-primary;
+  border-color: @orange-primary;
+  &:hover, &:active, &:focus {
+    background: @orange-secondary;
+    border-color: @orange-secondary;
+  }
+}
+
+.register {
+  font-size: 12px;
+  a {
+    color: @gold-primary;
+    &:hover, &:active {
+      color: @gold-secondary;
+    }
+  }
+}

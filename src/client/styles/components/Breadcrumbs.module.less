@@ -20,6 +20,8 @@
   color: @transparent-6;
 }
 
-.item_active, .item:active, .item:hover {
-  color: @text-color-full;
+.item_active {
+  &, &:hover, &:active {
+    color: @text-color-full;
+  }
 }
