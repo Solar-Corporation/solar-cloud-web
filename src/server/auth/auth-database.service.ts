@@ -25,7 +25,8 @@ export class AuthDatabaseService {
 	 * @returns {Promise<void>}
 	 */
 	async deleteAuth(refreshToken: string, transaction: Transaction): Promise<void> {
-		await SequelizeConnect.query(`CALL security_data.delete_jwt('${refreshToken}')`, { transaction: transaction });
+		await SequelizeConnect.query(`CALL security_data.delete_jwt('${refreshToken}')`,
+			{ transaction: transaction });
 	}
 
 	/**
