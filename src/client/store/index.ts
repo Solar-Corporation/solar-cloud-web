@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
+import { authAPI } from '../services/AuthService';
 import userReducer from './reducers/UserSlice';
 
 const rootReducer = combineReducers({
-	userReducer
+	userReducer,
+	[authAPI.reducerPath]: authAPI.reducer
 });
 
 export const setupStore = () => {
@@ -11,7 +13,7 @@ export const setupStore = () => {
 		reducer: rootReducer,
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware().concat(
-
+				authAPI.middleware
 			)
 	});
 };
