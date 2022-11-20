@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW user_data.email_user_auth
+CREATE OR REPLACE VIEW user_data.email_user
 			(email_id, email_value, user_id, user_password, user_nickname, user_first_name, user_last_name,
 			 user_middle_name, fk_image_id, create_at, update_at, user_uuid)
 AS
@@ -17,6 +17,6 @@ SELECT user_emails.email_id,
 FROM user_data.user_emails
 	     JOIN user_data.users u ON user_emails.email_id = u.fk_email_id;
 
-ALTER TABLE user_data.email_user_auth
+ALTER TABLE user_data.email_user
 	OWNER TO postgres;
 
