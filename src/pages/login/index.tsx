@@ -3,12 +3,31 @@ import { Button, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import Logo from '../../client/img/logo.svg';
+import { IAuth } from '../../client/models/IAuth';
+import { RouteNames } from '../../client/router';
+import { authAPI } from '../../client/services/AuthService';
 import styles from '../../client/styles/pages/Login.module.less';
+import { hash } from '../../client/utils';
 
 const { Text } = Typography;
 
 export default function Login() {
+	const router = useRouter();
+	const [loginUser, { data, isLoading }] = authAPI.useUserLoginMutation();
+
+	const handleSend = async (values: IAuth) => {
+		await loginUser({ ...values, password: await hash(values.password) });
+	};
+
+	useEffect(() => {
+		if (data) {
+			router.push(RouteNames.CLOUD);
+		}
+	}, [data]);
+
 	return (
 		<>
 			<Head>
@@ -18,20 +37,24 @@ export default function Login() {
 			</Head>
 			<main className={styles.main}>
 				<div className={styles.container}>
-					<Image src={Logo} alt="" className={styles.logo} />
+					<Image src={Logo} alt="" className={styles.logo} priority />
 					<h1 className={styles.title}>
 						Вход в аккаунт
 					</h1>
-					<Form layout="vertical" className={styles.form}>
-						<Form.Item>
+					<Form
+						className={styles.form}
+						layout="vertical"
+						onFinish={handleSend}
+					>
+						<Form.Item name="email" rules={[{ required: true, message: '' }]}>
 							<Input
 								prefix={<UserOutlined />}
 								placeholder="Ваша почта"
 								size="large"
 							/>
 						</Form.Item>
-						<Form.Item className={styles.password}>
-							<Form.Item name="password" className={styles.passwordInput}>
+						<Form.Item className={styles.password} required>
+							<Form.Item className={styles.passwordInput} name="password" rules={[{ required: true, message: '' }]}>
 								<Input.Password
 									prefix={<LockOutlined />}
 									placeholder="Пароль"
@@ -47,6 +70,8 @@ export default function Login() {
 								className={styles.button}
 								type="primary"
 								size="large"
+								htmlType="submit"
+								loading={isLoading}
 								block
 							>
 								Войти
