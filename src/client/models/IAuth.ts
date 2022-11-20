@@ -6,3 +6,13 @@ export interface IAuth {
 export interface IToken {
 	access: string;
 }
+
+export interface IRegister {
+	email: string;
+	password: string;
+	fullName: {
+		firstName: string;
+		middleName: string;
+		lastName: string;
+	}
+}
