@@ -27,6 +27,23 @@ export const authAPI = createApi({
 				}
 			}
 		}),
+		userRefresh: build.query<IToken, null>({
+			query: () => ({
+				url: '/refresh'
+			}),
+			async onQueryStarted(args, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled;
+					const user: UserState = {
+						data: jwt(data.access),
+						token: data.access
+					};
+					dispatch(setUser(user));
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}),
 		userRegister: build.mutation<IToken, IRegister>({
 			query: (data) => ({
 				url: '/registration',
