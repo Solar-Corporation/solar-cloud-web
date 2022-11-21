@@ -1,10 +1,12 @@
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
+import { authAPI } from '../client/services/AuthService';
 import { wrapper } from '../client/store';
 import '../client/styles/globals.less';
 
 function App({ Component, ...rest }: AppProps) {
 	const { store, props } = wrapper.useWrappedStore(rest);
+	store.dispatch(authAPI.endpoints.userRefresh.initiate(null));
 
 	return (
 		<Provider store={store}>
