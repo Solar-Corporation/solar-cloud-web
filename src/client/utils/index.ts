@@ -1,7 +1,3 @@
-import { GetServerSideProps } from 'next';
-import { authAPI } from '../services/AuthService';
-import { wrapper } from '../store';
-
 export const tooltipShowDelay = 0.4;
 
 export async function hash(string: string) {
@@ -13,10 +9,12 @@ export async function hash(string: string) {
 		.join('');
 }
 
-export const getServerSideRefresh: GetServerSideProps = wrapper.getServerSideProps(
-	(store) =>
-		async (ctx) => {
-			await store.dispatch(authAPI.endpoints.userRefresh.initiate(null));
-			return { props: {} };
-		}
-);
+// export const getServerSideRefresh: GetServerSideProps = wrapper.getServerSideProps(
+// 	(store) =>
+// 		async (ctx) => {
+// 			const { userReducer: { data }} = store.getState();
+// 			console.log('data', data);
+// 			await store.dispatch(authAPI.endpoints.userRefresh.initiate(null));
+// 			return { props: {} };
+// 		}
+// );
