@@ -6,7 +6,11 @@ import '../client/styles/globals.less';
 
 function App({ Component, ...rest }: AppProps) {
 	const { store, props } = wrapper.useWrappedStore(rest);
-	store.dispatch(authAPI.endpoints.userRefresh.initiate(null));
+	const { userReducer: { token } } = store.getState();
+
+	if (!token) {
+		store.dispatch(authAPI.endpoints.userRefresh.initiate(null));
+	}
 
 	return (
 		<Provider store={store}>
