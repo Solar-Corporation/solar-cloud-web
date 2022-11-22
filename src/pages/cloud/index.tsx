@@ -1,8 +1,6 @@
-import { getServerSideRefresh } from 'src/client/utils';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { Action } from '../../client/components/UI/Action/List';
 import { Control } from '../../client/components/UI/Control/List';
-import { useAppSelector } from '../../client/hooks/redux';
 import { RouteNames } from '../../client/router';
 
 export default function Cloud() {

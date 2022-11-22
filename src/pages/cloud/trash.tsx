@@ -1,4 +1,3 @@
-import { getServerSideRefresh } from 'src/client/utils';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { Control } from '../../client/components/UI/Control/List';
 import { RouteNames } from '../../client/router';
@@ -19,5 +18,3 @@ export default function Cloud() {
 		</CloudLayout>
 	);
 }
-
-// export { getServerSideRefresh as getServerSideProps };
