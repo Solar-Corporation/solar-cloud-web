@@ -9,6 +9,7 @@ export default () => ({
 	},
 	app: {
 		port: process.env.APP_PORT_SECRET || 3000,
+		path: process.env.STORE_PATH_SECRET,
 	},
 	database: {
 		dialect: process.env.DATABASE_DIALECT_SECRET as Dialect,
