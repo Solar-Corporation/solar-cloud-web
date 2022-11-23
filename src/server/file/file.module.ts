@@ -7,6 +7,7 @@ import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
 import { UserModule } from '../user/user.module';
+import { FileDatabaseService } from './file-database.service';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 
@@ -29,7 +30,7 @@ import { FileService } from './file.service';
 		NestjsFormDataModule,
 	],
 	controllers: [FileController],
-	providers: [FileService, JwtAuthGuard, TransactionInterceptor],
+	providers: [FileService, JwtAuthGuard, TransactionInterceptor, FileDatabaseService],
 	exports: [FileService],
 })
 export class FileModule {
