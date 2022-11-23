@@ -85,7 +85,7 @@ export class FileService implements IFile {
 			path: '/',
 			isFolder: true,
 			expand: true,
-			children: [],
+			children: Array(),
 		}, root: string | null = null,
 	): Promise<FileTree> {
 		const list: Array<string> = await fs.readdir(dirPath);
