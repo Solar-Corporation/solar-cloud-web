@@ -95,6 +95,9 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 	async refresh(
 		refreshToken: string,
 	): Promise<JwtToken> {
+		if (!refreshToken)
+			throw new UnauthorizedException(ErrorsConfig.unauthorized.message, ErrorsConfig.unauthorized.message);
+
 		const userDto = this.tokenService.validateJwtToken(refreshToken);
 		const isExist = await this.authDatabaseService.checkToken(refreshToken);
 		if (!userDto || !isExist)
