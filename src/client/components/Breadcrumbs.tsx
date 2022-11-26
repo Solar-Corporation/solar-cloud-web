@@ -26,7 +26,7 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 					href={link.href}
 					title={link.title}
 					className={
-						router.pathname === link.href
+						router.asPath === link.href
 							? `${styles.item} ${styles.item_active}`
 							: styles.item
 					}
