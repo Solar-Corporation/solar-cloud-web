@@ -3,7 +3,8 @@ import { Dialect } from 'sequelize';
 
 export default () => ({
 	auth: {
-		secretKey: process.env.JWT_KEY_SECRET,
+		accessSecretKey: process.env.JWT_ACCESS_KEY_SECRET,
+		refreshSecretKey: process.env.JWT_REFRESH_KEY_SECRET,
 		accessExpiresIn: Number(process.env.EXPIRESIN_ACCESS_SECRET),
 		refreshExpiresIn: Number(process.env.EXPIRESIN_REFRESH_SECRET),
 	},

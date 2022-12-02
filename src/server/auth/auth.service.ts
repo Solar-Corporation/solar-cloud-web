@@ -103,11 +103,12 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		if (!userDto || !isExist)
 			throw new UnauthorizedException(ErrorsConfig.unauthorized.message, ErrorsConfig.unauthorized.message);
 
-		const accessExpiresIn = Number(this.configService.get<number>('auth.accessExpiresIn'));
+		const accessExpiresIn = this.configService.get<number>('auth.accessExpiresIn')!;
+		const accessSecretKey = this.configService.get<string>('auth.accessSecretKey')!;
 
 		return {
 			refresh: refreshToken,
-			access: this.tokenService.createJwtToken(userDto, accessExpiresIn),
+			access: this.tokenService.createJwtToken(userDto, accessSecretKey, accessExpiresIn),
 		};
 	}
 
@@ -124,11 +125,15 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		deviceDataDto: DeviceDataDto,
 		transaction: Transaction,
 	): Promise<JwtToken> {
-		const refreshExpiresIn = Number(this.configService.get<number>('auth.refreshExpiresIn'));
-		const accessExpiresIn = Number(this.configService.get<number>('auth.accessExpiresIn'));
+		const refreshExpiresIn = this.configService.get<number>('auth.refreshExpiresIn')!;
+		const accessExpiresIn = this.configService.get<number>('auth.accessExpiresIn')!;
+
+		const accessSecretKey = this.configService.get<string>('auth.accessSecretKey')!;
+		const refreshSecretKey = this.configService.get<string>('auth.refreshSecretKey')!;
+
 		const jwtTokens = {
-			refresh: this.tokenService.createJwtToken(userDto, refreshExpiresIn),
-			access: this.tokenService.createJwtToken(userDto, accessExpiresIn),
+			refresh: this.tokenService.createJwtToken(userDto, refreshSecretKey, refreshExpiresIn),
+			access: this.tokenService.createJwtToken(userDto, accessSecretKey, accessExpiresIn),
 		};
 
 		const expiredDay = Math.floor(refreshExpiresIn / (3600 * 24));
