@@ -4,10 +4,9 @@ use std::process::exit;
 
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
+use xattr::set;
 
-// #[path = "./file_system.rs"]
 mod file_system;
-// use file_system;
 
 #[napi(object)]
 pub struct UserDir {
@@ -25,12 +24,17 @@ impl FileService {
 	#[napi]
 	pub async fn create_user_dir(user: UserDir, base_path: String) -> Result<String> {
 		let disc_space = file_system::FileSystem::disk_size();
-		let app_size = file_system::FileSystem::dir_size(PathBuf::from(&base_path)).await?;
-		if disc_space - app_size < (user.storage as u64) {
+
+		let total_size = file_system::FileSystem::total_size(&PathBuf::from(&base_path)).await?;
+		if disc_space - total_size < (user.storage as u64) {
 			exit(1);
 		}
+
 		let user_dir = Path::new(&base_path).join(user.uuid);
 		file_system::FileSystem::create_dir(&user_dir).await?;
+		set(&user_dir, "available_space", (user.storage as u64).to_string().as_bytes())
+			.expect("Cannot insert system value!");
+
 		return Ok(user_dir.into_os_string().into_string().unwrap());
 	}
 }

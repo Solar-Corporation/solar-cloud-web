@@ -1,9 +1,12 @@
 use std::path::{Path, PathBuf};
+use std::process::exit;
+use std::str;
 
 use async_recursion::async_recursion;
 use napi::bindgen_prelude::*;
 use sysinfo::{DiskExt, System, SystemExt};
 use tokio::{fs, io::AsyncWriteExt};
+use xattr::{get, set};
 
 pub struct FileSystem {}
 
@@ -28,13 +31,13 @@ impl FileSystem {
     }
 
     #[async_recursion]
-    pub async fn dir_size(dir_path: PathBuf) -> Result<u64> {
+    pub async fn dir_size(dir_path: &PathBuf) -> Result<u64> {
         let mut total_size = 0;
         let mut dir = fs::read_dir(dir_path).await?;
 
         while let Some(item) = dir.next_entry().await? {
             if item.metadata().await?.is_dir() {
-                total_size += FileSystem::dir_size(item.path()).await?;
+                total_size += FileSystem::dir_size(&item.path()).await?;
                 continue;
             }
             total_size += item.metadata().await?.len();
@@ -73,5 +76,24 @@ impl FileSystem {
     pub async fn remove_dir(dir_path: String) -> Result<()> {
         fs::remove_dir_all(dir_path).await?;
         return Ok(());
+    }
+
+    pub async fn total_size(base_path: &PathBuf) -> Result<u64> {
+        const NONE_MSG: &str = "none_space";
+
+        let metadata_vec_value = get(&base_path, "usage_space").unwrap().unwrap_or(NONE_MSG.as_bytes().to_vec());
+        let metadata_value = match str::from_utf8(&metadata_vec_value) {
+            Ok(v) => v,
+            Err(_) => exit(1),
+        };
+
+        if metadata_value == NONE_MSG {
+            let app_size = FileSystem::dir_size(&base_path).await?;
+            set(&base_path, "usage_space", app_size.to_string().as_bytes())
+              .expect("Cannot insert system value!");
+            return Ok(app_size);
+        }
+
+        return Ok(metadata_value.parse::<u64>().unwrap());
     }
 }
