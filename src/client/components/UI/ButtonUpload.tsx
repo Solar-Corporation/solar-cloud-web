@@ -1,18 +1,29 @@
 import { CloudUploadOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, ConfigProvider } from 'antd';
 import { FC } from 'react';
-import styles from '../../styles/components/ButtonUpload.module.less';
+import { variables } from '../../styles/theme';
 
 export const ButtonUpload: FC = () => {
 	return (
-		<Button
-			className={styles.main}
-			type="primary"
-			size="large"
-			icon={<CloudUploadOutlined />}
-			block
+		<ConfigProvider
+			theme={{
+				components: {
+					Button: {
+						colorPrimary: variables['@orange-primary'],
+						colorPrimaryHover: variables['@orange-secondary'],
+						colorPrimaryActive: variables['@orange-secondary']
+					}
+				}
+			}}
 		>
-			Загрузить
-		</Button>
+			<Button
+				type="primary"
+				size="large"
+				icon={<CloudUploadOutlined />}
+				block
+			>
+				Загрузить
+			</Button>
+		</ConfigProvider>
 	);
 };
