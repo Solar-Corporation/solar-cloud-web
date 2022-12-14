@@ -1,8 +1,10 @@
+import { ConfigProvider } from 'antd';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import { authAPI } from '../client/services/AuthService';
 import { wrapper } from '../client/store';
 import '../client/styles/globals.less';
+import { themeCloud } from '../client/styles/theme';
 
 function App({ Component, ...rest }: AppProps) {
 	const { store, props } = wrapper.useWrappedStore(rest);
@@ -14,7 +16,9 @@ function App({ Component, ...rest }: AppProps) {
 
 	return (
 		<Provider store={store}>
-			<Component {...props.pageProps} />
+			<ConfigProvider theme={themeCloud}>
+				<Component {...props.pageProps} />
+			</ConfigProvider>
 		</Provider>
 	);
 }
