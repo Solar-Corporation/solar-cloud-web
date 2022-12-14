@@ -2,30 +2,32 @@
 @white: #ffffff;
 @default: #292929;
 @secondary: #202020;
+@dark: #101010;
+@base: #606060;
 @magenta-primary: #cb2b83;
 @magenta-secondary: #e0529c;
 @red: #d32029;
-//@magenta-secondary: #a02669;
 @gold-primary: #e8b339;
 @gold-secondary: #f3cc62;
 @orange-primary: #e89a3c;
 @orange-secondary: #f3b765;
 @gradient: linear-gradient(to right, @gold-primary, @magenta-primary);
 
-@transparent-0-5: rgba(255, 255, 255, 0.05);
-@transparent-1: rgba(255, 255, 255, 0.1);
-@transparent-1-5: rgba(255, 255, 255, 0.15);
-@transparent-2: rgba(255, 255, 255, 0.2);
-@transparent-2-5: rgba(255, 255, 255, 0.25);
-@transparent-3: rgba(255, 255, 255, 0.3);
-@transparent-4: rgba(255, 255, 255, 0.4);
-@transparent-5: rgba(255, 255, 255, 0.5);
-@transparent-6: rgba(255, 255, 255, 0.6);
-@transparent-7: rgba(255, 255, 255, 0.7);
-@transparent-7-5: rgba(255, 255, 255, 0.75);
-@transparent-8: rgba(255, 255, 255, 0.8);
-@transparent-8-5: rgba(255, 255, 255, 0.85);
-@transparent-9: rgba(255, 255, 255, 0.9);
+@transparent-base: 255, 255, 255;
+@transparent-0-5: rgba(@transparent-base, 0.05);
+@transparent-1: rgba(@transparent-base, 0.1);
+@transparent-1-5: rgba(@transparent-base, 0.15);
+@transparent-2: rgba(@transparent-base, 0.2);
+@transparent-2-5: rgba(@transparent-base, 0.25);
+@transparent-3: rgba(@transparent-base, 0.3);
+@transparent-4: rgba(@transparent-base, 0.4);
+@transparent-5: rgba(@transparent-base, 0.5);
+@transparent-6: rgba(@transparent-base, 0.6);
+@transparent-7: rgba(@transparent-base, 0.7);
+@transparent-7-5: rgba(@transparent-base, 0.75);
+@transparent-8: rgba(@transparent-base, 0.8);
+@transparent-8-5: rgba(@transparent-base, 0.85);
+@transparent-9: rgba(@transparent-base, 0.9);
 
 // Shadows
 @shadow-group: 0px 2px 2px rgba(0, 0, 0, 0.08), 0px 2px 12px rgba(0, 0, 0, 0.32);
@@ -66,4 +68,4 @@
 @control-ghost-typo-secondary: @white;
 
 // Other
-@border-radius-base: @space-2xs;
+@border-radius: 4px;
