@@ -14,5 +14,5 @@ export interface IRegister {
 		firstName: string;
 		middleName: string;
 		lastName: string;
-	}
+	};
 }

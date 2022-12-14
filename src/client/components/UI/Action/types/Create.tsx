@@ -10,7 +10,7 @@ export const ActionCreate: FC = () => {
 	return (
 		<Action
 			icon={<PlusOutlined />}
-			title='Создать'
+			title="Создать"
 			onClick={handleClick}
 		/>
 	);
