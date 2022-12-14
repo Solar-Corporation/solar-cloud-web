@@ -1,6 +1,4 @@
-use std::io::{self, Read};
 use std::path::{Path, PathBuf};
-use std::process::exit;
 
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
@@ -27,7 +25,7 @@ impl FileService {
 
 		let total_size = file_system::FileSystem::total_size(&PathBuf::from(&base_path)).await?;
 		if disc_space - total_size < (user.storage as u64) {
-			exit(1);
+			return Err(Error::new(Status::Cancelled, "No free space".to_owned()));
 		}
 
 		let user_dir = Path::new(&base_path).join(user.uuid);

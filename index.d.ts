@@ -7,7 +7,6 @@ export interface UserDir {
   uuid: string;
   storage: number;
 }
-
 export class FileService {
   /**
    * Метод проверяет, хватает ли места на диске.

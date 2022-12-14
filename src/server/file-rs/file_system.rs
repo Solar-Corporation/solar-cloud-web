@@ -82,10 +82,7 @@ impl FileSystem {
         const NONE_MSG: &str = "none_space";
 
         let metadata_vec_value = get(&base_path, "usage_space").unwrap().unwrap_or(NONE_MSG.as_bytes().to_vec());
-        let metadata_value = match str::from_utf8(&metadata_vec_value) {
-            Ok(v) => v,
-            Err(_) => exit(1),
-        };
+        let metadata_value = str::from_utf8(&metadata_vec_value).unwrap();
 
         if metadata_value == NONE_MSG {
             let app_size = FileSystem::dir_size(&base_path).await?;
