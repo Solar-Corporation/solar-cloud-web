@@ -16,7 +16,7 @@ export default function Cloud() {
 	};
 
 	const handleClick = async () => {
-		await router.push(`${RouteNames.CLOUD}/?folder=${id}`);
+		await router.push(`${RouteNames.CLOUD}?path=${id}`);
 	};
 
 	return (
