@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use tokio::fs;
@@ -10,10 +12,22 @@ struct FileSystem {}
 impl FileSystem {
     #[napi]
     pub async fn save_file(file_data: Buffer, file_path: String) -> Result<()> {
-        let mut file = fs::File::create(file_path).await?;
+        let directory_path = Path::new(&file_path);
+        if !directory_path.exists() {
+            let parent = directory_path.parent().unwrap();
+            fs::create_dir_all(&parent).await?;
+        }
+        let mut file = fs::File::create(&file_path).await?;
         let buf: Vec<u8> = file_data.into();
         file.write_all(&buf).await?;
         return Ok(());
+    }
+
+    #[napi]
+    pub async fn is_file_exist(file_path: String) -> Result<bool> {
+        let directory_path = Path::new(&file_path);
+        let is_exist: bool = directory_path.exists();
+        return Ok(is_exist);
     }
 
     #[napi]

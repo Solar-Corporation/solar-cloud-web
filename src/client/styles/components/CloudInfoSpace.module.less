@@ -1,8 +1,8 @@
 @import '../variables';
 
 .container {
-  padding: @space-s @space-m @space-xs @space-m;
-  border-radius: @border-radius-base;
+  padding: @space-m @space-m @space-xs @space-m;
+  border-radius: @border-radius;
   background: @control-ghost-bg-primary;
   color: @control-ghost-typo-primary;
   text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
@@ -10,6 +10,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+
   &:hover {
     background: @control-ghost-bg-secondary;
     color: @control-ghost-typo-secondary;
@@ -17,7 +18,7 @@
 }
 
 .title {
-  margin-bottom: @space-xs;
+  margin-bottom: @space-s;
   font-size: 16px;
 }
 

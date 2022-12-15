@@ -43,10 +43,12 @@ export default function Login() {
 					</h1>
 					<Form
 						className={styles.form}
+						name="login"
 						layout="vertical"
+						validateMessages={{ required: '' }}
 						onFinish={handleSend}
 					>
-						<Form.Item name="email" rules={[{ required: true, message: '' }]}>
+						<Form.Item name="email" rules={[{ required: true }]}>
 							<Input
 								prefix={<UserOutlined />}
 								placeholder="Ваша почта"
@@ -54,7 +56,7 @@ export default function Login() {
 							/>
 						</Form.Item>
 						<Form.Item className={styles.password} required>
-							<Form.Item className={styles.passwordInput} name="password" rules={[{ required: true, message: '' }]}>
+							<Form.Item className={styles.passwordInput} name="password" rules={[{ required: true }]}>
 								<Input.Password
 									prefix={<LockOutlined />}
 									placeholder="Пароль"
@@ -77,7 +79,7 @@ export default function Login() {
 								Войти
 							</Button>
 							<Text type="secondary" className={styles.register}>
-								Нет аккаунта? <Link href="/">Зарегестрироваться</Link>
+								Нет аккаунта? <Link href={RouteNames.SIGNUP}>Зарегестрироваться</Link>
 							</Text>
 						</Form.Item>
 					</Form>

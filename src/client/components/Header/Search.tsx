@@ -18,6 +18,7 @@ export const HeaderSearch: FC = () => {
 			value={value}
 			onChange={(event) => setValue(event.target.value)}
 			onSearch={handleSearch}
+			enterButton
 		/>
 	);
 };

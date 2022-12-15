@@ -11,7 +11,7 @@ export class JwtAuthGuard extends PassportStrategy(Strategy) {
 	constructor(private readonly configService: ConfigService, private readonly userDatabaseService: UserDatabaseService) {
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-			secretOrKey: configService.get('auth.secretKey'),
+			secretOrKey: configService.get('auth.accessSecretKey'),
 		});
 	}
 

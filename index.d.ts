@@ -6,13 +6,11 @@
 export class FileSystem {
   static saveFile(fileData: Buffer, filePath: string): Promise<void>
 
+  static isFileExist(filePath: string): Promise<boolean>
+
   static getFile(filePath: string): Promise<Buffer>
-
   static deleteFile(filePath: string): Promise<void>
-
   static rename(oldPath: string, newPath: string): Promise<void>
-
   static createDir(dirPath: string): Promise<void>
-
   static removeDir(dirPath: string): Promise<void>
 }

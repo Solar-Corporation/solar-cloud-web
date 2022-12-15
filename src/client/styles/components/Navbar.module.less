@@ -1,39 +1,41 @@
 @import '../variables';
 
 .container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: @space-3xs;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: @space-3xs;
+  font-family: Roboto, serif;
 }
 
 .item {
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    height: @space-2xl;
-    padding: @space-xs 10px @space-xs 10px;
-    font-size: 16px;
-    line-height: 16px;
-    gap: @space-xs;
-    color: @transparent-5;
-    border-radius: @border-radius-base;
-    transition: all 0.15s;
-    -webkit-transition: all 0.15s;
-    &:hover, &:active {
-        color: @transparent-7;
-        background: @transparent-0-5;
-    }
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: @space-2xl;
+  padding: @space-xs 10px @space-xs 10px;
+  font-size: 16px;
+  line-height: 16px;
+  gap: @space-xs;
+  color: @transparent-5;
+  border-radius: @border-radius;
+  transition: all 0.15s;
+  -webkit-transition: all 0.15s;
+
+  &:hover, &:active {
+    color: @transparent-7;
+    background: @transparent-0-5;
+  }
 }
 
 .item_active {
-    &, &:hover, &:active {
-        font-weight: 500;
-        color: @gold-primary;
-        background: @transparent-1;
-    }
+  &, &:hover, &:active {
+    font-weight: 500;
+    color: @gold-primary;
+    background: @transparent-1;
+  }
 }
 
 .itemTitle {
-    margin-left: @space-xs;
+  margin-left: @space-xs;
 }

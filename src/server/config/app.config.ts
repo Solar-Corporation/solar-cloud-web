@@ -3,12 +3,14 @@ import { Dialect } from 'sequelize';
 
 export default () => ({
 	auth: {
-		secretKey: process.env.JWT_KEY_SECRET,
+		accessSecretKey: process.env.JWT_ACCESS_KEY_SECRET,
+		refreshSecretKey: process.env.JWT_REFRESH_KEY_SECRET,
 		accessExpiresIn: Number(process.env.EXPIRESIN_ACCESS_SECRET),
 		refreshExpiresIn: Number(process.env.EXPIRESIN_REFRESH_SECRET),
 	},
 	app: {
 		port: process.env.APP_PORT_SECRET || 3000,
+		path: process.env.STORE_PATH_SECRET,
 	},
 	database: {
 		dialect: process.env.DATABASE_DIALECT_SECRET as Dialect,

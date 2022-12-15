@@ -15,11 +15,18 @@ export class TokenService {
 	/**
 	 * Метод создаёт JWT токен.
 	 * @param {UserDto} userDto - payload токена с пользовательскими данными.
+	 * @param {string} secretKey - секретный ключ для подписи токена.
 	 * @param {number} expireIn - время, через которое токен станет недействительным.
 	 * @returns {string} - JWT токен.
 	 */
-	createJwtToken(userDto: UserDto, expireIn: number): string {
-		return this.jwtService.sign({ unique: uuidv4(), ...userDto }, { expiresIn: expireIn });
+	createJwtToken(userDto: UserDto, secretKey: string, expireIn: number): string {
+		return this.jwtService.sign({
+			unique: uuidv4(),
+			...userDto,
+		}, {
+			secret: secretKey,
+			expiresIn: expireIn,
+		});
 	}
 
 	/**
@@ -28,7 +35,7 @@ export class TokenService {
 	 * @returns {UserDto} - информацию из токена, если данные корректны.
 	 */
 	validateJwtToken(token: string): UserDto {
-		const userData: any = this.jwtService.verify(token, { secret: this.configService.get('auth.secretKey') });
+		const userData: any = this.jwtService.verify(token, { secret: this.configService.get('auth.accessSecretKey') });
 		delete userData.iat;
 		delete userData.exp;
 		delete userData.unique;

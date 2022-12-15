@@ -1,84 +1,105 @@
-@import "~antd/dist/antd.dark";
+//@import "~antd/dist/antd.dark";
+@import "~antd/dist/reset.css";
 @import "./variables";
 
-@primary-color: @transparent-2;
-@primary-color-hover: @transparent-3;
-@primary-color-active: @transparent-3;
-@primary-color-outline: fade(@primary-color, @outline-fade);
-@error-color: @red;
-
-@body-background: @secondary;
-@font-family: Roboto, serif;
-@input-bg: @secondary;
-@input-border-color: transparent;
-@input-hover-border-color: transparent;
-@tooltip-bg: #101010;
+//@primary-color: @transparent-2;
+//@primary-color-hover: @transparent-3;
+//@primary-color-active: @transparent-3;
+////@primary-color-outline: fade(@primary-color, @outline-fade);
+//@error-color: @red;
+//
+//@body-background: @secondary;
+//@font-family: Roboto, serif;
+//@input-bg: @secondary;
+//@input-border-color: transparent;
+//@input-hover-border-color: transparent;
 
 body {
   overflow: overlay;
+  //font-family: 'Roboto', serif;
+  background: @secondary;
 }
 
 a {
-  color: @magenta-primary;
-  &:hover, &:active {
-    color: @magenta-secondary;
-  }
+  text-decoration: none;
 }
 
-.ant-typography a {
-  color: @magenta-primary;
-  &:hover, &:active {
-    color: @magenta-secondary;
-  }
-}
+//a {
+//  color: @magenta-primary;
+//  text-decoration: none;
+//  &:hover, &:active {
+//    color: @magenta-secondary;
+//  }
+//}
+//
+//.ant-typography a {
+//  color: @magenta-primary;
+//  &:hover, &:active {
+//    color: @magenta-secondary;
+//  }
+//}
 
 .ant-avatar {
   background: @control-default-bg-primary;
   color: @control-default-typo-primary;
 }
 
-.ant-btn-primary {
-  background: @magenta-primary;
-  border-color: @magenta-primary;
-  &:hover, &:active, &:focus {
-    background: @magenta-secondary;
-    border-color: @magenta-secondary;
-  }
-}
-
+//.ant-btn-primary {
+//  background-color: @magenta-primary;
+//  border-color: @magenta-primary;
+//  &:hover, &:active, &:focus {
+//    background-color: @magenta-secondary;
+//    border-color: @magenta-secondary;
+//  }
+//}
+//
 .ant-btn-default {
-  background: @control-default-bg-primary;
-  color: @control-default-typo-primary;
+  box-shadow: none;
   border: none;
-  &:hover, &:active, &:focus {
+
+  &, &:not(:disabled):focus {
+    background: @control-default-bg-primary;
+    color: @control-default-typo-primary;
+  }
+
+  &:not(:disabled):hover, &:not(:disabled):active {
     background: @control-default-bg-secondary;
     color: @control-default-typo-secondary;
+    border-color: @base;
   }
 }
 
 .ant-btn-ghost {
-  background: @control-ghost-bg-primary;
-  color: @control-ghost-typo-primary;
   border: none;
-  &:hover, &:active, &:focus {
-    background: @control-ghost-bg-secondary;
+
+  &, &:focus {
+    background: @control-ghost-bg-primary;
+    color: @control-ghost-typo-primary;
+  }
+
+  &:hover, &:active {
+    background-color: @control-ghost-bg-secondary;
     color: @control-ghost-typo-secondary;
   }
 }
 
-.ant-input:focus {
-  box-shadow: none;
-}
-
-.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary) {
-  color: @control-default-typo-primary;
-}
-
-.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):hover,
-.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):active,
-.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):focus {
-  color: @control-default-typo-secondary;
-}
+//
+//.ant-input {
+//  &:focus {
+//    box-shadow: none;
+//    border-color: transparent;
+//  }
+//}
+//
+//.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button {
+//  color: @control-default-typo-primary;
+//}
+//
+//.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):hover,
+//.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):active,
+//.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):focus {
+//  color: @control-default-typo-secondary;
+//}
 
 .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
   border-color: @secondary;
@@ -96,6 +117,21 @@ input {
 
 .ant-input-prefix {
   margin-right: @space-xs;
+}
+
+.ant-input-search-button {
+  box-shadow: none;
+  color: @control-default-typo-primary;
+  background-color: @control-default-bg-primary;
+}
+
+.ant-input-search {
+  .ant-btn-primary {
+    &:not(:disabled):hover {
+      color: @control-default-typo-secondary;
+      background-color: @control-default-bg-secondary;
+    }
+  }
 }
 
 ::-webkit-scrollbar {
