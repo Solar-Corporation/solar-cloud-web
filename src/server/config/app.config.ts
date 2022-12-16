@@ -11,6 +11,8 @@ export default () => ({
 	app: {
 		port: process.env.APP_PORT_SECRET || 3000,
 		path: process.env.STORE_PATH_SECRET,
+		userStorage: process.env.USER_STORAGE_SECRET || 5368709120,
+		isRegistration: process.env.IS_REGISTRATION_SECRET || true,
 	},
 	database: {
 		dialect: process.env.DATABASE_DIALECT_SECRET as Dialect,
