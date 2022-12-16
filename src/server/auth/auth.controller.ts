@@ -18,7 +18,7 @@ export class AuthController {
 	) {
 	}
 
-	@Post('registration')
+	@Post('sing-up')
 	@UseInterceptors(TransactionInterceptor)
 	async registration(
 		@Body() registrationUserDto: UserRegistrationDto,
@@ -41,7 +41,7 @@ export class AuthController {
 		return tokens;
 	}
 
-	@Post('auth/email')
+	@Post('sign-in')
 	@UseInterceptors(TransactionInterceptor)
 	async emailLogin(
 		@Body() emailLoginDto: EmailLoginDto,
@@ -64,7 +64,7 @@ export class AuthController {
 		return tokens;
 	}
 
-	@Delete('logout')
+	@Delete('sign-out')
 	@UseInterceptors(TransactionInterceptor)
 	async logout(
 		@Req() req: Request,
