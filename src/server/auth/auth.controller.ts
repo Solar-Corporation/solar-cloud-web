@@ -5,6 +5,7 @@ import { Transaction } from 'sequelize';
 import { UAParser } from 'ua-parser-js';
 import { JwtToken } from '../../shared/types/auth.type';
 import { TransactionParam } from '../common/decorators/transaction.decorator';
+import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
 import { AuthService } from './auth.service';
 import { DeviceDataDto, EmailLoginDto, UserRegistrationDto } from './dto';
@@ -20,6 +21,7 @@ export class AuthController {
 
 	@Post('sing-up')
 	@UseInterceptors(TransactionInterceptor)
+	@UseInterceptors(RsErrorInterceptor)
 	async registration(
 		@Body() registrationUserDto: UserRegistrationDto,
 		@Req() req: Request,
