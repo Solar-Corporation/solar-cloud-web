@@ -4,9 +4,9 @@ import {
 	Delete,
 	Get,
 	Param,
-	Patch,
 	Post,
 	Put,
+	Query,
 	Req,
 	Res,
 	UseGuards,
@@ -16,64 +16,69 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Transaction } from 'sequelize';
-import { Readable } from 'stream';
-import { FileTree } from '../../shared/types/file.type';
+import { FileTree } from '../../../index';
+
 import { TransactionParam } from '../common/decorators/transaction.decorator';
+import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
 import { UserDto } from '../user/dto/user.dto';
-import { FileUploadDto, ParamFileDto, RenameFileDto } from './dto/file.dto';
+import { FileUploadDto, ParamDirDto, ParamFileDto, RenameDto } from './dto/file.dto';
 import { FileService } from './file.service';
 
 @Controller({ version: '1' })
 export class FileController {
-	constructor(private readonly fileService: FileService) {
-
+	constructor(
+		private readonly fileService: FileService,
+	) {
 	}
 
 	@Post('files')
 	@UseGuards(AuthGuard())
+	@UseInterceptors(RsErrorInterceptor)
 	@FormDataRequest()
-	@UseInterceptors(TransactionInterceptor)
 	async saveFile(
 		@Body() fileUploadDto: FileUploadDto,
 		@Req() req: Request,
-		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
 		const { user } = req;
-		await this.fileService.saveFile(fileUploadDto, user as UserDto, transaction);
+		await this.fileService.saveFile(fileUploadDto, user as UserDto);
 	}
 
 	@Get('files/:file_path')
 	@UseGuards(AuthGuard())
+	@UseInterceptors(RsErrorInterceptor)
 	async getFile(
-		@Param() param: ParamFileDto,
+		@Param() { filePath }: ParamFileDto,
 		@Req() req: Request,
 		@Res() res: Response,
 	): Promise<void> {
 		const { user } = req;
-		const file = await this.fileService.getFile(param.filePath, user as UserDto);
+		const { name, fileMime, stream } = await this.fileService.getFile(filePath, user as UserDto);
 		res.set({
-			'Content-Type': file.fileMime,
-			'Content-Disposition': `attachment; filename="${file.name}"`,
+			'Content-Type': fileMime,
+			'Content-Disposition': `attachment; filename="${name}"`,
 		});
-		(file.stream as Readable).pipe(res);
+		stream!.pipe(res);
 	}
 
-	@Patch('files')
+	@Put('files/:file_path')
 	@UseGuards(AuthGuard())
 	@UseInterceptors(TransactionInterceptor)
+	@UseInterceptors(RsErrorInterceptor)
 	async renameFile(
-		@Body() renameFileDto: RenameFileDto,
+		@Param() { filePath }: ParamFileDto,
+		@Query() { newName }: RenameDto,
 		@Req() req: Request,
 		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
 		const { user } = req;
-		await this.fileService.renameFile(renameFileDto, user as UserDto, transaction);
+		await this.fileService.renameFile({ filePath: filePath, newName: newName }, user as UserDto, transaction);
 	}
 
 	@Delete('files/:filePath')
 	@UseGuards(AuthGuard())
 	@UseInterceptors(TransactionInterceptor)
+	@UseInterceptors(RsErrorInterceptor)
 	async deleteFile(
 		@Param() param: ParamFileDto,
 		@Req() req: Request,
@@ -99,8 +104,12 @@ export class FileController {
 
 	@Get('files')
 	@UseGuards(AuthGuard())
-	async getFileTree(@Req() req: Request): Promise<FileTree> {
+	@UseInterceptors(RsErrorInterceptor)
+	async getFileTree(
+		@Query() { dirPath }: ParamDirDto,
+		@Req() req: Request,
+	): Promise<Array<FileTree>> {
 		const { user } = req;
-		return this.fileService.getFileTree(user as UserDto);
+		return this.fileService.getFileTree(user as UserDto, dirPath);
 	}
 }

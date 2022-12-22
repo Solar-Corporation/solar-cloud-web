@@ -18,7 +18,7 @@ export class FileDto {
 
 	@IsNumber()
 	@IsNotEmpty()
-	sizeCompressed: number = 0;
+	sizeCompressed?: number = 0;
 
 	@IsNumber()
 	@IsNotEmpty()
@@ -34,7 +34,7 @@ export class FileDto {
 	@IsString()
 	type?: string;
 
-	stream?: Readable;
+	stream?: Readable = new Readable();
 
 	@IsDate()
 	createAt?: Date;
@@ -46,7 +46,7 @@ export class FileDto {
 	isDelete?: boolean;
 
 	@IsDate()
-	deleteAt?: boolean;
+	deleteAt?: Date;
 }
 
 export class ParamFileDto {
@@ -54,6 +54,20 @@ export class ParamFileDto {
 	@IsNotEmpty()
 	@Expose({ name: 'file_path' })
 	filePath: string = '';
+}
+
+export class ParamDirDto {
+	@IsString()
+	@IsNotEmpty()
+	@Expose({ name: 'dir_path' })
+	dirPath: string = '';
+}
+
+export class RenameDto {
+	@IsString()
+	@IsNotEmpty()
+	@Expose({ name: 'new_name' })
+	newName: string = '';
 }
 
 export class RenameFileDto {
