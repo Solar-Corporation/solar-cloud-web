@@ -6,7 +6,7 @@ import { Readable } from 'stream';
 
 import { FileService as RsFileService, FileTree, UserFile } from '../../../index';
 import { UserDto } from '../user/dto/user.dto';
-import { FileDto, FileUploadDto, RenameFileDto } from './dto/file.dto';
+import { FileDto, FileUploadDto, RenameDto } from './dto/file.dto';
 import { FileDatabaseService } from './file-database.service';
 
 @Injectable()
@@ -47,11 +47,11 @@ export class FileService {
 		};
 	}
 
-	async renameFile(renameFileDto: RenameFileDto, userDto: UserDto, transaction: Transaction): Promise<void> {
+	async renameFile(renameFileDto: RenameDto, userDto: UserDto, transaction: Transaction): Promise<void> {
 		const storePath = this.configService.get('app.path');
-		const fullPath = path.join(storePath, userDto.uuid, renameFileDto.filePath);
+		const fullPath = path.join(storePath, userDto.uuid, renameFileDto.path);
 		const renameFilePath = fullPath.replace(path.basename(fullPath), renameFileDto.newName);
-		await this.fileDatabaseService.updateFilePath({ filePath: fullPath, newName: renameFilePath }, transaction);
+		await this.fileDatabaseService.updateFilePath({ path: fullPath, newName: renameFilePath }, transaction);
 		await RsFileService.rename(fullPath, renameFilePath);
 	}
 
