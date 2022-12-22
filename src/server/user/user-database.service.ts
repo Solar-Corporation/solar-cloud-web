@@ -29,7 +29,7 @@ export class UserDatabaseService {
 	}
 
 	async isEmailVerify(email: string): Promise<Boolean> {
-		const isEmail: any = await SequelizeConnect.query(`SELECT user_data.is_email_verify($email)`, {
+		const [isEmail]: any = await SequelizeConnect.query(`SELECT user_data.is_email_verify($email)`, {
 			type: QueryTypes.SELECT,
 			bind: { email: email },
 			nest: true,
