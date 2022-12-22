@@ -22,7 +22,7 @@ import { TransactionParam } from '../common/decorators/transaction.decorator';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
 import { UserDto } from '../user/dto/user.dto';
-import { FileUploadDto, ParamDirDto, ParamFileDto, RenameDto } from './dto/file.dto';
+import { FileUploadDto, ParamDirDto, ParamFileDto, RenameQueryDto } from './dto/file.dto';
 import { FileService } from './file.service';
 
 @Controller({ version: '1' })
@@ -48,12 +48,12 @@ export class FileController {
 	@UseGuards(AuthGuard())
 	@UseInterceptors(RsErrorInterceptor)
 	async getFile(
-		@Param() { filePath }: ParamFileDto,
+		@Param() { path }: ParamFileDto,
 		@Req() req: Request,
 		@Res() res: Response,
 	): Promise<void> {
 		const { user } = req;
-		const { name, fileMime, stream } = await this.fileService.getFile(filePath, user as UserDto);
+		const { name, fileMime, stream } = await this.fileService.getFile(path, user as UserDto);
 		res.set({
 			'Content-Type': fileMime,
 			'Content-Disposition': `attachment; filename="${name}"`,
@@ -61,18 +61,18 @@ export class FileController {
 		stream!.pipe(res);
 	}
 
-	@Put('files/:file_path')
+	@Put('files/:path')
 	@UseGuards(AuthGuard())
 	@UseInterceptors(TransactionInterceptor)
 	@UseInterceptors(RsErrorInterceptor)
 	async renameFile(
-		@Param() { filePath }: ParamFileDto,
-		@Query() { newName }: RenameDto,
+		@Param() { path }: ParamFileDto,
+		@Query() { newName }: RenameQueryDto,
 		@Req() req: Request,
 		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
 		const { user } = req;
-		await this.fileService.renameFile({ filePath: filePath, newName: newName }, user as UserDto, transaction);
+		await this.fileService.renameFile({ path: path, newName: newName }, user as UserDto, transaction);
 	}
 
 	@Delete('files/:filePath')

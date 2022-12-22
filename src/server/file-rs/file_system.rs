@@ -1,3 +1,4 @@
+use std::ffi::OsStr;
 use std::os::macos::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::process::exit;
@@ -144,14 +145,18 @@ impl FileSystem {
             let byte = Byte::from_bytes(metadata.len() as u128);
             let path = &item.path();
             let size = byte.get_appropriate_unit(true);
-            let mut ext = "";
             let mime_type = mime_guess::from_path(&path);
-            let mut file_type = String::from("");
 
-            if !metadata.is_dir() {
-                ext = Path::new(&path).extension().unwrap_or(Path::new("null").as_os_str()).to_str().unwrap_or("");
-                file_type = mime_type.first().unwrap_or(mime::TEXT_PLAIN).to_string();
-            }
+            let ext = Path::new(&path)
+              .extension()
+              .unwrap_or(OsStr::new(""))
+              .to_str()
+              .unwrap_or("");
+
+            let file_type = mime_type
+              .first()
+              .unwrap_or(mime::TEXT_PLAIN)
+              .to_string();
 
             file_tree.push(FileTree {
                 name: item.file_name().into_string().unwrap(),

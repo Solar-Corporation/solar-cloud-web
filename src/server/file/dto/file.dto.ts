@@ -52,8 +52,8 @@ export class FileDto {
 export class ParamFileDto {
 	@IsString()
 	@IsNotEmpty()
-	@Expose({ name: 'file_path' })
-	filePath: string = '';
+	@Expose({ name: 'path' })
+	path: string = '';
 }
 
 export class ParamDirDto {
@@ -63,17 +63,17 @@ export class ParamDirDto {
 	dirPath: string = '';
 }
 
-export class RenameDto {
+export class RenameQueryDto {
 	@IsString()
 	@IsNotEmpty()
 	@Expose({ name: 'new_name' })
 	newName: string = '';
 }
 
-export class RenameFileDto {
+export class RenameDto {
 	@IsString()
 	@IsNotEmpty()
-	filePath: string = '';
+	path: string = '';
 
 	@IsString()
 	@IsNotEmpty()
