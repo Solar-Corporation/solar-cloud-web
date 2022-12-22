@@ -5,7 +5,7 @@ use std::str;
 
 use async_recursion::async_recursion;
 use byte_unit::Byte;
-use mime_guess;
+use mime_guess::mime;
 use napi::bindgen_prelude::*;
 use sysinfo::{DiskExt, System, SystemExt};
 use tokio::{fs, io::AsyncWriteExt};
@@ -144,15 +144,21 @@ impl FileSystem {
             let byte = Byte::from_bytes(metadata.len() as u128);
             let path = &item.path();
             let size = byte.get_appropriate_unit(true);
-            let ext = Path::new(&path).extension().unwrap().to_str().unwrap();
+            let mut ext = "";
             let mime_type = mime_guess::from_path(&path);
+            let mut file_type = String::from("");
+
+            if !metadata.is_dir() {
+                ext = Path::new(&path).extension().unwrap_or(Path::new("null").as_os_str()).to_str().unwrap_or("");
+                file_type = mime_type.first().unwrap_or(mime::TEXT_PLAIN).to_string();
+            }
 
             file_tree.push(FileTree {
                 name: item.file_name().into_string().unwrap(),
                 path: path.to_str().unwrap().replace(&base_path.to_str().unwrap(), ""),
                 size: size.to_string(),
                 file_type: ext.to_string(),
-                mime_type: mime_type.first().unwrap().to_string(),
+                mime_type: file_type,
                 is_dir: metadata.is_dir(),
                 is_favorite: FileSystem::is_favorite(&item.path()).await?,
                 see_time: metadata.st_atime() * 1000,
