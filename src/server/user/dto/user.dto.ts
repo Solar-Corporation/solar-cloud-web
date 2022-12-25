@@ -61,5 +61,5 @@ export class UserDto {
 export class UserAuthDto extends UserDto {
 	@IsNotEmpty()
 	@IsHash('sha256')
-	password: string = '';
+	password!: string;
 }

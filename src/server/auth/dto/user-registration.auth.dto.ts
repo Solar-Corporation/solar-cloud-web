@@ -4,16 +4,17 @@ import { FullNameDto } from '../../user/dto/user.dto';
 
 export class UserRegistrationDto {
 	@IsEmail()
-	email: string = '';
+	@IsNotEmpty()
+	email!: string;
 
 	@IsString()
 	@IsHash('sha256')
 	@IsNotEmpty()
-	password: string = '';
+	password!: string;
 
 	@IsNotEmpty()
 	@IsNotEmptyObject()
 	@ValidateNested()
 	@Type(() => FullNameDto)
-	fullName?: FullNameDto;
+	fullName!: FullNameDto;
 }
