@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Put,
 	Query,
@@ -22,7 +23,7 @@ import { TransactionParam } from '../common/decorators/transaction.decorator';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
 import { UserDto } from '../user/dto/user.dto';
-import { FileUploadDto, ParamDirDto, ParamFileDto, RenameQueryDto } from './dto/file.dto';
+import { DirCreateDto, FileUploadDto, MovePaths, PathDto, PathsDto, RenameQueryDto } from './dto/file.dto';
 import { FileService } from './file.service';
 
 @Controller({ version: '1' })
@@ -38,21 +39,19 @@ export class FileController {
 	@FormDataRequest()
 	async saveFile(
 		@Body() fileUploadDto: FileUploadDto,
-		@Req() req: Request,
+		@Req() { user }: Request,
 	): Promise<void> {
-		const { user } = req;
 		await this.fileService.saveFile(fileUploadDto, user as UserDto);
 	}
 
-	@Get('files/:file_path')
+	@Get('files/:path')
 	@UseGuards(AuthGuard())
 	@UseInterceptors(RsErrorInterceptor)
 	async getFile(
-		@Param() { path }: ParamFileDto,
-		@Req() req: Request,
+		@Param() { path }: PathDto,
+		@Req() { user }: Request,
 		@Res() res: Response,
 	): Promise<void> {
-		const { user } = req;
 		const { name, fileMime, stream } = await this.fileService.getFile(path, user as UserDto);
 		res.set({
 			'Content-Type': fileMime,
@@ -66,50 +65,55 @@ export class FileController {
 	@UseInterceptors(TransactionInterceptor)
 	@UseInterceptors(RsErrorInterceptor)
 	async renameFile(
-		@Param() { path }: ParamFileDto,
+		@Param() { path }: PathDto,
 		@Query() { newName }: RenameQueryDto,
-		@Req() req: Request,
+		@Req() { user }: Request,
 		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
-		const { user } = req;
-		await this.fileService.renameFile({ path: path, newName: newName }, user as UserDto, transaction);
+		await this.fileService.rename({ path: path, newName: newName }, user as UserDto, transaction);
 	}
 
-	@Delete('files/:filePath')
+	@Delete('files')
 	@UseGuards(AuthGuard())
 	@UseInterceptors(TransactionInterceptor)
 	@UseInterceptors(RsErrorInterceptor)
-	async deleteFile(
-		@Param() param: ParamFileDto,
-		@Req() req: Request,
+	async delete(
+		@Req() { user }: Request,
+		@Body() { paths }: PathsDto,
 		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
-
+		await this.fileService.delete(user as UserDto, paths, transaction);
 	}
 
-	@Post()
-	async createDirectory() {
-
-	}
-
-	@Put()
-	async renameDirectory() {
-
-	}
-
-	@Delete()
-	async deleteDirectory() {
-
+	@Post('directories')
+	@UseGuards(AuthGuard())
+	@UseInterceptors(RsErrorInterceptor)
+	async createDirectory(
+		@Body() dirCreateDto: DirCreateDto,
+		@Req() { user }: Request,
+	) {
+		await this.fileService.createDir(user as UserDto, dirCreateDto);
 	}
 
 	@Get('files')
 	@UseGuards(AuthGuard())
 	@UseInterceptors(RsErrorInterceptor)
 	async getFileTree(
-		@Query() { dirPath }: ParamDirDto,
-		@Req() req: Request,
+		@Query() { path }: PathDto,
+		@Req() { user }: Request,
 	): Promise<Array<FileTree>> {
-		const { user } = req;
-		return this.fileService.getFileTree(user as UserDto, dirPath);
+		return this.fileService.getFileTree(user as UserDto, path);
+	}
+
+	@Patch('files')
+	@UseGuards(AuthGuard())
+	@UseInterceptors(TransactionInterceptor)
+	@UseInterceptors(RsErrorInterceptor)
+	async moveFiles(
+		@Body() { paths }: MovePaths,
+		@Req() { user }: Request,
+		@TransactionParam() transaction: Transaction,
+	): Promise<void> {
+		await this.fileService.moveFiles(user as UserDto, paths, transaction);
 	}
 }

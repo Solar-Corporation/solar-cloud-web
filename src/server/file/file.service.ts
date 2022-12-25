@@ -6,33 +6,34 @@ import { Readable } from 'stream';
 
 import { FileService as RsFileService, FileTree, UserFile } from '../../../index';
 import { UserDto } from '../user/dto/user.dto';
-import { FileDto, FileUploadDto, RenameDto } from './dto/file.dto';
+import { DirCreateDto, FileDto, FileUploadDto, MovePath, RenameDto } from './dto/file.dto';
 import { FileDatabaseService } from './file-database.service';
 
 @Injectable()
 export class FileService {
 
+	private readonly basePath;
+
 	constructor(
 		private readonly fileDatabaseService: FileDatabaseService,
 		private readonly configService: ConfigService,
 	) {
+		this.basePath = this.configService.get('app.path');
 	}
 
-	async saveFile(fileUploadDto: FileUploadDto, userDto: UserDto): Promise<void> {
-		const { file: { buffer, originalName }, filePath } = fileUploadDto;
-		const storePath = this.configService.get('app.path');
+	async saveFile(fileUploadDto: FileUploadDto, { uuid }: UserDto): Promise<void> {
+		const { file: { buffer, originalName }, path: filePath } = fileUploadDto;
 
 		const userFile: UserFile = {
-			filePath: path.join(storePath, userDto.uuid, filePath, originalName),
+			filePath: path.join(this.basePath, uuid, filePath, originalName),
 			buffer: buffer,
 		};
 
-		await RsFileService.saveFile(userFile, userDto.uuid, storePath);
+		await RsFileService.saveFile(userFile, uuid, this.basePath);
 	}
 
-	async getFile(shortFilePath: string, userDto: UserDto): Promise<FileDto> {
-		const storePath = this.configService.get('app.path');
-		const fullFilePath = path.join(storePath, userDto.uuid, shortFilePath);
+	async getFile(shortFilePath: string, { uuid }: UserDto): Promise<FileDto> {
+		const fullFilePath = path.join(this.basePath, uuid, shortFilePath);
 
 		const userFile = await RsFileService.getFile(fullFilePath);
 		return {
@@ -47,19 +48,47 @@ export class FileService {
 		};
 	}
 
-	async renameFile(renameFileDto: RenameDto, userDto: UserDto, transaction: Transaction): Promise<void> {
-		const storePath = this.configService.get('app.path');
-		const fullPath = path.join(storePath, userDto.uuid, renameFileDto.path);
-		const renameFilePath = fullPath.replace(path.basename(fullPath), renameFileDto.newName);
+	async rename({ path: renamePath, newName }: RenameDto, { uuid }: UserDto, transaction: Transaction): Promise<void> {
+		const fullPath = path.join(this.basePath, uuid, renamePath);
+		const renameFilePath = fullPath.replace(path.basename(fullPath), newName);
+
 		await this.fileDatabaseService.updateFilePath({ path: fullPath, newName: renameFilePath }, transaction);
+
 		await RsFileService.rename(fullPath, renameFilePath);
 	}
 
-	async getFileTree(userDto: UserDto, filePath: string): Promise<Array<FileTree>> {
-		const { uuid } = userDto;
-		const basePath = this.configService.get('app.path');
-		const userFilesPath = path.join(basePath, userDto.uuid, filePath);
-		return await RsFileService.getFileTree(userFilesPath, path.join(basePath, uuid));
+	async getFileTree({ uuid }: UserDto, filePath: string): Promise<Array<FileTree>> {
+		const userFilePath = path.join(this.basePath, uuid, filePath);
+		return await RsFileService.getFileTree(userFilePath, path.join(this.basePath, uuid));
 	}
 
+	async delete({ uuid }: UserDto, deletePaths: Array<string>, transaction: Transaction): Promise<void> {
+		for (const deletePath of deletePaths) {
+			const fullPath = path.join(this.basePath, uuid, deletePath);
+
+			const deleteMarked = await RsFileService.markAsDelete(fullPath);
+			deleteMarked.time = new Date(deleteMarked.time);
+
+			await this.fileDatabaseService.markAsDelete(deleteMarked, transaction);
+		}
+	}
+
+	async createDir({ uuid }: UserDto, dirCreate: DirCreateDto): Promise<void> {
+		const dirPath = path.join(this.basePath, uuid, dirCreate.path, dirCreate.name);
+		await RsFileService.createDir(dirPath);
+	}
+
+	async moveFiles({ uuid }: UserDto, movePaths: Array<MovePath>, transaction: Transaction): Promise<void> {
+		for (const { pathFrom, pathTo } of movePaths) {
+			const fullPathFrom = path.join(this.basePath, uuid, pathFrom);
+			const fullPathTo = path.join(this.basePath, uuid, pathTo);
+
+			await this.fileDatabaseService.updateFilePath({
+				path: path.parse(fullPathFrom).dir,
+				newName: fullPathTo,
+			}, transaction);
+
+			await RsFileService.movePath(fullPathFrom, fullPathTo);
+		}
+	}
 }
