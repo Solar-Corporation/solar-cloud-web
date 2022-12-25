@@ -19,7 +19,7 @@ export class AuthController {
 	) {
 	}
 
-	@Post('sing-up')
+	@Post('sign-up')
 	@UseInterceptors(TransactionInterceptor)
 	@UseInterceptors(RsErrorInterceptor)
 	async registration(
