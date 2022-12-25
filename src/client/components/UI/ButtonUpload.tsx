@@ -1,10 +1,24 @@
 import { CloudUploadOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Upload } from 'antd';
+import { Button, ConfigProvider, Dropdown, MenuProps, Upload } from 'antd';
 import { FC } from 'react';
-import { variables } from '../../styles/theme';
 import styles from '../../styles/components/ButtonUpload.module.less';
+import { variables } from '../../styles/theme';
 
 export const ButtonUpload: FC = () => {
+	const menu: MenuProps['items'] = [
+		{
+			label: <Upload name="file" className={styles.upload}>Загрузить файл</Upload>,
+			key: 0,
+			onClick: () => {
+				console.log('click');
+			}
+		},
+		{
+			label: <Upload name="file">Загрузить папку</Upload>,
+			key: 1
+		}
+	];
+
 	return (
 		<ConfigProvider
 			theme={{
@@ -17,7 +31,7 @@ export const ButtonUpload: FC = () => {
 				}
 			}}
 		>
-			<Upload name="file" className={styles.upload}>
+			<Dropdown menu={{ items: menu }} trigger={['click']}>
 				<Button
 					type="primary"
 					size="large"
@@ -26,7 +40,7 @@ export const ButtonUpload: FC = () => {
 				>
 					Загрузить
 				</Button>
-			</Upload>
+			</Dropdown>
 		</ConfigProvider>
 	);
 };
