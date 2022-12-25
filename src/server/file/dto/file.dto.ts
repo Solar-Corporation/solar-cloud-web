@@ -1,20 +1,32 @@
 import { Expose } from 'class-transformer';
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { IsFile, MemoryStoredFile } from 'nestjs-form-data';
 import { Readable } from 'stream';
 
-export class FileUploadDto {
-	@IsFile()
-	file: MemoryStoredFile = new MemoryStoredFile;
+export class DirCreateDto {
+	@IsString()
+	@IsNotEmpty()
+	path!: string;
 
 	@IsString()
-	filePath: string = '';
+	@IsNotEmpty()
+	name!: string;
+}
+
+export class FileUploadDto {
+	@IsFile()
+	@IsNotEmpty()
+	file!: MemoryStoredFile;
+
+	@IsString()
+	@IsNotEmpty()
+	path!: string;
 }
 
 export class FileDto {
 	@IsString()
 	@IsNotEmpty()
-	filePath: string = '';
+	filePath!: string;
 
 	@IsNumber()
 	@IsNotEmpty()
@@ -49,33 +61,48 @@ export class FileDto {
 	deleteAt?: Date;
 }
 
-export class ParamFileDto {
+export class PathDto {
 	@IsString()
 	@IsNotEmpty()
 	@Expose({ name: 'path' })
-	path: string = '';
+	path!: string;
 }
 
-export class ParamDirDto {
+export class PathsDto {
+	@IsArray()
+	@IsNotEmpty()
+	paths!: Array<string>;
+}
+
+export class MovePaths {
+	@IsArray()
+	@IsNotEmpty()
+	paths!: Array<MovePath>;
+}
+
+export class MovePath {
 	@IsString()
 	@IsNotEmpty()
-	@Expose({ name: 'dir_path' })
-	dirPath: string = '';
+	pathFrom!: string;
+
+	@IsString()
+	@IsNotEmpty()
+	pathTo!: string;
 }
 
 export class RenameQueryDto {
 	@IsString()
 	@IsNotEmpty()
 	@Expose({ name: 'new_name' })
-	newName: string = '';
+	newName!: string;
 }
 
 export class RenameDto {
 	@IsString()
 	@IsNotEmpty()
-	path: string = '';
+	path!: string;
 
 	@IsString()
 	@IsNotEmpty()
-	newName: string = '';
+	newName!: string;
 }

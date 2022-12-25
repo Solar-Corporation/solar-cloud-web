@@ -14,29 +14,29 @@ export class TokenPayloadDto extends UserDto {
 export class DeviceDataDto {
 	@IsNotEmpty()
 	@IsIP()
-	deviceIp: string = '';
+	deviceIp!: string;
 
 	@IsNotEmpty()
 	@IsNotEmptyObject()
-	deviceUa: object = {};
+	deviceUa!: object;
 }
 
 export class RefreshTokenDto {
 	@IsNotEmpty()
 	@IsJWT()
-	refreshToken: string = '';
+	refreshToken!: string;
 
 	@IsNotEmpty()
 	@IsNumber()
-	userId: number = 0;
+	userId!: number;
 
 	@IsNotEmpty()
 	@IsIP()
-	deviceIp: string = '';
+	deviceIp!: string;
 
 	@IsNotEmpty()
 	@IsNotEmptyObject()
-	deviceUa: object = {};
+	deviceUa!: object;
 
 	@IsNotEmpty()
 	@IsDate()
