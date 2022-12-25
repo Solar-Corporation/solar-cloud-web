@@ -11,7 +11,6 @@ export const themeCloud = {
 		colorPrimary: variables['@base'],
 		colorBgSpotlight: variables['@dark'],
 		borderRadius: Number(variables['@border-radius'].replace(/px/g, '')),
-		boxShadow: 'none'
 	},
 	components: {
 		Button: {
