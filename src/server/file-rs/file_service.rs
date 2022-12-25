@@ -6,7 +6,9 @@ use napi_derive::napi;
 use xattr::set;
 
 use file_system::FileSystem;
+use file_system_check::FileSystemCheck;
 
+mod file_system_check;
 mod file_system;
 
 #[napi(object)]
@@ -22,6 +24,14 @@ pub struct UserFile {
 	pub mime_type: Option<String>,
 	pub see_time: Option<i64>,
 	pub size: Option<i64>,
+}
+
+#[napi(object)]
+pub struct DeleteMarked {
+	#[napi(ts_type = "Date")]
+	pub time: i64,
+	pub path: String,
+	pub is_dir: bool,
 }
 
 #[napi(object)]
@@ -45,15 +55,15 @@ impl FileService {
 	/// Если места хватает, то создаёт папку пользователя.
 	#[napi]
 	pub async fn create_user_dir(user: UserDir, base_path: String) -> Result<String> {
-		let disc_space = file_system::FileSystem::disk_size();
+		let disc_space = FileSystem::disk_size();
 
-		let total_size = file_system::FileSystem::total_size(&PathBuf::from(&base_path)).await?;
+		let total_size = FileSystem::total_size(&PathBuf::from(&base_path)).await?;
 		if disc_space - total_size < (user.storage as u64) {
 			return Err(Error::new(Status::Cancelled, "No free space".to_owned()));
 		}
 
 		let user_dir = Path::new(&base_path).join(user.uuid);
-		file_system::FileSystem::create_dir(&user_dir).await?;
+		FileSystem::create_dir(&user_dir).await?;
 		set(&user_dir, "available_space", (user.storage as u64).to_string().as_bytes());
 
 		return Ok(user_dir.into_os_string().into_string().unwrap());
@@ -62,8 +72,8 @@ impl FileService {
 	/// Метод сохраняет файл в папку пользователя
 	#[napi]
 	pub async fn save_file(file: UserFile, uuid: String, base_path: String) -> Result<()> {
-		let file_path = &PathBuf::from(&file.file_path);
-		let is_exist = FileSystem::is_exist(file_path).await?;
+		let file_path = PathBuf::from(&file.file_path);
+		let is_exist = FileSystemCheck::is_exist(&file_path).await?;
 		if is_exist {
 			return Err(Error::new(Status::Cancelled, "File already exist!".to_owned()));
 		}
@@ -77,7 +87,7 @@ impl FileService {
 			return Err(Error::new(Status::Cancelled, "No free space".to_owned()));
 		}
 
-		file_system::FileSystem::save_file(file.buffer, file_path).await?;
+		FileSystem::save_file(file.buffer, &file_path).await?;
 
 		let size = total_size + file_size;
 		set(&user_dir, "usage_space", size.to_string().as_bytes());
@@ -88,14 +98,14 @@ impl FileService {
 	/// Метод получения файла по пути
 	#[napi]
 	pub async fn get_file(path: String) -> Result<UserFile> {
-		let file_path = &PathBuf::from(&path);
+		let file_path = PathBuf::from(&path);
 
-		let is_exist = FileSystem::is_exist(&file_path).await?;
+		let is_exist = FileSystemCheck::is_exist(&file_path).await?;
 		if !is_exist {
 			return Err(Error::new(Status::Cancelled, "The file does not exist".to_owned()));
 		}
 
-		let is_delete = FileSystem::is_file_delete(&file_path).await?;
+		let is_delete = FileSystemCheck::is_delete(&file_path).await?;
 		if is_delete {
 			return Err(Error::new(Status::Cancelled, "The file has been deleted!".to_owned()));
 		}
@@ -107,26 +117,80 @@ impl FileService {
 	/// Метод возвращает файлы, которые находятся в директории по заданному пути
 	#[napi]
 	pub async fn get_file_tree(path: String, base_path: String) -> Result<Vec<FileTree>> {
-		let dir_path = &PathBuf::from(&path);
+		let dir_path = PathBuf::from(&path);
 
-		let is_exist = FileSystem::is_exist(&dir_path).await?;
+		let is_exist = FileSystemCheck::is_exist(&dir_path).await?;
 		if !is_exist {
 			return Err(Error::new(Status::Cancelled, "The file does not exist".to_owned()));
 		}
-		let file_tree = FileSystem::file_tree(dir_path, &PathBuf::from(&base_path)).await?;
+
+		let is_delete = FileSystemCheck::is_delete(&dir_path).await?;
+		if is_delete {
+			return Err(Error::new(Status::Cancelled, "The file has been deleted!".to_owned()));
+		}
+
+		let file_tree = FileSystem::file_tree(&dir_path, &PathBuf::from(&base_path)).await?;
 		return Ok(file_tree);
 	}
 
 	#[napi]
 	pub async fn rename(path: String, new_path: String) -> Result<()> {
-		let old_path = &PathBuf::from(&path);
+		let old_path = PathBuf::from(&path);
 
-		let is_exist = FileSystem::is_exist(&old_path).await?;
+		let is_exist = FileSystemCheck::is_exist(&old_path).await?;
 		if !is_exist {
 			return Err(Error::new(Status::Cancelled, "The file does not exist".to_owned()));
 		}
 
 		FileSystem::rename(&old_path, &PathBuf::from(new_path)).await?;
+
+		return Ok(());
+	}
+
+	#[napi]
+	pub async fn mark_as_delete(path: String) -> Result<DeleteMarked> {
+		let delete_path = PathBuf::from(&path);
+
+		let is_exist = FileSystemCheck::is_exist(&delete_path).await?;
+		if !is_exist {
+			return Err(Error::new(Status::Cancelled, "The file does not exist".to_owned()));
+		}
+
+		let delete_marked = FileSystem::mark_as_delete(&delete_path).await?;
+		return Ok(delete_marked);
+	}
+
+	#[napi]
+	pub async fn create_dir(dir_path: String) -> Result<()> {
+		let create_path = PathBuf::from(&dir_path);
+
+		let is_exist = FileSystemCheck::is_exist(&create_path).await?;
+		if is_exist {
+			return Err(Error::new(Status::Cancelled, "The dir already exist!".to_owned()));
+		}
+
+		FileSystem::create_dir(&create_path).await?;
+
+		return Ok(());
+	}
+
+	#[napi]
+	pub async fn move_path(path_from: String, path_to: String) -> Result<()> {
+		let path_from = PathBuf::from(&path_from);
+		let path_to = PathBuf::from(&path_to);
+
+		let is_exist_from = FileSystemCheck::is_exist(&path_from).await?;
+		let is_exist_to = FileSystemCheck::is_exist(&path_to).await?;
+		if !is_exist_from && !is_exist_to {
+			return Err(Error::new(Status::Cancelled, "The dir or file does not exist".to_owned()));
+		}
+
+		let is_delete = FileSystemCheck::is_delete(&path_from).await?;
+		if is_delete {
+			return Err(Error::new(Status::Cancelled, "The dir or file been deleted!".to_owned()));
+		}
+
+		FileSystem::move_path(&path_from, &path_to).await?;
 
 		return Ok(());
 	}
