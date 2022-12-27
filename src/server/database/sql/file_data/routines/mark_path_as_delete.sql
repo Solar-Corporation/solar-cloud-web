@@ -16,7 +16,7 @@ BEGIN
 	  AND is_dir_delete IS NULL;
 
 	IF NOT EXISTS(SELECT path_system FROM file_data.paths WHERE path_system = path) THEN
-		INSERT INTO file_data.paths (path_system, is_dir, delete_at, is_dir_delete)
+		INSERT INTO file_data.paths (path_system, is_dir, delete_at)
 		VALUES (path::text, dir, delete_time::timestamp);
 	END IF;
 END;
