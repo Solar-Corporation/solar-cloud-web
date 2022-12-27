@@ -10,7 +10,7 @@ export const authAPI = createApi({
 	endpoints: (build) => ({
 		userLogin: build.mutation<IToken, IAuth>({
 			query: (data) => ({
-				url: '/auth/email',
+				url: '/sign-in',
 				method: 'POST',
 				body: data
 			}),
@@ -46,7 +46,7 @@ export const authAPI = createApi({
 		}),
 		userRegister: build.mutation<IToken, IRegister>({
 			query: (data) => ({
-				url: '/registration',
+				url: '/sign-up',
 				method: 'POST',
 				body: data
 			}),
