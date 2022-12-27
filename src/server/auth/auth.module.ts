@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
