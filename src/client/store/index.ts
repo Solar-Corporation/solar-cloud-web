@@ -1,11 +1,13 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import { authAPI } from '../services/AuthService';
+import { filesAPI } from '../services/FilesService';
 import userReducer from './reducers/UserSlice';
 
 const rootReducer = combineReducers({
 	userReducer,
-	[authAPI.reducerPath]: authAPI.reducer
+	[authAPI.reducerPath]: authAPI.reducer,
+	[filesAPI.reducerPath]: filesAPI.reducer
 });
 
 export const setupStore = () => {
@@ -13,7 +15,8 @@ export const setupStore = () => {
 		reducer: rootReducer,
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware().concat(
-				authAPI.middleware
+				authAPI.middleware,
+				filesAPI.middleware
 			)
 	});
 };
