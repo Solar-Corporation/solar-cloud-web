@@ -52,10 +52,10 @@ export class FileController {
 		@Req() { user }: Request,
 		@Res() res: Response,
 	): Promise<void> {
-		const { name, fileMime, stream } = await this.fileService.getFile(path, user as UserDto);
+		const { fileMime, stream, name } = await this.fileService.getFile(path, user as UserDto);
 		res.set({
-			'Content-Type': fileMime,
-			'Content-Disposition': `attachment; filename="${name}"`,
+			'Content-Type': `${fileMime}; charset=utf-8`,
+			'Content-Disposition': `attachment; filename="${encodeURI(name!)}"`,
 		});
 		stream!.pipe(res);
 	}
