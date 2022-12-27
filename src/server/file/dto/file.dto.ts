@@ -1,11 +1,14 @@
-import { Expose } from 'class-transformer';
-import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { IsFile, MemoryStoredFile } from 'nestjs-form-data';
+import { Expose, Type } from 'class-transformer';
+import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { FileSystemStoredFile, IsFiles } from 'nestjs-form-data';
 import { Readable } from 'stream';
+import { AbsolutePath } from '../../common/decorators/path-validate.decorator';
+
 
 export class DirCreateDto {
 	@IsString()
 	@IsNotEmpty()
+	@AbsolutePath()
 	path!: string;
 
 	@IsString()
@@ -14,12 +17,13 @@ export class DirCreateDto {
 }
 
 export class FileUploadDto {
-	@IsFile()
+	@IsFiles()
 	@IsNotEmpty()
-	file!: MemoryStoredFile;
+	files!: FileSystemStoredFile[];
 
 	@IsString()
 	@IsNotEmpty()
+	@AbsolutePath()
 	path!: string;
 }
 
@@ -65,28 +69,34 @@ export class PathDto {
 	@IsString()
 	@IsNotEmpty()
 	@Expose({ name: 'path' })
+	@AbsolutePath()
 	path!: string;
 }
 
 export class PathsDto {
 	@IsArray()
 	@IsNotEmpty()
+	@AbsolutePath()
 	paths!: Array<string>;
 }
 
 export class MovePaths {
 	@IsArray()
 	@IsNotEmpty()
+	@ValidateNested({ each: true })
+	@Type(() => MovePath)
 	paths!: Array<MovePath>;
 }
 
 export class MovePath {
 	@IsString()
 	@IsNotEmpty()
+	@AbsolutePath()
 	pathFrom!: string;
 
 	@IsString()
 	@IsNotEmpty()
+	@AbsolutePath()
 	pathTo!: string;
 }
 
@@ -94,15 +104,18 @@ export class RenameQueryDto {
 	@IsString()
 	@IsNotEmpty()
 	@Expose({ name: 'new_name' })
+	@AbsolutePath()
 	newName!: string;
 }
 
 export class RenameDto {
 	@IsString()
 	@IsNotEmpty()
+	@AbsolutePath()
 	path!: string;
 
 	@IsString()
 	@IsNotEmpty()
+	@AbsolutePath()
 	newName!: string;
 }
