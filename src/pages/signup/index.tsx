@@ -1,4 +1,4 @@
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +9,7 @@ import { IRegister } from '../../client/models/IAuth';
 import { RouteNames } from '../../client/router';
 import { authAPI } from '../../client/services/AuthService';
 import styles from '../../client/styles/pages/Signup.module.less';
+import { variables } from '../../client/styles/theme';
 import { hash } from '../../client/utils';
 
 const { Text } = Typography;
@@ -118,19 +119,36 @@ export default function Signup() {
 							/>
 						</Form.Item>
 						<Form.Item className={styles.control}>
-							<Button
-								className={styles.button}
-								type="primary"
-								size="large"
-								htmlType="submit"
-								loading={isLoading}
-								block
+							<ConfigProvider
+								theme={{
+									token: {
+										colorLink: variables['@gold-primary'],
+										colorLinkHover: variables['@gold-secondary'],
+										colorLinkActive: variables['@gold-secondary']
+									},
+									components: {
+										Button: {
+											colorPrimary: variables['@orange-primary'],
+											colorPrimaryHover: variables['@orange-secondary'],
+											colorPrimaryActive: variables['@orange-secondary']
+										}
+									}
+								}}
 							>
-								Зарегистрироваться
-							</Button>
-							<Text type="secondary" className={styles.login}>
-								Уже есть аккаунт? <Link href={RouteNames.LOGIN}>Войти</Link>
-							</Text>
+								<Button
+									className={styles.button}
+									type="primary"
+									size="large"
+									htmlType="submit"
+									loading={isLoading}
+									block
+								>
+									Зарегистрироваться
+								</Button>
+								<Text type="secondary" className={styles.login}>
+									Уже есть аккаунт? <Link href={RouteNames.LOGIN}>Войти</Link>
+								</Text>
+							</ConfigProvider>
 						</Form.Item>
 					</Form>
 				</div>
