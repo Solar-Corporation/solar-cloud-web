@@ -7,7 +7,7 @@ use std::str;
 use async_recursion::async_recursion;
 use byte_unit::Byte;
 use chrono::{Duration, Timelike, Utc};
-use mime_guess::mime;
+use mime_guess::{mime, Mime};
 use napi::bindgen_prelude::*;
 use sysinfo::{DiskExt, System, SystemExt};
 use tokio::{fs, io::AsyncWriteExt};
@@ -19,14 +19,14 @@ use crate::file_service::FileSystemCheck;
 pub struct FileSystem {}
 
 impl FileSystem {
-    pub async fn save_file(file_data: Buffer, file_path: &PathBuf) -> Result<()> {
+    pub async fn save_file(buf: &Vec<u8>, file_path: &PathBuf) -> Result<()> {
         if !file_path.exists() {
             let parent = file_path.parent().unwrap();
             fs::create_dir_all(&parent).await?;
         }
 
         let mut file = fs::File::create(&file_path).await?;
-        let buf: Vec<u8> = file_data.into();
+
         file.write_all(&buf).await?;
 
         return Ok(());
@@ -73,9 +73,9 @@ impl FileSystem {
         let metadata = fs::metadata(&file_path).await?;
 
         let user_file = UserFile {
-            buffer: file.into(),
+            buffer: Some(file.into()),
             file_path: str_file_path.to_string(),
-            mime_type: Some(mime_type.first().unwrap().to_string()),
+            mime_type: Some(mime_type.first().unwrap_or(mime::TEXT_PLAIN).to_string()),
             see_time: Some(metadata.atime()),
             size: Some(metadata.len() as i64),
         };
@@ -98,19 +98,30 @@ impl FileSystem {
     }
 
     #[async_recursion]
-    pub async fn move_path(path_from: &PathBuf, path_to: &PathBuf) -> Result<()> {
+    pub async fn move_dir(path_from: &PathBuf, path_to: &PathBuf) -> Result<()> {
         let mut dir = fs::read_dir(&path_from).await?;
 
         while let Some(item) = dir.next_entry().await? {
             let item_path_to = path_to.join(&item.file_name());
-
             if item.metadata().await?.is_dir() {
                 fs::create_dir_all(&item_path_to).await?;
-                FileSystem::move_path(&item.path(), &item_path_to).await?;
+                FileSystem::move_dir(&item.path(), &item_path_to).await?;
                 continue;
             }
             fs::copy(&item.path(), &item_path_to).await?;
         }
+        return Ok(());
+    }
+
+    pub async fn move_path(path_from: &PathBuf, path_to: &PathBuf) -> Result<()> {
+        fs::create_dir_all(&path_to).await?;
+        if fs::metadata(&path_from).await?.is_dir() {
+            FileSystem::move_dir(&path_from, &path_to).await?;
+        } else {
+            let item_path_to = path_to.join(&path_from.file_name().unwrap());
+            fs::copy(&path_from, &item_path_to).await?;
+        }
+
         FileSystem::remove(&path_from).await?;
         return Ok(());
     }
@@ -159,6 +170,7 @@ impl FileSystem {
             is_dir: fs::metadata(&path).await?.is_dir(),
         })
     }
+
     pub async fn file_tree(dir_path: &PathBuf, base_path: &PathBuf) -> Result<Vec<FileTree>> {
         let mut file_tree: Vec<FileTree> = Vec::new();
         let mut dir = fs::read_dir(dir_path).await?;
@@ -201,5 +213,40 @@ impl FileSystem {
         }
 
         return Ok(file_tree);
+    }
+
+    pub async fn set_favorite(path: &PathBuf, state: &bool) -> Result<()> {
+        set(&path, "is_favorite", &state.to_string().as_bytes());
+        return Ok(());
+    }
+
+    pub async fn get_file_metadata(path: &PathBuf, base_path: &PathBuf) -> Result<FileTree> {
+        let metadata = fs::metadata(&path).await?;
+
+        let byte = Byte::from_bytes(metadata.len() as u128);
+        let size = byte.get_appropriate_unit(true);
+
+        let ext = Path::new(&path)
+          .extension()
+          .unwrap_or(OsStr::new(""))
+          .to_str()
+          .unwrap_or("");
+
+        let file_type = mime_guess::from_path(&path)
+          .first()
+          .unwrap_or(mime::TEXT_PLAIN)
+          .to_string();
+
+
+        return Ok(FileTree {
+            name: path.file_name().unwrap().to_str().unwrap().to_string(),
+            path: path.to_str().unwrap().replace(&base_path.to_str().unwrap(), ""),
+            size: size.to_string(),
+            file_type: ext.to_string(),
+            mime_type: file_type,
+            is_dir: metadata.is_dir(),
+            is_favorite: FileSystemCheck::is_favorite(&path).await?,
+            see_time: metadata.atime() * 1000,
+        });
     }
 }

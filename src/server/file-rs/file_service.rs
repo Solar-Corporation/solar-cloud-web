@@ -1,4 +1,5 @@
 use std::path::{Path, PathBuf};
+use std::task::ready;
 use std::time::SystemTime;
 
 use napi::bindgen_prelude::*;
@@ -19,7 +20,7 @@ pub struct UserDir {
 
 #[napi(object)]
 pub struct UserFile {
-	pub buffer: Buffer,
+	pub buffer: Option<Buffer>,
 	pub file_path: String,
 	pub mime_type: Option<String>,
 	pub see_time: Option<i64>,
@@ -82,12 +83,13 @@ impl FileService {
 		let available_size = FileSystem::available_size(&user_dir).await?;
 
 		let total_size = FileSystem::total_size(&user_dir).await?;
-		let file_size = file.buffer.len() as u64;
+		let buffer = file.buffer.expect("");
+		let file_size = buffer.len() as u64;
 		if available_size - total_size < file_size {
 			return Err(Error::new(Status::Cancelled, "No free space".to_owned()));
 		}
 
-		FileSystem::save_file(file.buffer, &file_path).await?;
+		FileSystem::save_file(&buffer.into(), &file_path).await?;
 
 		let size = total_size + file_size;
 		set(&user_dir, "usage_space", size.to_string().as_bytes());
@@ -133,6 +135,7 @@ impl FileService {
 		return Ok(file_tree);
 	}
 
+	/// Метод переименовывает название директории или файла
 	#[napi]
 	pub async fn rename(path: String, new_path: String) -> Result<()> {
 		let old_path = PathBuf::from(&path);
@@ -147,6 +150,7 @@ impl FileService {
 		return Ok(());
 	}
 
+	/// Метод помечает директорию или файл как удалённую
 	#[napi]
 	pub async fn mark_as_delete(path: String) -> Result<DeleteMarked> {
 		let delete_path = PathBuf::from(&path);
@@ -160,6 +164,7 @@ impl FileService {
 		return Ok(delete_marked);
 	}
 
+	/// Метод создаёт директорию по заданному пути
 	#[napi]
 	pub async fn create_dir(dir_path: String) -> Result<()> {
 		let create_path = PathBuf::from(&dir_path);
@@ -174,6 +179,7 @@ impl FileService {
 		return Ok(());
 	}
 
+	/// Метод переносит файлы по заданному пути
 	#[napi]
 	pub async fn move_path(path_from: String, path_to: String) -> Result<()> {
 		let path_from = PathBuf::from(&path_from);
@@ -193,5 +199,48 @@ impl FileService {
 		FileSystem::move_path(&path_from, &path_to).await?;
 
 		return Ok(());
+	}
+
+	/// Метод устанавливает статус директории
+	#[napi]
+	pub async fn set_favorite(path: String, state: bool) -> Result<()> {
+		let path_from = PathBuf::from(&path);
+		let is_exist = FileSystemCheck::is_exist(&path_from).await?;
+		if !is_exist {
+			return Err(Error::new(Status::Cancelled, "The dir or file does not exist".to_owned()));
+		}
+
+		let is_delete = FileSystemCheck::is_delete(&path_from).await?;
+		if is_delete {
+			return Err(Error::new(Status::Cancelled, "The dir or file been deleted!".to_owned()));
+		}
+
+		FileSystem::set_favorite(&path_from, &state).await?;
+
+		return Ok(());
+	}
+
+	/// Метод получает метаданные директории или файла
+	#[napi]
+	pub async fn get_files_metadata(paths: Vec<String>, base_path: String) -> Result<Vec<FileTree>> {
+		let mut file_tree: Vec<FileTree> = Vec::new();
+		let base_path = PathBuf::from(base_path);
+
+		for path in paths.into_iter() {
+			let path_buf = PathBuf::from(&path);
+			let is_exist = FileSystemCheck::is_exist(&path_buf).await?;
+			if !is_exist {
+				return Err(Error::new(Status::Cancelled, "The dir or file does not exist".to_owned()));
+			}
+
+			let is_delete = FileSystemCheck::is_delete(&path_buf).await?;
+			if is_delete {
+				return Err(Error::new(Status::Cancelled, "The dir or file been deleted!".to_owned()));
+			}
+
+			file_tree.push(FileSystem::get_file_metadata(&path_buf, &base_path).await?);
+		}
+
+		return Ok(file_tree);
 	}
 }
