@@ -10,6 +10,9 @@ export const themeCloud = {
 	token: {
 		colorPrimary: variables['@base'],
 		colorBgSpotlight: variables['@dark'],
+		colorLink: variables['@magenta-primary'],
+		colorLinkHover: variables['@magenta-secondary'],
+		colorLinkActive: variables['@magenta-secondary'],
 		borderRadius: Number(variables['@border-radius'].replace(/px/g, '')),
 	},
 	components: {
