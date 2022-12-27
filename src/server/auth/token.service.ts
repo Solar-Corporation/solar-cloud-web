@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from '../user/dto/user.dto';
@@ -8,7 +7,6 @@ import { UserDto } from '../user/dto/user.dto';
 export class TokenService {
 	constructor(
 		private readonly jwtService: JwtService,
-		private readonly configService: ConfigService,
 	) {
 	}
 
@@ -32,10 +30,11 @@ export class TokenService {
 	/**
 	 * Метод валидирует JWT токен на корректность.
 	 * @param {string} token - JWT токен.
+	 * @param secret
 	 * @returns {UserDto} - информацию из токена, если данные корректны.
 	 */
-	validateJwtToken(token: string): UserDto {
-		const userData: any = this.jwtService.verify(token, { secret: this.configService.get('auth.accessSecretKey') });
+	validateJwtToken(token: string, secret: string): UserDto {
+		const userData: any = this.jwtService.verify(token, { secret: secret });
 		delete userData.iat;
 		delete userData.exp;
 		delete userData.unique;

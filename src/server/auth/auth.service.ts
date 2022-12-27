@@ -78,7 +78,7 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		if (!refreshToken)
 			throw new UnauthorizedException(ErrorsConfig.unauthorized.message, ErrorsConfig.unauthorized.message);
 
-		const userDto = this.tokenService.validateJwtToken(refreshToken);
+		const userDto = this.tokenService.validateJwtToken(refreshToken, this.configService.get('auth.refreshSecretKey')!);
 		const isExist = await this.authDatabaseService.checkToken(refreshToken);
 		if (!userDto || !isExist)
 			throw new UnauthorizedException(ErrorsConfig.unauthorized.message, ErrorsConfig.unauthorized.message);
