@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import { IAuth } from '../../client/models/IAuth';
 import { RouteNames } from '../../client/router';
 import { authAPI } from '../../client/services/AuthService';
 import styles from '../../client/styles/pages/Login.module.less';
+import { variables } from '../../client/styles/theme';
 import { hash } from '../../client/utils';
 
 const { Text } = Typography;
@@ -68,19 +69,36 @@ export default function Login() {
 							</Link>
 						</Form.Item>
 						<Form.Item className={styles.control}>
-							<Button
-								className={styles.button}
-								type="primary"
-								size="large"
-								htmlType="submit"
-								loading={isLoading}
-								block
+							<ConfigProvider
+								theme={{
+									token: {
+										colorLink: variables['@gold-primary'],
+										colorLinkHover: variables['@gold-secondary'],
+										colorLinkActive: variables['@gold-secondary']
+									},
+									components: {
+										Button: {
+											colorPrimary: variables['@orange-primary'],
+											colorPrimaryHover: variables['@orange-secondary'],
+											colorPrimaryActive: variables['@orange-secondary']
+										}
+									}
+								}}
 							>
-								Войти
-							</Button>
-							<Text type="secondary" className={styles.register}>
-								Нет аккаунта? <Link href={RouteNames.SIGNUP}>Зарегестрироваться</Link>
-							</Text>
+								<Button
+									className={styles.button}
+									type="primary"
+									size="large"
+									htmlType="submit"
+									loading={isLoading}
+									block
+								>
+									Войти
+								</Button>
+								<Text type="secondary" className={styles.register}>
+									Нет аккаунта? <Link href={RouteNames.SIGNUP}>Зарегестрироваться</Link>
+								</Text>
+							</ConfigProvider>
 						</Form.Item>
 					</Form>
 				</div>
