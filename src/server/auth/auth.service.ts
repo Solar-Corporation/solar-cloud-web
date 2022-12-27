@@ -1,12 +1,11 @@
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 import { Transaction } from 'sequelize';
 import { IAuth } from '../../shared/interfaces/auth.interface';
 import { JwtToken } from '../../shared/types/auth.type';
 import { ErrorsConfig } from '../config/error.config';
 import { UserDto } from '../user/dto/user.dto';
-import { UserDatabaseService } from '../user/user-database.service';
+import { UserService } from '../user/user.service';
 import { AuthDatabaseService } from './auth-database.service';
 import { DeviceDataDto, EmailLoginDto, UserRegistrationDto } from './dto';
 import { TokenService } from './token.service';
@@ -15,7 +14,7 @@ import { TokenService } from './token.service';
 export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 
 	constructor(
-		private readonly userDataBaseService: UserDatabaseService,
+		private readonly userService: UserService,
 		private readonly tokenService: TokenService,
 		private readonly configService: ConfigService,
 		private readonly authDatabaseService: AuthDatabaseService,
@@ -34,15 +33,7 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		deviceDataDto: DeviceDataDto,
 		transaction: Transaction,
 	): Promise<JwtToken> {
-		const isUserExist = await this.userDataBaseService.checkEmail(registrationUserDto.email);
-		if (isUserExist)
-			throw new ConflictException(ErrorsConfig.userExist.message, ErrorsConfig.userExist.message);
-
-		const salt = await bcrypt.genSalt();
-		registrationUserDto.password = await bcrypt.hash(registrationUserDto.password, salt);
-
-		const userDto = await this.userDataBaseService.createUser(registrationUserDto, transaction);
-
+		const userDto = await this.userService.addUser(registrationUserDto, this.configService.get<number>('app.userStorage')!, transaction);
 		return await this.createTokens(userDto, deviceDataDto, transaction);
 	}
 
@@ -58,18 +49,7 @@ export class AuthService implements IAuth<EmailLoginDto | DeviceDataDto> {
 		deviceDataDto: DeviceDataDto,
 		transaction: Transaction,
 	): Promise<JwtToken> {
-		const isUserExist = await this.userDataBaseService.checkEmail(emailLoginDto.email);
-		if (!isUserExist)
-			throw new NotFoundException(ErrorsConfig.emailNotFound.message, ErrorsConfig.emailNotFound.message);
-
-		const userAuthDto = await this.userDataBaseService.getUserByEmail(emailLoginDto.email);
-
-		const isPasswordCompare = await bcrypt.compare(emailLoginDto.password, userAuthDto.password);
-		if (!isPasswordCompare)
-			throw new UnauthorizedException(ErrorsConfig.wrongPassword.message, ErrorsConfig.wrongPassword.message);
-
-		const userDto: any = userAuthDto;
-		delete userDto.password;
+		const userDto = await this.userService.checkUser(emailLoginDto);
 		return await this.createTokens(userDto, deviceDataDto, transaction);
 	}
 

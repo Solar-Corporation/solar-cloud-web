@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Transaction } from 'sequelize';
+import { QueryTypes, Transaction } from 'sequelize';
 import { UserRegistrationDto } from '../auth/dto';
 import { SequelizeConnect } from '../database/database-connect';
 import { UserAuthDto, UserDto } from './dto/user.dto';
@@ -26,5 +26,14 @@ export class UserDatabaseService {
 	async getUserById(id: number): Promise<UserDto> {
 		const userDto: any = await SequelizeConnect.query(`SELECT user_data.get_user_by_id(${id})`);
 		return userDto[0][0].get_user_by_id;
+	}
+
+	async isEmailVerify(email: string): Promise<Boolean> {
+		const [isEmail]: any = await SequelizeConnect.query(`SELECT user_data.is_email_verify($email)`, {
+			type: QueryTypes.SELECT,
+			bind: { email: email },
+			nest: true,
+		});
+		return isEmail.is_email_verify;
 	}
 }
