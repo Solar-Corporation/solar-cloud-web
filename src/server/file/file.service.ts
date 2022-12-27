@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import { Transaction } from 'sequelize';
@@ -22,14 +22,18 @@ export class FileService {
 	}
 
 	async saveFile(fileUploadDto: FileUploadDto, { uuid }: UserDto): Promise<void> {
-		const { file: { buffer, originalName }, path: filePath } = fileUploadDto;
+		const { files, path: filePath } = fileUploadDto;
+		for (const file of files) {
 
-		const userFile: UserFile = {
-			filePath: path.join(this.basePath, uuid, filePath, originalName),
-			buffer: buffer,
-		};
+			const { buffer, originalName }: any = file;
 
-		await RsFileService.saveFile(userFile, uuid, this.basePath);
+			const userFile: UserFile = {
+				filePath: path.join(this.basePath, uuid, filePath, originalName),
+				buffer: buffer,
+			};
+
+			await RsFileService.saveFile(userFile, uuid, this.basePath);
+		}
 	}
 
 	async getFile(shortFilePath: string, { uuid }: UserDto): Promise<FileDto> {
@@ -42,7 +46,7 @@ export class FileService {
 			isDelete: false,
 			name: path.basename(fullFilePath),
 			sizeActual: userFile.size!,
-			stream: Readable.from(userFile.buffer)!,
+			stream: Readable.from(userFile.buffer!),
 			type: path.extname(fullFilePath),
 			updateAt: new Date(userFile.seeTime!),
 		};
@@ -64,7 +68,10 @@ export class FileService {
 
 	async delete({ uuid }: UserDto, deletePaths: Array<string>, transaction: Transaction): Promise<void> {
 		for (const deletePath of deletePaths) {
-			const fullPath = path.join(this.basePath, uuid, deletePath);
+			const fullPath = path.join(this.basePath, uuid, path.normalize(deletePath));
+
+			if (fullPath === path.join(this.basePath, uuid, '/'))
+				throw new ConflictException('You cannot remove the root directory!');
 
 			const deleteMarked = await RsFileService.markAsDelete(fullPath);
 			deleteMarked.time = new Date(deleteMarked.time);
@@ -82,6 +89,9 @@ export class FileService {
 		for (const { pathFrom, pathTo } of movePaths) {
 			const fullPathFrom = path.join(this.basePath, uuid, pathFrom);
 			const fullPathTo = path.join(this.basePath, uuid, pathTo);
+
+			if (fullPathFrom === fullPathTo)
+				throw new ConflictException('Paths must be different!');
 
 			await this.fileDatabaseService.updateFilePath({
 				path: path.parse(fullPathFrom).dir,
