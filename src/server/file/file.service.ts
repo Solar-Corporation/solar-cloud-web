@@ -4,7 +4,7 @@ import path from 'path';
 import { Transaction } from 'sequelize';
 import { Readable } from 'stream';
 
-import { FileService as RsFileService, FileTree, UserFile } from '../../../index';
+import { FileService as RsFileService, FsItem, UserFile } from '../../../index';
 import { UserDto } from '../user/dto/user.dto';
 import { DirCreateDto, FileDto, FileUploadDto, MovePath, RenameDto } from './dto/file.dto';
 import { FileDatabaseService } from './file-database.service';
@@ -61,9 +61,9 @@ export class FileService {
 		await RsFileService.rename(fullPath, renameFilePath);
 	}
 
-	async getFileTree({ uuid }: UserDto, filePath: string): Promise<Array<FileTree>> {
+	async getFileTree({ uuid }: UserDto, filePath: string): Promise<Array<FsItem>> {
 		const userFilePath = path.join(this.basePath, uuid, filePath);
-		return await RsFileService.getFileTree(userFilePath, path.join(this.basePath, uuid));
+		return await RsFileService.getDirItems(userFilePath);
 	}
 
 	async delete({ uuid }: UserDto, deletePaths: Array<string>, transaction: Transaction): Promise<void> {

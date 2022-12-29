@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Post, Req, UseGuards, UseInterceptors } 
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Transaction } from 'sequelize';
-import { FileTree } from '../../../index';
+import { FsItem } from '../../../index';
 import { TransactionParam } from '../common/decorators/transaction.decorator';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
@@ -47,7 +47,7 @@ export class FavoriteController {
 	@UseInterceptors(RsErrorInterceptor)
 	async getFavorites(
 		@Req() { user }: Request,
-	): Promise<Array<FileTree>> {
+	): Promise<Array<FsItem>> {
 		return await this.favoriteService.getFavorites(user as UserDto);
 	}
 }

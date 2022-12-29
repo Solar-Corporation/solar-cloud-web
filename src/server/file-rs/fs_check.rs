@@ -2,11 +2,11 @@ use std::path::{Path, PathBuf};
 use std::str;
 
 use napi::bindgen_prelude::*;
-use xattr::{get, set};
+use xattr::get;
 
-pub struct FileSystemCheck {}
+pub struct FsCheck {}
 
-impl FileSystemCheck {
+impl FsCheck {
 	pub async fn is_exist(file_path: &PathBuf) -> Result<bool> {
 		let directory_path = Path::new(&file_path);
 		let is_exist: bool = directory_path.exists();
