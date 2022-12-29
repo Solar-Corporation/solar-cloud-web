@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_user_by_email(user_email text) RETURNS jsonb
+CREATE OR REPLACE FUNCTION user_data.get_user_by_email(user_email text) RETURNS jsonb
 	LANGUAGE plpgsql
 AS
 $$
@@ -15,7 +15,7 @@ BEGIN
 		       || JSONB_BUILD_OBJECT('email', user_row.email_value)
 		       || JSONB_BUILD_OBJECT('password', user_row.user_password)
 		       || JSONB_BUILD_OBJECT('nickname', user_row.user_nickname)
-		       || JSONB_BUILD_OBJECT('uuid', user_row.user_nickname)
+		       || JSONB_BUILD_OBJECT('uuid', user_row.user_uuid)
 		       || JSONB_BUILD_OBJECT('fullName', JSONB_BUILD_OBJECT('firstName', user_row.user_first_name,
 		                                                            'middleName', user_row.user_middle_name,
 		                                                            'lastName', user_row.user_last_name))
