@@ -17,8 +17,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Transaction } from 'sequelize';
-import { FileTree } from '../../../index';
 
+import { FsItem } from '../../../index';
 import { TransactionParam } from '../common/decorators/transaction.decorator';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
@@ -101,7 +101,7 @@ export class FileController {
 	async getFileTree(
 		@Query() { path }: PathDto,
 		@Req() { user }: Request,
-	): Promise<Array<FileTree>> {
+	): Promise<Array<FsItem>> {
 		return this.fileService.getFileTree(user as UserDto, path);
 	}
 
