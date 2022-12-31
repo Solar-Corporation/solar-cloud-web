@@ -1,14 +1,14 @@
-CREATE OR REPLACE FUNCTION user_data.get_user_by_email(user_email text) RETURNS jsonb
+CREATE OR REPLACE FUNCTION user_data.get_user_by_email(email text) RETURNS jsonb
 	LANGUAGE plpgsql
 AS
 $$
 DECLARE
 	result_user jsonb;
-	user_row    user_data.email_user;
+	user_row    user_data.user_email;
 BEGIN
 	SELECT *
-	FROM user_data.email_user
-	WHERE (email_value = user_email)
+	FROM user_data.user_email
+	WHERE (email_value = email)
 	INTO user_row;
 
 	SELECT JSONB_BUILD_OBJECT('id', user_row.user_id)

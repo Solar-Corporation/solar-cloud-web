@@ -4,10 +4,10 @@ AS
 $$
 DECLARE
 	result_user jsonb;
-	user_row    user_data.email_user;
+	user_row    user_data.user_email;
 BEGIN
 	SELECT *
-	FROM user_data.email_user
+	FROM user_data.user_email
 	WHERE (user_id = id)
 	INTO user_row;
 
