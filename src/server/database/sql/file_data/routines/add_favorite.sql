@@ -17,7 +17,7 @@ BEGIN
 	WHERE path_system = path
 	INTO path_id;
 
-	INSERT INTO table_links.favorite_user_paths (fk_user_id, fk_path_id)
+	INSERT INTO file_data.users_favorite_paths (fk_user_id, fk_path_id)
 	VALUES (user_id, path_id);
 END
 $$
