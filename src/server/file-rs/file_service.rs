@@ -68,7 +68,7 @@ impl FileService {
 
 		let user_dir = Path::new(&base_path).join(user.uuid);
 		FileSystem::create_dir(&user_dir).await?;
-		set(&user_dir, "available_space", (user.storage as u64).to_string().as_bytes());
+		set(&user_dir, "user.available_space", (user.storage as u64).to_string().as_bytes());
 
 		return Ok(user_dir.into_os_string().into_string().unwrap());
 	}
@@ -95,7 +95,7 @@ impl FileService {
 		FileSystem::save_file(&buffer.into(), &file_path).await?;
 
 		let size = total_size + file_size;
-		set(&user_dir, "usage_space", size.to_string().as_bytes());
+		set(&user_dir, "user.usage_space", size.to_string().as_bytes());
 
 		return Ok(());
 	}

@@ -22,8 +22,8 @@ impl FsMetadata {
 
 		let delete_at = Utc::now();
 
-		set(&path, "is_delete", "true".as_bytes());
-		set(&path, "delete_time", delete_at.timestamp().to_string().as_bytes());
+		set(&path, "user.is_delete", "true".as_bytes());
+		set(&path, "user.delete_time", delete_at.timestamp().to_string().as_bytes());
 
 		return Ok(DeleteMarked {
 			time: delete_at.timestamp() * MILLISECOND,
@@ -36,7 +36,7 @@ impl FsMetadata {
 		const MILLISECOND: i64 = 1000;
 		const IS_DELETE: i64 = 0;
 
-		let metadata_delete_value = get(&path, "delete_time")
+		let metadata_delete_value = get(&path, "user.delete_time")
 			.unwrap_or(Some(IS_DELETE.to_string().as_bytes().to_vec()))
 			.unwrap_or(IS_DELETE.to_string().as_bytes().to_vec());
 
@@ -52,7 +52,7 @@ impl FsMetadata {
 	}
 
 	pub async fn set_favorite(path: &PathBuf, state: &bool) -> Result<()> {
-		set(&path, "is_favorite", &state.to_string().as_bytes());
+		let test = set(&path, "user.is_favorite", &state.to_string().as_bytes()).err();
 		return Ok(());
 	}
 
