@@ -74,7 +74,8 @@ export class FileService {
 				throw new ConflictException('You cannot remove the root directory!');
 
 			const deleteMarked = await RsFileService.markAsDelete(fullPath);
-			deleteMarked.time = new Date(deleteMarked.time);
+			const deleteDate = new Date(deleteMarked.time);
+			deleteMarked.time = new Date(deleteDate.setDate(deleteDate.getDate() + 30));
 
 			await this.fileDatabaseService.markAsDelete(deleteMarked, transaction);
 		}
