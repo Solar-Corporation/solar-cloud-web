@@ -246,4 +246,24 @@ impl FileService {
 
 		return Ok(files);
 	}
+
+	/// Метод удаляет метаданные связанные с информацией об удалении файла.
+	#[napi]
+	pub async fn restore_delete_paths(paths: Vec<String>) -> Result<()> {
+		for path in paths.into_iter() {
+			let restore_path = PathBuf::from(path);
+			FsMetadata::restore_delete(&restore_path).await?;
+		}
+		return Ok(());
+	}
+
+	/// Метод удаляет все переданные пути
+	#[napi]
+	pub async fn delete_paths(paths: Vec<String>) -> Result<()> {
+		for path in paths.into_iter() {
+			let delete_path = PathBuf::from(path);
+			FileSystem::remove(&delete_path).await?;
+		}
+		return Ok(());
+	}
 }

@@ -9,11 +9,17 @@ BEGIN
 	WHERE path_system LIKE CONCAT('%', path, '%')
 	  AND delete_at IS NULL;
 
-	UPDATE file_data.paths
-	SET is_dir_delete = FALSE
-	WHERE path_system LIKE CONCAT('%', path, '%')
-	  AND path_system <> path
-	  AND is_dir_delete IS NULL;
+	IF (dir) THEN
+		UPDATE file_data.paths
+		SET is_dir_delete = FALSE
+		WHERE path_system LIKE CONCAT('%', path, '%')
+		  AND path_system <> path
+		  AND is_dir_delete IS NULL;
+	ELSE
+		UPDATE file_data.paths
+		SET is_dir_delete = NULL
+		WHERE path_system = path;
+	END IF;
 
 	IF NOT EXISTS(SELECT path_system FROM file_data.paths WHERE path_system = path) THEN
 		INSERT INTO file_data.paths (path_system, is_dir, delete_at)

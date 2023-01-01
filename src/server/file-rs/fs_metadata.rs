@@ -32,6 +32,12 @@ impl FsMetadata {
 		})
 	}
 
+	pub async fn restore_delete(path: &PathBuf) -> Result<()> {
+		remove(&path, "user.is_delete");
+		remove(&path, "user.delete_time");
+		return Ok(());
+	}
+
 	pub async fn get_delete_time(path: &PathBuf) -> Result<Option<i64>> {
 		const MILLISECOND: i64 = 1000;
 		const IS_DELETE: i64 = 0;
