@@ -14,13 +14,11 @@ export interface UserFile {
   seeTime?: number;
   size?: number;
 }
-
 export interface DeleteMarked {
   time: Date;
   path: string;
   isDir: boolean;
 }
-
 export interface FsItem {
   name: string;
   path: string;
@@ -40,19 +38,19 @@ export class FileService {
   static createUserDir(user: UserDir, basePath: string): Promise<string>
   /** Метод сохраняет файл в папку пользователя */
   static saveFile(file: UserFile, uuid: string, basePath: string): Promise<void>
-
   /** Метод получения файла по пути */
   static getFile(path: string): Promise<UserFile>
-
   /** Метод возвращает файлы, которые находятся в директории по заданному пути */
   static getDirItems(path: string): Promise<Array<FsItem>>
-
   /** Метод переименовывает название директории или файла */
   static rename(path: string, newPath: string): Promise<void>
+
   /** Метод помечает директорию или файл как удалённую */
   static markAsDelete(path: string): Promise<DeleteMarked>
+
   /** Метод создаёт директорию по заданному пути */
   static createDir(dirPath: string): Promise<void>
+
   /** Метод переносит файлы по заданному пути */
   static movePath(pathFrom: string, pathTo: string): Promise<void>
 
@@ -61,4 +59,10 @@ export class FileService {
 
   /** Метод получает метаданные директории или файла */
   static getFilesMetadata(paths: Array<string>, getDelete: boolean): Promise<Array<FsItem>>
+
+  /** Метод удаляет метаданные связанные с информацией об удалении файла. */
+  static restoreDeletePaths(paths: Array<string>): Promise<void>
+
+  /** Метод удаляет все переданные пути */
+  static deletePaths(paths: Array<string>): Promise<void>
 }
