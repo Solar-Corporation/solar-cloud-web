@@ -1,23 +1,36 @@
 import { CloudUploadOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider, Dropdown, MenuProps, Upload } from 'antd';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styles from '../../styles/components/ButtonUpload.module.less';
 import { variables } from '../../styles/theme';
 
 export const ButtonUpload: FC = () => {
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
 	const menu: MenuProps['items'] = [
 		{
-			label: <Upload name="file" className={styles.upload}>Загрузить файл</Upload>,
 			key: 0,
+			label: <Upload name="file" className={styles.upload} fileList={[]} multiple>
+				<div className={styles.item}>Загрузить файл</div>
+			</Upload>,
 			onClick: () => {
 				console.log('click');
 			}
 		},
 		{
-			label: <Upload name="file">Загрузить папку</Upload>,
-			key: 1
+			key: 1,
+			label: <Upload name="folder" fileList={[]} directory>
+				<div className={styles.item}>Загрузить папку</div>
+			</Upload>
 		}
 	];
+
+	useEffect(() => {
+		window.addEventListener('scroll', () => setIsMenuOpen(false));
+		return () => {
+			window.removeEventListener('scroll', () => setIsMenuOpen(false));
+		};
+	}, []);
 
 	return (
 		<ConfigProvider
@@ -31,7 +44,13 @@ export const ButtonUpload: FC = () => {
 				}
 			}}
 		>
-			<Dropdown menu={{ items: menu }} trigger={['click']}>
+			<Dropdown
+				menu={{ items: menu }}
+				trigger={['click']}
+				overlayClassName={styles.dropdown}
+				open={isMenuOpen}
+				onOpenChange={(isOpen) => setIsMenuOpen(isOpen)}
+			>
 				<Button
 					type="primary"
 					size="large"
