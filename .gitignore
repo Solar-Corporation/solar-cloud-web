@@ -125,7 +125,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-/index.node
+**/*.node
 /public/
 
 .idea
