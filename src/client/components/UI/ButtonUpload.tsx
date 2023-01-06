@@ -1,5 +1,5 @@
-import { CloudUploadOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Dropdown, MenuProps, Upload } from 'antd';
+import { CloudUploadOutlined, FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
+import { Button, ConfigProvider, Tooltip, Upload } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import styles from '../../styles/components/ButtonUpload.module.less';
 import { variables } from '../../styles/theme';
@@ -7,23 +7,20 @@ import { variables } from '../../styles/theme';
 export const ButtonUpload: FC = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-	const menu: MenuProps['items'] = [
-		{
-			key: 0,
-			label: <Upload name="file" className={styles.upload} fileList={[]} multiple>
-				<div className={styles.item}>Загрузить файл</div>
-			</Upload>,
-			onClick: () => {
-				console.log('click');
-			}
-		},
-		{
-			key: 1,
-			label: <Upload name="folder" fileList={[]} directory>
-				<div className={styles.item}>Загрузить папку</div>
-			</Upload>
-		}
-	];
+	const menu = (
+		<ul className={styles.menu}>
+			<li>
+				<Upload name="file" className={styles.upload} fileList={[]} multiple>
+					<div className={styles.item}><FileAddOutlined className={styles.icon} /><span>Загрузить файлы</span></div>
+				</Upload>
+			</li>
+			<li>
+				<Upload name="folder" fileList={[]} directory>
+					<div className={styles.item}><FolderAddOutlined className={styles.icon} /><span>Загрузить папку</span></div>
+				</Upload>
+			</li>
+		</ul>
+	);
 
 	useEffect(() => {
 		window.addEventListener('scroll', () => setIsMenuOpen(false));
@@ -44,10 +41,10 @@ export const ButtonUpload: FC = () => {
 				}
 			}}
 		>
-			<Dropdown
-				menu={{ items: menu }}
-				trigger={['click']}
-				overlayClassName={styles.dropdown}
+			<Tooltip
+				trigger="click"
+				title={menu}
+				placement="bottom"
 				open={isMenuOpen}
 				onOpenChange={(isOpen) => setIsMenuOpen(isOpen)}
 			>
@@ -59,7 +56,7 @@ export const ButtonUpload: FC = () => {
 				>
 					Загрузить
 				</Button>
-			</Dropdown>
+			</Tooltip>
 		</ConfigProvider>
 	);
 };
