@@ -1,8 +1,8 @@
+use std::io::Result;
 use std::path::PathBuf;
 use std::str;
 
 use async_recursion::async_recursion;
-use napi::bindgen_prelude::*;
 use tokio::fs;
 use xattr::{get, set};
 

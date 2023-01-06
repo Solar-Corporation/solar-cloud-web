@@ -18,7 +18,7 @@ import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Transaction } from 'sequelize';
 
-import { FsItem } from '../../../index';
+import { FsItem } from '../../../solar-s3';
 import { TransactionParam } from '../common/decorators/transaction.decorator';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';

@@ -1,5 +1,4 @@
 use std::ffi::OsStr;
-use std::fmt::format;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::str;

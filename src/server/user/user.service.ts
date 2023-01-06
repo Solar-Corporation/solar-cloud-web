@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException, UnauthorizedException
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Transaction } from 'sequelize';
-import { FileService } from '../../../index';
+import { FileService } from '../../../solar-s3';
 import { EmailLoginDto, UserRegistrationDto } from '../auth/dto';
 import { ErrorsConfig } from '../config/error.config';
 import { UserDto } from './dto/user.dto';

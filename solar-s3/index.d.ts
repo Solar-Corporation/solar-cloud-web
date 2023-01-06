@@ -44,25 +44,18 @@ export class FileService {
   static getDirItems(path: string): Promise<Array<FsItem>>
   /** Метод переименовывает название директории или файла */
   static rename(path: string, newPath: string): Promise<void>
-
   /** Метод помечает директорию или файл как удалённую */
   static markAsDelete(path: string): Promise<DeleteMarked>
-
   /** Метод создаёт директорию по заданному пути */
   static createDir(dirPath: string): Promise<void>
-
   /** Метод переносит файлы по заданному пути */
   static movePath(pathFrom: string, pathTo: string): Promise<void>
-
   /** Метод устанавливает статус директории */
   static setFavorite(path: string, state: boolean): Promise<void>
-
   /** Метод получает метаданные директории или файла */
   static getFilesMetadata(paths: Array<string>, getDelete: boolean): Promise<Array<FsItem>>
-
   /** Метод удаляет метаданные связанные с информацией об удалении файла. */
   static restoreDeletePaths(paths: Array<string>): Promise<void>
-
   /** Метод удаляет все переданные пути */
   static deletePaths(paths: Array<string>): Promise<void>
 }
