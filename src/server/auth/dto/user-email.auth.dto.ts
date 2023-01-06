@@ -1,4 +1,4 @@
-import { IsEmail, IsHash, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class EmailLoginDto {
 
@@ -6,6 +6,5 @@ export class EmailLoginDto {
 	email!: string;
 
 	@IsNotEmpty()
-	@IsHash('sha256')
 	password!: string;
 }

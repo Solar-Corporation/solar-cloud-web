@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEmail, IsHash, IsNotEmpty, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
 import { FullNameDto } from '../../user/dto/user.dto';
 
 export class UserRegistrationDto {
@@ -8,7 +8,6 @@ export class UserRegistrationDto {
 	email!: string;
 
 	@IsString()
-	@IsHash('sha256')
 	@IsNotEmpty()
 	password!: string;
 
