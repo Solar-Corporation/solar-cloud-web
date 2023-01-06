@@ -1,7 +1,7 @@
 export enum RouteNames {
 	HOME = '/',
-	LOGIN = '/login',
-	SIGNUP = '/signup',
+	LOGIN = '/sign-in',
+	SIGNUP = '/sign-up',
 	CLOUD = '/cloud',
 	RECENT = '/cloud/recent',
 	MARKED = '/cloud/marked',
