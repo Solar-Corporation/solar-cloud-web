@@ -15,7 +15,7 @@ import { hash } from '../../client/utils';
 
 const { Text } = Typography;
 
-export default function Login() {
+export default function SignIn() {
 	const router = useRouter();
 	const [loginUser, { data, isLoading }] = authAPI.useUserLoginMutation();
 
