@@ -11,7 +11,6 @@ import { RouteNames } from '../../client/router';
 import { authAPI } from '../../client/services/AuthService';
 import styles from '../../client/styles/pages/Login.module.less';
 import { variables } from '../../client/styles/theme';
-import { hash } from '../../client/utils';
 
 const { Text } = Typography;
 
@@ -20,7 +19,7 @@ export default function SignIn() {
 	const [loginUser, { data, isLoading }] = authAPI.useUserLoginMutation();
 
 	const handleSend = async (values: IAuth) => {
-		await loginUser({ ...values, password: await hash(values.password) });
+		await loginUser(values);
 	};
 
 	useEffect(() => {

@@ -10,7 +10,6 @@ import { RouteNames } from '../../client/router';
 import { authAPI } from '../../client/services/AuthService';
 import styles from '../../client/styles/pages/Signup.module.less';
 import { variables } from '../../client/styles/theme';
-import { hash } from '../../client/utils';
 
 const { Text } = Typography;
 
@@ -21,7 +20,7 @@ export default function Signup() {
 	const handleSend = async (values: any) => {
 		const data: IRegister = {
 			email: values.email,
-			password: await hash(values.password),
+			password: values.password,
 			fullName: {
 				firstName: values.firstName,
 				lastName: values.lastName,
