@@ -4,7 +4,7 @@ import path from 'path';
 import { Transaction } from 'sequelize';
 import { Readable } from 'stream';
 
-import { FileService as RsFileService, FsItem, UserFile } from '../../../index';
+import { FileService as RsFileService, FsItem, UserFile } from '../../../solar-s3';
 import { UserDto } from '../user/dto/user.dto';
 import { DirCreateDto, FileDto, FileUploadDto, MovePath, RenameDto } from './dto/file.dto';
 import { FileDatabaseService } from './file-database.service';

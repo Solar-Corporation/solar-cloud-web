@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import { Transaction } from 'sequelize';
-import { FileService as RsFileService, FsItem } from '../../../index';
+import { FileService as RsFileService, FsItem } from '../../../solar-s3';
 import { UserDto } from '../user/dto/user.dto';
 import { FavoriteDatabaseService } from './favorite-database.service';
 
