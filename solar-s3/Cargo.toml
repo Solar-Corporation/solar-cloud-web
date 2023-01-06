@@ -1,5 +1,5 @@
 [package]
-name = "solar-cloud"
+name = "solar-s3"
 version = "0.0.1"
 edition = "2021"
 
@@ -19,7 +19,7 @@ xattr = "1.0.0"
 mime_guess = "2.0.4"
 byte-unit = "4.0.18"
 chrono = "0.4.23"
-cfg-if = "1.0.0"
+regex = "*"
 
 [build-dependencies]
 napi-build = "2.0.1"

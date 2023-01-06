@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import { Transaction } from 'sequelize';
-import { FileService as RsFileService, FileTree } from '../../../index';
+import { FileService as RsFileService, FsItem } from '../../../solar-s3';
 import { UserDto } from '../user/dto/user.dto';
 import { FavoriteDatabaseService } from './favorite-database.service';
 
@@ -36,9 +36,8 @@ export class FavoriteService {
 		}
 	}
 
-	async getFavorites({ id, uuid }: UserDto): Promise<Array<FileTree>> {
-		const fullPath = path.join(this.basePath, uuid);
+	async getFavorites({ id }: UserDto): Promise<Array<FsItem>> {
 		const paths = await this.favoriteDatabaseService.getFavoritesPaths(id);
-		return await RsFileService.getFilesMetadata(paths, fullPath);
+		return await RsFileService.getFilesMetadata(paths, false);
 	}
 }

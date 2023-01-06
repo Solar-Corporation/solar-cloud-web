@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import config from './config/app.config';
 import { FavoriteModule } from './favorite/favorite.module';
 import { FileModule } from './file/file.module';
+import { TrashModule } from './trash/trash.module';
 
 @Module({
 	imports: [
@@ -14,8 +15,8 @@ import { FileModule } from './file/file.module';
 		AuthModule,
 		FileModule,
 		FavoriteModule,
+		TrashModule,
 	],
 })
 export class AppModule {
-
 }

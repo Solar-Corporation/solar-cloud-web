@@ -10,6 +10,6 @@ BEGIN
 	WHERE path_system = path
 	INTO path_id;
 
-	DELETE FROM table_links.favorite_user_paths WHERE fk_path_id = path_id AND fk_user_id = user_id;
+	DELETE FROM file_data.users_favorite_paths WHERE fk_path_id = path_id AND fk_user_id = user_id;
 END;
 $$

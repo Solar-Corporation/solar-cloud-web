@@ -17,8 +17,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Transaction } from 'sequelize';
-import { FileTree } from '../../../index';
 
+import { FsItem } from '../../../solar-s3';
 import { TransactionParam } from '../common/decorators/transaction.decorator';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
@@ -52,10 +52,10 @@ export class FileController {
 		@Req() { user }: Request,
 		@Res() res: Response,
 	): Promise<void> {
-		const { name, fileMime, stream } = await this.fileService.getFile(path, user as UserDto);
+		const { fileMime, stream, name } = await this.fileService.getFile(path, user as UserDto);
 		res.set({
-			'Content-Type': fileMime,
-			'Content-Disposition': `attachment; filename="${name}"`,
+			'Content-Type': `${fileMime}; charset=utf-8`,
+			'Content-Disposition': `attachment; filename="${encodeURI(name!)}"`,
 		});
 		stream!.pipe(res);
 	}
@@ -101,7 +101,7 @@ export class FileController {
 	async getFileTree(
 		@Query() { path }: PathDto,
 		@Req() { user }: Request,
-	): Promise<Array<FileTree>> {
+	): Promise<Array<FsItem>> {
 		return this.fileService.getFileTree(user as UserDto, path);
 	}
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Transaction } from 'sequelize';
-import { DeleteMarked } from '../../../index';
+import { DeleteMarked } from '../../../solar-s3';
 import { SequelizeConnect } from '../database/database-connect';
 import { RenameDto } from './dto/file.dto';
 
