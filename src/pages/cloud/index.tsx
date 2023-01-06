@@ -22,7 +22,7 @@ export default function Cloud() {
 		await router.push(`${RouteNames.CLOUD}?path=${id}`);
 	};
 
-	const {data, error} = filesAPI.useGetFilesQuery('');
+	// const {data, error} = filesAPI.useGetFilesQuery('');
 
 	return (
 		<CloudLayout
@@ -35,14 +35,14 @@ export default function Cloud() {
 	);
 }
 
-// export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
-// 	(store) =>
-// 		async (ctx) => {
-// 			// const { userReducer: { data }} = store.getState();
-// 			// console.log('data', data);
-// 			const files = await store.dispatch(filesAPI.endpoints.getFiles.initiate(''));
-// 			console.log('files', files);
-// 			return { props: {} };
-// 		}
-// );
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
+	(store) =>
+		async (ctx) => {
+			// const { userReducer: { data }} = store.getState();
+			// console.log('data', data);
+			const files = await store.dispatch(filesAPI.endpoints.getFiles.initiate(''));
+			console.log('files', files);
+			return { props: {} };
+		}
+);
 // export { getServerSideRefresh as getServerSideProps };
