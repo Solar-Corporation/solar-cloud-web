@@ -18,7 +18,7 @@ export class AppModule {
 	public static initialize(): DynamicModule {
 		const renderModule =
 			module.hot?.data?.renderModule ??
-			RenderModule.forRootAsync(Next({ dev: false }), {
+			RenderModule.forRootAsync(Next({ dev: true }), {
 				viewsDir: null,
 			});
 
