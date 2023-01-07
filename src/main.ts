@@ -2,6 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
+import { RenderService } from 'nest-next';
 import { AppModule } from './server/app.module';
 
 declare const module: any;
@@ -22,6 +23,11 @@ const bootstrap = async () => {
 			transform: true,
 		}),
 	);
+
+	const service = app.get(RenderService);
+	service.setErrorHandler(async (err, req, res) => {
+		res.send(err.response);
+	});
 
 	await app.use(cookieParser());
 	await app.listen(port);

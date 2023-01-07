@@ -8,6 +8,10 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
+[profile.release]
+opt-level = 3
+dependency-profile = 'release'
+
 [dependencies]
 napi = { version = "2.10.0", features = ["full"] }
 napi-derive = { version = "2.9.1", features = ["type-def"] }
