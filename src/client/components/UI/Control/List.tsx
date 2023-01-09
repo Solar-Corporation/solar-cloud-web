@@ -15,7 +15,7 @@ interface ActionListProps {
 export const ControlList: FC<ActionListProps> = ({ list }) => {
 	return (
 		<>
-			{list?.map((type, index) => [
+			{list.map((type, index) => [
 				type === Control.INFO && <ControlInfo key={index} />,
 				type === Control.VIEW && <ControlView key={index} />
 			])}

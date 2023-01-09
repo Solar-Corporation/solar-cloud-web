@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
 	[filesAPI.reducerPath]: filesAPI.reducer
 });
 
-export const setupStore = () => {
+export const makeStore = () => {
 	return configureStore({
 		reducer: rootReducer,
 		middleware: (getDefaultMiddleware) =>
@@ -21,7 +21,7 @@ export const setupStore = () => {
 	});
 };
 
-export type AppStore = ReturnType<typeof setupStore>;
-export type RootState = ReturnType<AppStore['getState']>;
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppState = ReturnType<AppStore['getState']>;
 export type AppDispatch = AppStore['dispatch'];
-export const wrapper = createWrapper<AppStore>(setupStore);
+export const wrapper = createWrapper<AppStore>(makeStore);
