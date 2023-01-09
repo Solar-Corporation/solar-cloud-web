@@ -5,15 +5,14 @@ import {
 	fetchBaseQuery,
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
-import { RootState } from '../store';
-import { authAPI } from './AuthService';
+import { AppState } from '../store';
 import { apiUrl } from './config';
 
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: `${apiUrl}`,
 	prepareHeaders: (headers, { getState }) => {
-		const token = (getState() as RootState).userReducer.token;
+		const token = (getState() as AppState).userReducer.token;
 		if (token) headers.set('Authorization', `Bearer ${token}`);
 		return headers;
 	}
@@ -22,9 +21,8 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
 	let result = await baseQuery(args, api, extraOptions);
 	if (result.error && result.error.status === 401) {
-		// try to get a new token
-		const refreshResult = await authAPI.endpoints.userRefresh.initiate(null);
-		console.log(refreshResult);
+		const refreshResult = await baseQuery('/refresh', api, extraOptions);
+		console.log('refresh', refreshResult);
 		// if (refreshResult.data) {
 		// 	result = await baseQuery(args, api, extraOptions);
 		// }
@@ -36,9 +34,10 @@ export const filesAPI = createApi({
 	reducerPath: 'filesAPI',
 	baseQuery: baseQueryWithRefresh,
 	endpoints: (build) => ({
-		getFiles: build.query<any, string>({
-			query: (data) => ({
-				url: '/files'
+		getFiles: build.query<string, string>({
+			query: (path) => ({
+				url: '/files',
+				params: { path }
 			})
 		})
 	})
