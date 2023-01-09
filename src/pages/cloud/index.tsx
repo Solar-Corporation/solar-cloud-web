@@ -6,6 +6,7 @@ import { Control } from '../../client/components/UI/Control/List';
 import { RouteNames } from '../../client/router';
 import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
+import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 
 export default function Cloud() {
 	const id = 3432432;
@@ -22,8 +23,6 @@ export default function Cloud() {
 		await router.push(`${RouteNames.CLOUD}?path=${id}`);
 	};
 
-	// const {data, error} = filesAPI.useGetFilesQuery('');
-
 	return (
 		<CloudLayout
 			title="Все файлы"
@@ -35,14 +34,10 @@ export default function Cloud() {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
-	(store) =>
-		async (ctx) => {
-			// const { userReducer: { data }} = store.getState();
-			// console.log('data', data);
-			const files = await store.dispatch(filesAPI.endpoints.getFiles.initiate(''));
-			console.log('files', files);
-			return { props: {} };
-		}
-);
-// export { getServerSideRefresh as getServerSideProps };
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
+	setInitialUserData(ctx, store.dispatch);
+
+	const { data: files } = await store.dispatch(filesAPI.endpoints.getFiles.initiate('/'));
+	console.log('files', files);
+	return { props: {} };
+});
