@@ -1,8 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
+import { setCookie } from 'nookies';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
 import { setUser, UserState } from '../store/reducers/UserSlice';
 import { apiUrl } from './config';
+
+export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
+	const user: UserState = {
+		data: jwt(data.access),
+		token: data.access
+	};
+	setCookie(null, 'accessToken', data.access, { maxAge: 30 * 24 * 60 * 60, path: '/' });
+	dispatch(setUser(user));
+};
 
 export const authAPI = createApi({
 	reducerPath: 'authAPI',
@@ -17,11 +29,7 @@ export const authAPI = createApi({
 			async onQueryStarted(args, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
-					const user: UserState = {
-						data: jwt(data.access),
-						token: data.access
-					};
-					dispatch(setUser(user));
+					setUserOnQueryFulfilled(data, dispatch);
 				} catch (error) {
 					console.log(error);
 				}
@@ -34,11 +42,7 @@ export const authAPI = createApi({
 			async onQueryStarted(args, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
-					const user: UserState = {
-						data: jwt(data.access),
-						token: data.access
-					};
-					dispatch(setUser(user));
+					setUserOnQueryFulfilled(data, dispatch);
 				} catch (error) {
 					console.log(error);
 				}
@@ -53,11 +57,7 @@ export const authAPI = createApi({
 			async onQueryStarted(args, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
-					const user: UserState = {
-						data: jwt(data.access),
-						token: data.access
-					};
-					dispatch(setUser(user));
+					setUserOnQueryFulfilled(data, dispatch);
 				} catch (error) {
 					console.log(error);
 				}
