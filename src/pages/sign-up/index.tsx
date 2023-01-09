@@ -24,7 +24,7 @@ export default function Signup() {
 			fullName: {
 				firstName: values.firstName,
 				lastName: values.lastName,
-				middleName: values.middleName
+				middleName: values.middleName || ''
 			}
 		};
 
@@ -58,44 +58,31 @@ export default function Signup() {
 						validateMessages={{ required: 'Обязательное поле' }}
 						onFinish={handleSend}
 					>
-						<Form.Item
-							name="firstName"
-							rules={[{ required: true }]}
-						>
-							<Input
-								placeholder="Имя"
-							/>
-						</Form.Item>
 						<Form.Item name="lastName" rules={[{ required: true }]}>
-							<Input
-								placeholder="Фамилия"
-							/>
+							<Input placeholder="Фамилия" />
 						</Form.Item>
-						<Form.Item name="middleName" rules={[{ required: true }]}>
-							<Input
-								placeholder="Отчество"
-							/>
+						<Form.Item name="firstName" rules={[{ required: true }]}>
+							<Input placeholder="Имя" />
+						</Form.Item>
+						<Form.Item name="middleName">
+							<Input placeholder="Отчество" />
 						</Form.Item>
 						<Form.Item
 							name="email"
 							rules={[
 								{ required: true },
-								{ type: 'email', message: 'Неверный E-mail' }
+								{ type: 'email', message: 'Неверный формат E-mail' }
 							]}
 							hasFeedback
 						>
-							<Input
-								placeholder="Ваша почта"
-							/>
+							<Input placeholder="Ваша почта" />
 						</Form.Item>
 						<Form.Item
 							name="password"
 							rules={[{ required: true }]}
 							hasFeedback
 						>
-							<Input.Password
-								placeholder="Пароль"
-							/>
+							<Input.Password placeholder="Пароль" />
 						</Form.Item>
 						<Form.Item
 							name="confirmPassword"
@@ -113,9 +100,7 @@ export default function Signup() {
 							]}
 							hasFeedback
 						>
-							<Input.Password
-								placeholder="Подтверждение пароля"
-							/>
+							<Input.Password placeholder="Подтверждение пароля" />
 						</Form.Item>
 						<Form.Item className={styles.control}>
 							<ConfigProvider
