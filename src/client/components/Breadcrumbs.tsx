@@ -35,7 +35,7 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 				</Link>,
 				(index !== links.length - 1) && <RightOutlined key={`separator${index}`} className={styles.separator} />
 			])}
-			{actions && <>
+			{actions && actions.length > 0 && <>
         <RightOutlined className={styles.separator} />
         <ActionList list={actions} />
       </>}

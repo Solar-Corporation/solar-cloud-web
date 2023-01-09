@@ -13,7 +13,7 @@ interface ActionListProps {
 export const ActionList: FC<ActionListProps> = ({ list }) => {
 	return (
 		<>
-			{list?.map((type, index) => [
+			{list.map((type, index) => [
 				type === Action.CREATE && <ActionCreate key={index} />
 			])}
 		</>

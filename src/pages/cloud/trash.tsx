@@ -2,7 +2,7 @@ import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { Control } from '../../client/components/UI/Control/List';
 import { RouteNames } from '../../client/router';
 
-export default function Cloud() {
+export default function CloudTrash() {
 	const headingOptions = {
 		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
 		constControls: [Control.VIEW, Control.INFO],

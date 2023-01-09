@@ -2,14 +2,14 @@ import { Button, Tooltip } from 'antd';
 import { FC, ReactNode } from 'react';
 import { tooltipShowDelay } from '../../../utils';
 
-interface ControlTypeProps {
+interface ControlProps {
 	icon: ReactNode;
 	title: string;
 	onClick: () => void;
 	children?: never;
 }
 
-export const Control: FC<ControlTypeProps> = ({ icon, title, onClick }) => {
+export const Control: FC<ControlProps> = ({ icon, title, onClick }) => {
 	return (
 		<Tooltip
 			title={title}

@@ -50,7 +50,8 @@
 
 // Sizes
 @sidebar-width: 240px;
-@container-width: calc(100vw - (@space-xl * 2 + @space-l + @sidebar-width));
+@container-indent: @space-xl * 2 + @space-l + @sidebar-width;
+@container-width: calc(100vw - @container-indent);
 @header-height: 60px;
 
 // Text
