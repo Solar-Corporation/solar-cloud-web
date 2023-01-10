@@ -18,9 +18,9 @@ function App({ Component, ...rest }: AppProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<ConfigProvider theme={themeCloud}>
-				<main className={roboto.className}>
+				<div className={roboto.className}>
 					<Component {...props.pageProps} />
-				</main>
+				</div>
 			</ConfigProvider>
 		</Provider>
 	);
