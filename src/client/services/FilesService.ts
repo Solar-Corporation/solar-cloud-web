@@ -5,6 +5,7 @@ import {
 	fetchBaseQuery,
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
+import { IFile } from '../models/IFile';
 import { AppState } from '../store';
 import { apiUrl } from './config';
 
@@ -34,7 +35,7 @@ export const filesAPI = createApi({
 	reducerPath: 'filesAPI',
 	baseQuery: baseQueryWithRefresh,
 	endpoints: (build) => ({
-		getFiles: build.query<string, string>({
+		getFiles: build.query<IFile[], string>({
 			query: (path) => ({
 				url: '/files',
 				params: { path }
