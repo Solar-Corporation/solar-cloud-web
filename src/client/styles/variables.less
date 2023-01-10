@@ -49,10 +49,12 @@
 @space-6xl: 96px;
 
 // Sizes
-@sidebar-width: 240px;
-@container-indent: @space-xl * 2 + @space-l + @sidebar-width;
-@container-width: calc(100vw - @container-indent);
 @header-height: 60px;
+@sidebar-width: 240px;
+@container-width-indent: @space-xl * 2 + @space-l + @sidebar-width;
+@container-width: calc(100vw - @container-width-indent);
+@container-height-indent: @header-height + @space-l;
+@container-height: calc(100vh - @container-height-indent);
 
 // Text
 @text-color-full: #ffffff;
