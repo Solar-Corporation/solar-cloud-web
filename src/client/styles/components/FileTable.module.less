@@ -1,0 +1,60 @@
+@import "../variables";
+
+.main {
+  width: 100%;
+  border-spacing: 0;
+  text-align: start;
+  color: @fileTable-typo-primary;
+
+  thead {
+    display: block;
+    background-color: @fileTable-background-primary;
+    border-radius: @border-radius @border-radius 0 0;
+    transition: background-color 0.15s;
+    -webkit-transition: background-color 0.15s;
+
+    &:hover {
+      background-color: @fileTable-background-hover;
+    }
+
+    th {
+      cursor: pointer;
+      padding: @space-s @space-3xl @space-s @space-s;
+      font-weight: normal;
+      text-align: start;
+      font-size: 14px;
+      line-height: 14px;
+      transition: color 0.15s;
+      -webkit-transition: color 0.15s;
+
+      &:hover {
+        color: @fileTable-typo-secondary;
+      }
+    }
+  }
+
+}
+
+.name {
+  width: @fileTable-width-name;
+}
+
+.extension {
+  min-width: @fileTable-width-extension;
+}
+
+.date {
+  min-width: @fileTable-width-date;
+}
+
+.size {
+  min-width: @fileTable-width-size;
+}
+
+.icon {
+  font-size: 36px;
+}
+
+.iconUnknown {
+  color: @magenta-secondary;
+}
