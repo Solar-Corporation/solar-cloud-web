@@ -9,7 +9,30 @@ import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 
-export default function Cloud({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Cloud({  }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const files = [
+		{
+			name: "test123.txt",
+			path: "/test123.txt",
+			size: "7 B",
+			fileType: "txt",
+			mimeType: "text/plain",
+			isDir: false,
+			isFavorite: false,
+			seeTime: 1673380864000
+		},
+		{
+			name: "test",
+			path: "/test",
+			size: "4.00 KiB",
+			fileType: "",
+			mimeType: "text/plain",
+			isDir: true,
+			isFavorite: false,
+			seeTime: 1673379696000
+		}
+	];
+
 	const id = 3432432;
 	const router = useRouter();
 
