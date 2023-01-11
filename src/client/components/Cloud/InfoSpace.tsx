@@ -28,7 +28,7 @@ export const CloudInfoSpace: FC<CloudInfoSpaceProps> = ({ used, total }) => {
 					percent > 35
 						? percent > 70
 							? percent > 99
-								? variables['@red']
+								? variables['@alert']
 								: variables['@magenta-primary']
 							: variables['@orange-primary']
 						: variables['@gold-primary']
