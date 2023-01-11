@@ -4,16 +4,28 @@
 @secondary: #202020;
 @dark: #101010;
 @base: #656565;
+@alert: #d32029;
+
 @magenta-primary: #cb2b83;
 @magenta-secondary: #e0529c;
-@red: #d32029;
 @gold-primary: #e8b339;
 @gold-secondary: #f3cc62;
 @orange-primary: #e89a3c;
 @orange-secondary: #f3b765;
 @gradient: linear-gradient(to right, @gold-primary, @magenta-primary);
 
+@blue: #7f9ef3;
+@cyan: #58d1c9;
+@green: #8fd460;
+@light-blue: #65b7f3;
+@purple: #ab7ae0;
+@red: #f37370;
+@volcano: #f3956a;
+@yellow: #f3ea62;
+
 @transparent-base: 255, 255, 255;
+@transparent-0-2: rgba(@transparent-base, 0.02);
+@transparent-0-3: rgba(@transparent-base, 0.03);
 @transparent-0-5: rgba(@transparent-base, 0.05);
 @transparent-1: rgba(@transparent-base, 0.1);
 @transparent-1-5: rgba(@transparent-base, 0.15);
@@ -69,6 +81,19 @@
 @control-ghost-bg-secondary: @transparent-1-5;
 @control-ghost-typo-primary: @transparent-7-5;
 @control-ghost-typo-secondary: @white;
+
+// FileTable
+@fileTable-background-primary: @transparent-0-3;
+@fileTable-background-secondary: @transparent-0-2;
+@fileTable-background-hover: @transparent-1;
+@fileTable-background-selected: @transparent-1-5;
+@fileTable-typo-primary: @transparent-7-5;
+@fileTable-typo-secondary: @text-color-full;
+
+@fileTable-width-name: 100%;
+@fileTable-width-extension: 156px;
+@fileTable-width-date: 165px;
+@fileTable-width-size: 120px;
 
 // Other
 @border-radius: 4px;
