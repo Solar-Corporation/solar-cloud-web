@@ -25,6 +25,7 @@
 
 @transparent-base: 255, 255, 255;
 @transparent-0-2: rgba(@transparent-base, 0.02);
+@transparent-0-2-5: rgba(@transparent-base, 0.025);
 @transparent-0-3: rgba(@transparent-base, 0.03);
 @transparent-0-5: rgba(@transparent-base, 0.05);
 @transparent-1: rgba(@transparent-base, 0.1);
@@ -90,9 +91,11 @@
 @fileTable-typo-primary: @transparent-7-5;
 @fileTable-typo-secondary: @text-color-full;
 
+@fileTable-width-indent: @space-s * 2 + @space-l * 2;
+@fileTable-width: calc(@container-width - @fileTable-width-indent);
 @fileTable-width-name: 100%;
-@fileTable-width-extension: 156px;
-@fileTable-width-date: 165px;
+@fileTable-width-extension: 190px;
+@fileTable-width-date: 162px;
 @fileTable-width-size: 120px;
 
 // Other
