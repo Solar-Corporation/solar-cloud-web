@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { IFile } from '../../models/IFile';
-import { FileTableBody } from './Body';
-import { FileTableHeader } from './Header';
 import styles from '../../styles/components/FileTable.module.less';
+import { FileTableHeader } from './Header';
+import { FileTableRow } from './Row';
 
 interface FileTableProps {
 	files: IFile[];
@@ -12,10 +12,10 @@ interface FileTableProps {
 export const FileTable: FC<FileTableProps> = ({ files, disableHeader }) => {
 	return (
 		files.length > 0
-			? <table className={styles.main}>
+			? <div className={styles.main}>
 				{!disableHeader && <FileTableHeader columns={files[0]} />}
-				<FileTableBody files={files} />
-			</table>
+				{files.map((file) => <FileTableRow key={file.path} file={file} />)}
+			</div>
 			: <div>No files yet</div>
 	);
 };

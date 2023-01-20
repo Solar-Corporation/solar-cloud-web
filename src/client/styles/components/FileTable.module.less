@@ -1,60 +1,134 @@
 @import "../variables";
 
 .main {
-  width: 100%;
-  border-spacing: 0;
-  text-align: start;
+  cursor: default;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: @fileTable-width;
+  max-width: @fileTable-width;
+  font-size: 14px;
+  line-height: 16px;
   color: @fileTable-typo-primary;
+  border-radius: @border-radius;
 
-  thead {
-    display: block;
+  > div {
     background-color: @fileTable-background-primary;
-    border-radius: @border-radius @border-radius 0 0;
-    transition: background-color 0.15s;
-    -webkit-transition: background-color 0.15s;
+    transition: all 0.15s;
+    -webkit-transition: all 0.15s;
+
+    &:nth-child(even) {
+      background-color: @fileTable-background-secondary;
+    }
 
     &:hover {
       background-color: @fileTable-background-hover;
-    }
-
-    th {
-      cursor: pointer;
-      padding: @space-s @space-3xl @space-s @space-s;
-      font-weight: normal;
-      text-align: start;
-      font-size: 14px;
-      line-height: 14px;
-      transition: color 0.15s;
-      -webkit-transition: color 0.15s;
-
-      &:hover {
-        color: @fileTable-typo-secondary;
-      }
+      color: @fileTable-typo-secondary;
     }
   }
+}
 
+.header {
+  display: flex;
+
+  > div {
+    cursor: pointer;
+    padding: @space-s @space-3xl @space-s @space-s;
+    color: @fileTable-typo-primary;
+    transition: color 0.15s;
+    -webkit-transition: color 0.15s;
+
+    &:hover {
+      color: @fileTable-typo-secondary;
+    }
+  }
+}
+
+.headerName {
+  width: @fileTable-width-name;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: @space-xs + @space-3xs 0 @space-xs + @space-3xs 0;
+}
+
+.columns {
+  display: flex;
+  align-items: center;
+}
+
+.column {
+  padding: 0 @space-3xl 0 @space-s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .name {
-  width: @fileTable-width-name;
+  display: flex;
+  gap: @space-s;
+  align-items: center;
+}
+
+.nameText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .extension {
   min-width: @fileTable-width-extension;
+  max-width: @fileTable-width-extension;
 }
 
 .date {
   min-width: @fileTable-width-date;
+  max-width: @fileTable-width-date;
 }
 
 .size {
   min-width: @fileTable-width-size;
+  max-width: @fileTable-width-size;
 }
 
 .icon {
-  font-size: 36px;
+  font-size: 32px;
 }
 
 .iconUnknown {
   color: @magenta-secondary;
+}
+
+.iconFolder {
+  color: @orange-secondary;
+}
+
+.iconPdf {
+  color: @red;
+}
+
+.iconPpt {
+  color: @volcano;
+}
+
+.iconText {
+  color: @purple;
+}
+
+.iconWord {
+  color: @blue;
+}
+
+.iconExcel {
+  color: @green;
+}
+
+.iconZip {
+  color: @light-blue;
+}
+
+.iconImage {
+  color: @yellow;
 }

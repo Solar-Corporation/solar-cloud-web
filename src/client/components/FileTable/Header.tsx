@@ -8,13 +8,11 @@ interface FileTableHeaderProps {
 
 export const FileTableHeader: FC<FileTableHeaderProps> = ({ columns }) => {
 	return (
-		<thead>
-		<tr>
-			{columns.name && <th className={styles.name}>Название</th>}
-			{columns.fileType && <th className={styles.extension}>Тип</th>}
-			{columns.seeTime && <th className={styles.date}>Дата изменения</th>}
-			{columns.size && <th className={styles.size}>Размер</th>}
-		</tr>
-		</thead>
+		<div className={styles.header}>
+			<div className={styles.headerName}>Название</div>
+			{columns.hasOwnProperty('fileType') && <div className={styles.extension}>Тип</div>}
+			{columns.hasOwnProperty('fileType') && <div className={styles.date}>Дата изменения</div>}
+			{columns.hasOwnProperty('size') && <div className={styles.size}>Размер</div>}
+		</div>
 	);
 };
