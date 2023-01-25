@@ -1,6 +1,7 @@
 // @ts-ignore
 import * as palette from '!!../utils/lessVarLoader!./variables.less';
 import { theme } from 'antd';
+import { pxToNumber } from '../utils';
 
 export const variables = palette;
 const { darkAlgorithm } = theme;
@@ -13,7 +14,7 @@ export const themeCloud = {
 		colorLink: variables['@magenta-primary'],
 		colorLinkHover: variables['@magenta-secondary'],
 		colorLinkActive: variables['@magenta-secondary'],
-		borderRadius: Number(variables['@border-radius'].replace(/px/g, ''))
+		borderRadius: pxToNumber(variables['@border-radius'])
 	},
 	components: {
 		Button: {
