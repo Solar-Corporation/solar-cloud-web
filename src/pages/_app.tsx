@@ -5,7 +5,8 @@ import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { wrapper } from '../client/store';
 import '../client/styles/globals.less';
-import { themeCloud } from '../client/styles/theme';
+import { themeCloud, variables } from '../client/styles/theme';
+import ProgressBar from 'nextjs-progressbar';
 
 const roboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
 
@@ -19,6 +20,7 @@ function App({ Component, ...rest }: AppProps) {
 			</Head>
 			<ConfigProvider theme={themeCloud}>
 				<div className={roboto.className}>
+					<ProgressBar color={variables['@magenta-primary']} options={{ showSpinner: false }} />
 					<Component {...props.pageProps} />
 				</div>
 			</ConfigProvider>
