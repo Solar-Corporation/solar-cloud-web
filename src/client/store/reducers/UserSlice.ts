@@ -24,6 +24,10 @@ export const UserSlice = createSlice({
 		setUser(state, action: PayloadAction<UserState>) {
 			state.data = action.payload.data;
 			state.token = action.payload.token;
+		},
+		clearUser(state) {
+			state.data = initialState.data;
+			state.token = initialState.token;
 		}
 	},
 	extraReducers: {
@@ -37,7 +41,7 @@ export const UserSlice = createSlice({
 });
 
 export default UserSlice.reducer;
-export const { setUser } = UserSlice.actions;
+export const { setUser, clearUser } = UserSlice.actions;
 export const setInitialUserData = (ctx: GetServerSidePropsContext, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const { accessToken: token } = parseCookies(ctx);
 	if (token) {
