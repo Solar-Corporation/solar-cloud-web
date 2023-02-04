@@ -3,9 +3,11 @@ import { createWrapper } from 'next-redux-wrapper';
 import { authAPI } from '../services/AuthService';
 import { filesAPI } from '../services/FilesService';
 import userReducer from './reducers/UserSlice';
+import cloudReducer from './reducers/CloudSlice';
 
 const rootReducer = combineReducers({
 	userReducer,
+	cloudReducer,
 	[authAPI.reducerPath]: authAPI.reducer,
 	[filesAPI.reducerPath]: filesAPI.reducer
 });
