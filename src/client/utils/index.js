@@ -1,3 +1,5 @@
+import { RouteNames } from '../router';
+
 export const tooltipShowDelay = 0.4;
 
 export const getDateStr = (date) => {
@@ -13,6 +15,19 @@ export const getDateStr = (date) => {
 
 export const pxToNumber = (string) => {
   return Number(string.replace(/px/g, ''));
+};
+
+export const getLinks = (string) => {
+  const links = [{ title: 'Все файлы', href: RouteNames.CLOUD }];
+
+  if (string !== '/') {
+    const arrFromString = string.split('/');
+    for (let i = 1; i < arrFromString.length; i++) {
+      links.push({ title: arrFromString[i], href: `${RouteNames.CLOUD}?path=/${arrFromString[i]}` });
+    }
+  }
+
+  return links;
 };
 
 // export async function hash(string) {
