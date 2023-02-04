@@ -13,7 +13,6 @@ interface BreadcrumbsItemProps {
 
 export const BreadcrumbsItem: FC<BreadcrumbsItemProps> = ({ link, active }) => {
 	const { url } = useAppSelector(state => state.cloudReducer.context);
-	console.log(url);
 
 	return (
 		<Link
