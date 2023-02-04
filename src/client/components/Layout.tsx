@@ -9,10 +9,18 @@ interface AppLayoutProps {
 	sidebarTop?: ReactNode;
 	sidebarBottom?: ReactNode;
 	headingOptions?: PageHeadingProps;
+	onClickContainer?: () => void;
 	children: ReactNode;
 }
 
-export const Layout: FC<AppLayoutProps> = ({ title, sidebarTop, sidebarBottom, headingOptions, children }) => {
+export const Layout: FC<AppLayoutProps> = ({
+																						 title,
+																						 sidebarTop,
+																						 sidebarBottom,
+																						 headingOptions,
+																						 onClickContainer,
+																						 children
+																					 }) => {
 	return (
 		<>
 			<Head>
@@ -20,31 +28,33 @@ export const Layout: FC<AppLayoutProps> = ({ title, sidebarTop, sidebarBottom, h
 				<meta name="description" content="description" />
 				<meta charSet="utf-8" />
 			</Head>
-			<Header />
-			<main className={styles.main}>
-				{
-					(sidebarTop || sidebarBottom) &&
-          <div className={styles.sidebar}>
-						{sidebarTop && <div className={styles.stickyTop}>{sidebarTop}</div>}
-						{sidebarBottom && <div className={styles.stickyBottom}>{sidebarBottom}</div>}
-          </div>
-				}
-				<div className={styles.container}>
+			<div onClick={onClickContainer}>
+				<Header />
+				<main className={styles.main}>
 					{
-						headingOptions &&
-            <PageHeading
-              links={headingOptions.links}
-              actions={headingOptions.actions}
-              floatControls={headingOptions.floatControls}
-              constControls={headingOptions.constControls}
-              sticky={headingOptions.sticky}
-            />
+						(sidebarTop || sidebarBottom) &&
+            <div className={styles.sidebar}>
+							{sidebarTop && <div className={styles.stickyTop}>{sidebarTop}</div>}
+							{sidebarBottom && <div className={styles.stickyBottom}>{sidebarBottom}</div>}
+            </div>
 					}
-					<div className={styles.content}>
-						{children}
+					<div className={styles.container}>
+						{
+							headingOptions &&
+              <PageHeading
+                links={headingOptions.links}
+                actions={headingOptions.actions}
+                floatControls={headingOptions.floatControls}
+                constControls={headingOptions.constControls}
+                sticky={headingOptions.sticky}
+              />
+						}
+						<div className={styles.content}>
+							{children}
+						</div>
 					</div>
-				</div>
-			</main>
+				</main>
+			</div>
 		</>
 	);
 };
