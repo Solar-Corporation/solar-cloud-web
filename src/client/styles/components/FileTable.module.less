@@ -30,6 +30,8 @@
 
 .header {
   display: flex;
+  user-select: none;
+  -webkit-user-select: none;
 
   > div {
     cursor: pointer;
@@ -51,7 +53,18 @@
 .row {
   display: flex;
   justify-content: space-between;
+  user-select: none;
+  -webkit-user-select: none;
   padding: @space-xs + @space-3xs 0 @space-xs + @space-3xs 0;
+}
+
+.selected {
+  background-color: @fileTable-background-hover !important;
+  color: @fileTable-typo-secondary;
+
+  &:hover {
+    background-color: @fileTable-background-selected !important;
+  }
 }
 
 .columns {

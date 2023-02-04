@@ -52,6 +52,11 @@ a {
 .ant-dropdown {
   .ant-dropdown-menu {
     background-color: @dark;
+    padding: @space-xs - @space-3xs @space-xs;
+  }
+
+  .ant-dropdown-arrow::before {
+    background-color: @dark;
   }
 }
 
@@ -139,10 +144,12 @@ input {
 .ant-input-search {
   .ant-input-lg {
     height: 40px;
+
     &:focus {
       box-shadow: none;
     }
   }
+
   .ant-btn-primary {
     &:not(:disabled):hover {
       color: @control-default-typo-secondary;
