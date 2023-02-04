@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/components/PageHeading.module.less';
 import { Breadcrumbs, IBreadcrumbsItem } from './Breadcrumbs';
-import { Action } from './UI/Action/List';
-import { Control, ControlList } from './UI/Control/List';
+import Action from './UI/Action/List';
+import Control, { ControlList } from './UI/Control/List';
 
 export interface PageHeadingProps {
 	links: IBreadcrumbsItem[];
@@ -43,7 +43,8 @@ export const PageHeading: FC<PageHeadingProps> = ({ links, actions, floatControl
 			}
 		>
 			<Breadcrumbs links={links} actions={actions} />
-			{((floatControls && floatControls.length > 0) || (constControls && constControls.length > 0)) && <div className={styles.controls}>
+			{((floatControls && floatControls.length > 0) || (constControls && constControls.length > 0)) &&
+      <div className={styles.controls}>
 				{floatControls && <>
           <ControlList list={floatControls} />
           <div className={styles.controlsDivider} />

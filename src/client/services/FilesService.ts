@@ -35,7 +35,7 @@ export const filesAPI = createApi({
 	reducerPath: 'filesAPI',
 	baseQuery: baseQueryWithRefresh,
 	endpoints: (build) => ({
-		getFiles: build.query<IFile[], string>({
+		getFiles: build.query<IFile[], string | string[]>({
 			query: (path) => ({
 				url: '/files',
 				params: { path }
