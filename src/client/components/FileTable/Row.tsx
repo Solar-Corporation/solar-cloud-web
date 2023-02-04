@@ -1,17 +1,23 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { IFile } from '../../models/IFile';
 import {
 	FileExcelFilled,
 	FileImageFilled,
 	FilePdfFilled,
 	FilePptFilled,
-	FileTextFilled, FileUnknownFilled,
-	FileWordFilled, FileZipFilled,
+	FileTextFilled,
+	FileUnknownFilled,
+	FileWordFilled,
+	FileZipFilled,
 	FolderFilled
 } from '@ant-design/icons';
 import styles from '../../styles/components/FileTable.module.less';
 import { FileTableColumn } from './Column';
 import { getDateStr } from '../../utils';
+import { RouteNames } from '../../router';
+import { useRouter } from 'next/router';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { clearSelected, selectFile, unselectFile } from '../../store/reducers/CloudSlice';
 
 enum Extension {
 	UNKNOWN = 'Файл',
@@ -30,6 +36,10 @@ interface FileTableRowProps {
 }
 
 export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
+	const router = useRouter();
+	const dispatch = useAppDispatch();
+	const { selected } = useAppSelector(state => state.cloudReducer);
+	const [isSelected, setIsSelected] = useState<boolean>(!!selected.find(selectedFile => selectedFile.path === file.path));
 	const date = new Date(file.seeTime || '');
 	let icon;
 	let extension;
@@ -85,8 +95,44 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 		}
 	}
 
+	useEffect(() => {
+		setIsSelected(!!selected.find(selectedFile => selectedFile.path === file.path));
+	}, [selected]);
+
+	const handleClick = async (event: any) => {
+		event.stopPropagation();
+		switch (event.detail) {
+			case 1: {
+				if (event.ctrlKey) {
+					if (!isSelected) {
+						dispatch(selectFile(file));
+					} else {
+						dispatch(unselectFile(file));
+					}
+				} else {
+					dispatch(clearSelected());
+					dispatch(selectFile(file));
+				}
+				break;
+			}
+			case 2: {
+				if (file.isDir) {
+					await router.push(`${RouteNames.CLOUD}?path=${file.path}`);
+				} else {
+					console.log('double click!');
+				}
+				break;
+			}
+			default:
+				break;
+		}
+	};
+
 	return (
-		<div className={styles.row}>
+		<div
+			className={isSelected ? `${styles.selected} ${styles.row}` : styles.row}
+			onClick={event => handleClick(event)}
+		>
 			<FileTableColumn title={file.name}>
 				<div className={styles.name}>
 					<span className={styles.icon}>{icon}</span>
