@@ -7,6 +7,8 @@ import { INavbarItem, Navbar } from '../Navbar';
 import { PageHeadingProps } from '../PageHeading';
 import { ButtonUpload } from '../UI/ButtonUpload';
 import { CloudInfoSpace } from './InfoSpace';
+import { useAppDispatch } from '../../hooks/redux';
+import { clearSelected } from '../../store/reducers/CloudSlice';
 
 interface CloudLayoutProps {
 	title: string;
@@ -15,6 +17,7 @@ interface CloudLayoutProps {
 }
 
 export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, children }) => {
+	const dispatch = useAppDispatch();
 	const links: INavbarItem[] = [
 		{ icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
 		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.CLOUD },
@@ -22,6 +25,10 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, child
 		{ icon: <TagsOutlined />, title: 'Теги', href: RouteNames.TAGS },
 		{ icon: <DeleteOutlined />, title: 'Корзина', href: RouteNames.TRASH }
 	];
+
+	const handleClearSelected = () => {
+		dispatch(clearSelected());
+	};
 
 	return (
 		<Layout
@@ -34,6 +41,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, child
 			}
 			sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
 			headingOptions={headingOptions}
+			onClickContainer={handleClearSelected}
 		>
 			{children}
 		</Layout>
