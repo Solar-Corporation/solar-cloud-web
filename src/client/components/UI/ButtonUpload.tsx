@@ -3,6 +3,7 @@ import { Button, ConfigProvider, Tooltip, Upload } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import styles from '../../styles/components/ButtonUpload.module.less';
 import { variables } from '../../styles/theme';
+import { ContextMenuItem } from '../ContextMenu/Item';
 
 export const ButtonUpload: FC = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,13 +11,13 @@ export const ButtonUpload: FC = () => {
 	const menu = (
 		<ul className={styles.menu}>
 			<li>
-				<Upload name="file" className={styles.upload} fileList={[]} multiple>
-					<div className={styles.item}><FileAddOutlined className={styles.icon} /><span>Загрузить файлы</span></div>
+				<Upload name="file" fileList={[]} multiple>
+					<ContextMenuItem className={styles.item} icon={<FileAddOutlined />} title="Загрузить файлы" />
 				</Upload>
 			</li>
 			<li>
 				<Upload name="folder" fileList={[]} directory>
-					<div className={styles.item}><FolderAddOutlined className={styles.icon} /><span>Загрузить папку</span></div>
+					<ContextMenuItem className={styles.item} icon={<FolderAddOutlined />} title="Загрузить папку" />
 				</Upload>
 			</li>
 		</ul>
