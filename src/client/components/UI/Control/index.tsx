@@ -1,41 +1,41 @@
 import { Button } from 'antd';
 import { FC, ReactNode } from 'react';
-import styles from '../../../styles/components/Control.module.less';
+import { ContextMenuItem } from '../../ContextMenu/Item';
 
 export interface ControlTypeProps {
 	context?: boolean;
+	primary?: boolean;
 }
 
 interface ControlProps {
 	icon: ReactNode;
 	title: string;
-	onClick: () => void;
-	children?: never;
+	onClick?: () => void;
+	primary?: boolean;
 	context?: boolean;
+	children?: never;
 }
 
-export const Control: FC<ControlProps> = ({ icon, title, onClick, context }) => {
+export const Control: FC<ControlProps> = ({ icon, title, onClick, primary, context }) => {
 	const handleClick = (event: any) => {
 		event.stopPropagation();
-		onClick();
+		if (onClick) onClick();
 	};
 
 	return (
 		context
 			?
-			<div
-				className={styles.item}
-				onClick={onClick}
-			>
-				{icon}
-				<span>{title}</span>
-			</div>
+			<ContextMenuItem
+				title={title}
+				icon={icon}
+				onClick={handleClick}
+			/>
 			:
 			<Button
 				title={title}
-				type="ghost"
 				icon={icon}
-				onClick={event => handleClick(event)}
+				type={primary ? 'primary' : 'ghost'}
+				onClick={handleClick}
 			/>
 	);
 };

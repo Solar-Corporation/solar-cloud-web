@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/components/PageHeading.module.less';
 import { Breadcrumbs, IBreadcrumbsItem } from './Breadcrumbs';
-import Action from './UI/Action/List';
 import Control, { ControlList } from './UI/Control/List';
 
 export interface PageHeadingProps {
 	links: IBreadcrumbsItem[];
-	actions?: Action[];
+	actions?: Control[];
 	floatControls?: Control[];
 	constControls?: Control[];
 	sticky?: boolean;

@@ -1,8 +1,8 @@
 import { RightOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import styles from '../../styles/components/Breadcrumbs.module.less';
-import Action, { ActionList } from '../UI/Action/List';
 import { BreadcrumbsItem } from './Item';
+import Control, { ControlList } from '../UI/Control/List';
 
 export interface IBreadcrumbsItem {
 	title: string;
@@ -11,7 +11,7 @@ export interface IBreadcrumbsItem {
 
 interface BreadcrumbsProps {
 	links: IBreadcrumbsItem[];
-	actions?: Action[];
+	actions?: Control[];
 }
 
 export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
@@ -24,7 +24,7 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 			])}
 			{actions && actions.length > 0 && <>
         <RightOutlined className={styles.separator} />
-        <ActionList list={actions} />
+        <ControlList list={actions} primary />
       </>}
 		</div>
 	);
