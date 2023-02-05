@@ -110,8 +110,15 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 						dispatch(unselectFile(file));
 					}
 				} else {
-					dispatch(clearSelected());
-					dispatch(selectFile(file));
+					if (selected.length > 1) {
+						dispatch(clearSelected());
+						dispatch(selectFile(file));
+					} else {
+						if (!isSelected) {
+							dispatch(clearSelected());
+							dispatch(selectFile(file));
+						}
+					}
 				}
 				break;
 			}
@@ -144,7 +151,8 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
         <FileTableColumn title={extension} className={styles.extension}>{extension}</FileTableColumn>}
 				{file.hasOwnProperty('seeTime') &&
         <FileTableColumn className={styles.date}>{getDateStr(date)}</FileTableColumn>}
-				{file.hasOwnProperty('size') && <FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
+				{file.hasOwnProperty('size') &&
+        <FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
 			</div>
 		</div>
 	);
