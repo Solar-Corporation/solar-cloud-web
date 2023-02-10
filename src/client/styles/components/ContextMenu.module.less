@@ -1,0 +1,24 @@
+@import '../variables';
+
+.main {
+  ul {
+    width: @sidebar-width;
+  }
+
+  li {
+    cursor: default !important;
+    padding: 0 !important;
+    margin: @space-3xs 0 !important;
+    background-color: transparent !important;
+  }
+
+  .control {
+    width: @sidebar-width - @space-m;
+  }
+
+  .divider {
+    box-sizing: border-box;
+    margin: @space-2xs;
+    border-bottom: 1px solid @transparent-2;
+  }
+}
