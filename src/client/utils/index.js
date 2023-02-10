@@ -1,7 +1,5 @@
 import { RouteNames } from '../router';
 
-export const tooltipShowDelay = 0.4;
-
 export const getDateStr = (date) => {
   const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;
   const month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`;
@@ -38,13 +36,3 @@ export const getLinks = (string) => {
 //     .map((bytes) => bytes.toString(16).padStart(2, "0"))
 //     .join("");
 // }
-
-// export const getServerSideRefresh: GetServerSideProps = wrapper.getServerSideProps(
-// 	(store) =>
-// 		async (ctx) => {
-// 			const { userReducer: { data }} = store.getState();
-// 			console.log('data', data);
-// 			await store.dispatch(authAPI.endpoints.userRefresh.initiate(null));
-// 			return { props: {} };
-// 		}
-// );
