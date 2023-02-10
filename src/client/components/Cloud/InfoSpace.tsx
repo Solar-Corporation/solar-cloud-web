@@ -1,8 +1,8 @@
-import { CloudServerOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
 import { FC } from 'react';
 import styles from '../../styles/components/CloudInfoSpace.module.less';
 import { variables } from '../../styles/theme';
+import { CloudServerOutlined } from '@ant-design/icons';
 
 interface CloudInfoSpaceProps {
 	used: number;
@@ -19,9 +19,11 @@ export const CloudInfoSpace: FC<CloudInfoSpaceProps> = ({ used, total }) => {
 				<span className={styles.titleText}>Хранилище</span>
 			</div>
 			<div className={styles.info}>
-				<span className={styles.space}>{used} ГБ </span>|
-				<span className={styles.space}> </span>
-				{total} ГБ
+				{
+					used
+						? <><span className={styles.space}>{used} ГБ </span>|<span className={styles.space}> </span>{total} ГБ</>
+						: <span className={styles.space}>Свободно</span>
+				}
 			</div>
 			<Progress
 				strokeColor={
