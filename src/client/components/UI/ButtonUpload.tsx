@@ -1,25 +1,18 @@
-import { CloudUploadOutlined, FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Tooltip, Upload } from 'antd';
+import { CloudUploadOutlined } from '@ant-design/icons';
+import { Button, ConfigProvider, Tooltip } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import styles from '../../styles/components/ButtonUpload.module.less';
 import { variables } from '../../styles/theme';
-import { ContextMenuItem } from '../ContextMenu/Item';
+import Control, { getControlType } from '../UI/Control/List';
 
 export const ButtonUpload: FC = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	const menu = (
 		<ul className={styles.menu}>
-			<li>
-				<Upload name="file" fileList={[]} multiple>
-					<ContextMenuItem className={styles.item} icon={<FileAddOutlined />} title="Загрузить файлы" />
-				</Upload>
-			</li>
-			<li>
-				<Upload name="folder" fileList={[]} directory>
-					<ContextMenuItem className={styles.item} icon={<FolderAddOutlined />} title="Загрузить папку" />
-				</Upload>
-			</li>
+			{[Control.UPLOAD, Control.UPLOAD_FOLDER].map((type, index) =>
+				<li key={index} className={styles.item}>{getControlType(type, index, 'primary', true, styles.control)}</li>
+			)}
 		</ul>
 	);
 
