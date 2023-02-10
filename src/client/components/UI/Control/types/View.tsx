@@ -2,7 +2,7 @@ import { TableOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 
-export const ControlView: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlView: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -12,8 +12,9 @@ export const ControlView: FC<ControlTypeProps> = ({ context, primary }) => {
 			icon={<TableOutlined />}
 			title="Вид"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 import { PlusOutlined } from '@ant-design/icons';
 
-export const ControlCreate: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlCreate: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -10,10 +10,11 @@ export const ControlCreate: FC<ControlTypeProps> = ({ context, primary }) => {
 	return (
 		<Control
 			icon={<PlusOutlined />}
-			title="Создать"
+			title="Создать папку"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

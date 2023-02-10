@@ -2,7 +2,7 @@ import { StarOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 
-export const ControlMark: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlMark: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -10,10 +10,11 @@ export const ControlMark: FC<ControlTypeProps> = ({ context, primary }) => {
 	return (
 		<Control
 			icon={<StarOutlined />}
-			title="Добавить в избранное"
+			title="Пометить как избранное"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

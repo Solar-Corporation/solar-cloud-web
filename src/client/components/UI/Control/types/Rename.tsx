@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 import { EditOutlined } from '@ant-design/icons';
 
-export const ControlRename: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlRename: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -12,8 +12,9 @@ export const ControlRename: FC<ControlTypeProps> = ({ context, primary }) => {
 			icon={<EditOutlined />}
 			title="Переименовать"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

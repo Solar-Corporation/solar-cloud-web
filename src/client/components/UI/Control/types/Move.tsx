@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 import { ExportOutlined } from '@ant-design/icons';
 
-export const ControlMove: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlMove: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -12,8 +12,9 @@ export const ControlMove: FC<ControlTypeProps> = ({ context, primary }) => {
 			icon={<ExportOutlined />}
 			title="Переместить"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

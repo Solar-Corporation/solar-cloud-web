@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 import { DownloadOutlined } from '@ant-design/icons';
 
-export const ControlDownload: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -12,8 +12,9 @@ export const ControlDownload: FC<ControlTypeProps> = ({ context, primary }) => {
 			icon={<DownloadOutlined />}
 			title="Скачать"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 import { DeleteOutlined } from '@ant-design/icons';
 
-export const ControlDelete: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlDelete: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -12,8 +12,9 @@ export const ControlDelete: FC<ControlTypeProps> = ({ context, primary }) => {
 			icon={<DeleteOutlined />}
 			title="Удалить"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

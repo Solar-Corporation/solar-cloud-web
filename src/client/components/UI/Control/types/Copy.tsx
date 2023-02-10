@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
 import { CopyOutlined } from '@ant-design/icons';
 
-export const ControlCopy: FC<ControlTypeProps> = ({ context, primary }) => {
+export const ControlCopy: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {
 		console.log('press');
 	};
@@ -12,8 +12,9 @@ export const ControlCopy: FC<ControlTypeProps> = ({ context, primary }) => {
 			icon={<CopyOutlined />}
 			title="Копировать"
 			onClick={handleClick}
-			primary={primary}
-			context={context}
+			className={className}
+			type={type}
+			block={block}
 		/>
 	);
 };

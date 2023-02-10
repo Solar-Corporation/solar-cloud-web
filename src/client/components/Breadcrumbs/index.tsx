@@ -24,7 +24,7 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 			])}
 			{actions && actions.length > 0 && <>
         <RightOutlined className={styles.separator} />
-        <ControlList list={actions} primary />
+        <ControlList list={actions} type="primary" />
       </>}
 		</div>
 	);
