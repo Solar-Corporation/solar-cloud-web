@@ -1,14 +1,13 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
-import Action from '../../client/components/UI/Action/List';
 import Control from '../../client/components/UI/Control/List';
-import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 import { FileTable } from '../../client/components/FileTable';
 import { useAppSelector } from '../../client/hooks/redux';
 import { getLinks } from '../../client/utils';
 import { setContext } from '../../client/store/reducers/CloudSlice';
+import { filesAPI } from '../../client/services/FilesService';
 
 export default function Cloud({ files, path, links }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected } = useAppSelector(state => state.cloudReducer);
@@ -118,7 +117,7 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 
 	const headingOptions = {
 		links,
-		actions: [Action.CREATE],
+		actions: [Control.CREATE],
 		constControls: [Control.VIEW, Control.INFO],
 		floatControls:
 			selected.length
@@ -129,12 +128,20 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 		sticky: true
 	};
 
+	const contextMenu = path !== '/'
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.VIEW, Control.INFO]
+		: [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO];
+	const contextMenuFiles = selected.length > 1
+		? [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
+		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
+
 	return (
 		<CloudLayout
 			title="Все файлы"
 			headingOptions={headingOptions}
+			contextMenu={contextMenu}
 		>
-			{files && <FileTable files={files} />}
+			{files && <FileTable files={files} contextMenu={contextMenuFiles} />}
 		</CloudLayout>
 	);
 }
