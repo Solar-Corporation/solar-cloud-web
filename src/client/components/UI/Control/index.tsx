@@ -1,41 +1,41 @@
 import { Button } from 'antd';
 import { FC, ReactNode } from 'react';
-import { ContextMenuItem } from '../../ContextMenu/Item';
+import styles from '../../../styles/components/Control.module.less';
+import { Roboto } from '@next/font/google';
 
 export interface ControlTypeProps {
-	context?: boolean;
-	primary?: boolean;
+	type?: 'default' | 'primary' | 'ghost';
+	block?: boolean;
+	className?: string;
 }
 
-interface ControlProps {
+interface ControlProps extends ControlTypeProps {
 	icon: ReactNode;
 	title: string;
 	onClick?: () => void;
-	primary?: boolean;
-	context?: boolean;
+	disabled?: boolean;
+	disablePropagation?: boolean;
 	children?: never;
 }
 
-export const Control: FC<ControlProps> = ({ icon, title, onClick, primary, context }) => {
+const roboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
+
+export const Control: FC<ControlProps> = ({ icon, title, onClick, disabled, disablePropagation, block, type, className }) => {
 	const handleClick = (event: any) => {
-		event.stopPropagation();
+		if (!disablePropagation) event.stopPropagation();
 		if (onClick) onClick();
 	};
 
 	return (
-		context
-			?
-			<ContextMenuItem
-				title={title}
-				icon={icon}
-				onClick={handleClick}
-			/>
-			:
-			<Button
-				title={title}
-				icon={icon}
-				type={primary ? 'primary' : 'ghost'}
-				onClick={handleClick}
-			/>
+		<Button
+			title={block ? undefined : title}
+			icon={icon}
+			className={block ? className ? `${styles.main} ${className}` : styles.main : className}
+			type={type}
+			disabled={disabled}
+			onClick={handleClick}
+		>
+			{block ? <span className={`${styles.title} ${roboto.className}`}>{title}</span> : undefined}
+		</Button>
 	);
 };
