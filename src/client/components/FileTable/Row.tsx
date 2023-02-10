@@ -100,7 +100,6 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 	}, [selected]);
 
 	const handleClick = async (event: any) => {
-		event.stopPropagation();
 		switch (event.detail) {
 			case 1: {
 				if (event.ctrlKey) {
@@ -135,10 +134,18 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 		}
 	};
 
+	const handleContextMenu = () => {
+		if (!isSelected) {
+			dispatch(clearSelected());
+			dispatch(selectFile(file));
+		}
+	};
+
 	return (
 		<div
 			className={isSelected ? `${styles.selected} ${styles.row}` : styles.row}
-			onClick={event => handleClick(event)}
+			onClick={handleClick}
+			onContextMenu={handleContextMenu}
 		>
 			<FileTableColumn title={file.name}>
 				<div className={styles.name}>
