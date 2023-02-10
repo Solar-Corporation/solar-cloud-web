@@ -9,14 +9,16 @@ import { ButtonUpload } from '../UI/ButtonUpload';
 import { CloudInfoSpace } from './InfoSpace';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { clearSelected } from '../../store/reducers/CloudSlice';
+import Control from '../UI/Control/List';
 
 interface CloudLayoutProps {
 	title: string;
 	headingOptions: PageHeadingProps;
+	contextMenu?: Control[];
 	children: ReactNode;
 }
 
-export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, children }) => {
+export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, contextMenu, children }) => {
 	const { selected } = useAppSelector(state => state.cloudReducer);
 	const dispatch = useAppDispatch();
 
@@ -43,6 +45,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, child
 			}
 			sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
 			headingOptions={headingOptions}
+			contextMenu={contextMenu}
 			onClickContainer={handleClearSelected}
 		>
 			{children}
