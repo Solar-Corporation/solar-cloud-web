@@ -1,37 +1,43 @@
 @import '../variables';
 
 .container {
-  padding: @space-m @space-m @space-xs @space-m;
+  padding: @space-m @space-m @space-2xs @space-m;
   border-radius: @border-radius;
-  background: @infoSpace-background-primary;
+  background: @infoSpace-bg-primary;
   color: @control-ghost-typo-primary;
   text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
   box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
   font-weight: 500;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
   -webkit-transition: all 0.2s;
 
   &:hover {
-    background: @infoSpace-background-secondary;
+    background: @infoSpace-bg-secondary;
     color: @control-ghost-typo-secondary;
   }
 }
 
 .title {
-  margin-bottom: @space-s;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: @space-xs;
+  margin-bottom: @space-l;
+  font-size: 18px;
 }
 
 .titleText {
-  margin-left: 6px;
+  font-size: 16px;
+  line-height: 16px;
+
 }
 
 .info {
-  line-height: 28px;
-  height: 28px;
+  line-height: 20px;
+  height: 20px;
 }
 
 .space {
-  font-size: 28px;
+  font-size: 20px;
 }

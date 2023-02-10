@@ -12,17 +12,38 @@
   color: @fileTable-typo-primary;
   border-radius: @border-radius;
 
-  > div {
-    background-color: @fileTable-background-primary;
-    transition: all 0.15s;
-    -webkit-transition: all 0.15s;
+  .header {
+    background-color: @fileTable-bg-primary;
+    &:hover {
+      background-color: @fileTable-bg-hover;
+      box-shadow: 0 -1px 0 @transparent-1 inset;
+    }
+  }
+
+  .row {
+    background-color: @fileTable-bg-secondary;
 
     &:nth-child(even) {
-      background-color: @fileTable-background-secondary;
+      background-color: @fileTable-bg-primary;
     }
 
     &:hover {
-      background-color: @fileTable-background-hover;
+      background-color: @fileTable-bg-hover;
+      color: @fileTable-typo-secondary;
+    }
+  }
+}
+
+.disableHeader {
+  .row {
+    background-color: @fileTable-bg-primary;
+
+    &:nth-child(even) {
+      background-color: @fileTable-bg-secondary;
+    }
+
+    &:hover {
+      background-color: @fileTable-bg-hover;
       color: @fileTable-typo-secondary;
     }
   }
@@ -30,8 +51,11 @@
 
 .header {
   display: flex;
+  box-sizing: border-box;
   user-select: none;
   -webkit-user-select: none;
+  transition: all 0.15s;
+  -webkit-transition: all 0.15s;
 
   > div {
     cursor: pointer;
@@ -56,14 +80,16 @@
   user-select: none;
   -webkit-user-select: none;
   padding: @space-xs + @space-3xs 0 @space-xs + @space-3xs 0;
+  transition: all 0.15s;
+  -webkit-transition: all 0.15s;
 }
 
 .selected {
-  background-color: @fileTable-background-hover !important;
+  background-color: @fileTable-bg-hover !important;
   color: @fileTable-typo-secondary;
 
   &:hover {
-    background-color: @fileTable-background-selected !important;
+    background-color: @fileTable-bg-selected !important;
   }
 }
 

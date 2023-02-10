@@ -4,13 +4,16 @@
   list-style-type: none;
   padding-inline-start: 0;
   margin: 0;
-}
 
-.item {
-  margin: @space-3xs 0;
-  width: @sidebar-width - @space-m;
+  .item {
+    margin: @space-3xs 0;
+  }
 
-  &:hover {
-    background-color: @orange-primary;
+  .control {
+    width: @sidebar-width - @space-m;
+
+    &:not(:disabled):hover, &:not(:disabled):active {
+      background-color: @orange-primary;
+    }
   }
 }
