@@ -23,6 +23,18 @@ export const getContextMenuItems = (list: Control[], className?: string): MenuPr
 };
 
 export const ContextMenu: FC<ContextMenuProps> = ({ menu, children }) => {
+	const dropdownRender = (menus: ReactNode) => {
+		const handleClick = (event: any) => {
+			event.stopPropagation();
+		};
+
+		return (
+			<div onClick={handleClick} onContextMenu={handleClick}>
+				{menus}
+			</div>
+		);
+	};
+
 	return (
 		menu
 			?
@@ -30,6 +42,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({ menu, children }) => {
 				menu={{ items: getContextMenuItems(menu, styles.control) }}
 				trigger={['contextMenu']}
 				overlayClassName={styles.main}
+				dropdownRender={dropdownRender}
 			>
 				{children}
 			</Dropdown>
