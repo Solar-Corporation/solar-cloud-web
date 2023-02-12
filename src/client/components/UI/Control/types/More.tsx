@@ -1,6 +1,6 @@
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
-import { FC, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 import stylesContextMenu from '../../../../styles/components/ContextMenu.module.less';
 import styles from '../../../../styles/components/Control.module.less';
 import { getContextMenuItems } from '../../../ContextMenu';
@@ -14,8 +14,16 @@ interface ControlMoreProps extends ControlTypeProps {
 export const ControlMore: FC<ControlMoreProps> = ({ list, type, block, className }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-	const handleClick = ({ domEvent: event }: any) => {
-		event.stopPropagation();
+	const dropdownRender = (menus: ReactNode) => {
+		const handleClick = (event: any) => {
+			event.stopPropagation();
+		};
+
+		return (
+			<div onClick={handleClick} onContextMenu={handleClick}>
+				{menus}
+			</div>
+		);
 	};
 
 	useEffect(() => {
@@ -27,12 +35,13 @@ export const ControlMore: FC<ControlMoreProps> = ({ list, type, block, className
 
 	return (
 		<Dropdown
-			menu={{ items: getContextMenuItems(list), onClick: handleClick }}
+			menu={{ items: getContextMenuItems(list) }}
 			placement="bottomRight"
 			open={isMenuOpen}
 			onOpenChange={(isOpen) => setIsMenuOpen(isOpen)}
 			overlayClassName={`${stylesContextMenu.main} ${styles.dropdown}`}
 			trigger={['click']}
+			dropdownRender={dropdownRender}
 			arrow
 		>
 			<Control
