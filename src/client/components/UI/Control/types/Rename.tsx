@@ -1,6 +1,6 @@
+import { EditOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
-import { EditOutlined } from '@ant-design/icons';
 
 export const ControlRename: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {

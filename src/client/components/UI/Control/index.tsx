@@ -1,7 +1,7 @@
+import { Roboto } from '@next/font/google';
 import { Button } from 'antd';
 import { FC, ReactNode } from 'react';
 import styles from '../../../styles/components/Control.module.less';
-import { Roboto } from '@next/font/google';
 
 export interface ControlTypeProps {
 	type?: 'default' | 'primary' | 'ghost';
@@ -20,7 +20,16 @@ interface ControlProps extends ControlTypeProps {
 
 const roboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
 
-export const Control: FC<ControlProps> = ({ icon, title, onClick, disabled, disablePropagation, block, type, className }) => {
+export const Control: FC<ControlProps> = ({
+	                                          icon,
+	                                          title,
+	                                          onClick,
+	                                          disabled,
+	                                          disablePropagation,
+	                                          block,
+	                                          type,
+	                                          className
+                                          }) => {
 	const handleClick = (event: any) => {
 		if (!disablePropagation) event.stopPropagation();
 		if (onClick) onClick();

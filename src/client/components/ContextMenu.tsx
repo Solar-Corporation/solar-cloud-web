@@ -1,6 +1,6 @@
-import { FC, ReactNode } from 'react';
 import type { MenuProps } from 'antd';
 import { Dropdown } from 'antd';
+import { FC, ReactNode } from 'react';
 import styles from '../styles/components/ContextMenu.module.less';
 import Control, { getControlType } from './UI/Control/List';
 
@@ -23,12 +23,6 @@ export const getContextMenuItems = (list: Control[], className?: string): MenuPr
 };
 
 export const ContextMenu: FC<ContextMenuProps> = ({ menu, children }) => {
-	// const [isMenuOpen, setIsMenuOpen] = useState(false);
-	//
-	// const handleOpenChange = (isOpen: boolean) => {
-	// 	setIsMenuOpen(isOpen);
-	// };
-
 	return (
 		menu
 			?
@@ -36,8 +30,6 @@ export const ContextMenu: FC<ContextMenuProps> = ({ menu, children }) => {
 				menu={{ items: getContextMenuItems(menu, styles.control) }}
 				trigger={['contextMenu']}
 				overlayClassName={styles.main}
-				// open={isMenuOpen}
-				// onOpenChange={(isOpen) => setIsMenuOpen(isOpen)}
 			>
 				{children}
 			</Dropdown>

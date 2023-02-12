@@ -1,6 +1,6 @@
-import { IFile } from '../../models/IFile';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
+import { IFile } from '../../models/IFile';
 
 interface ICloudContext {
 	url: string;

@@ -1,7 +1,7 @@
 import { FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
+import { Upload } from 'antd';
 import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
-import { Upload } from 'antd';
 
 interface ControlUploadProps extends ControlTypeProps {
 	folder?: boolean;

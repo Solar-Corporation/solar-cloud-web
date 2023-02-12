@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { ControlInfo } from './types/Info';
-import { ControlView } from './types/View';
-import { ControlShare } from './types/Share';
-import { ControlDownload } from './types/Download';
-import { ControlDelete } from './types/Delete';
-import { ControlMore } from './types/More';
-import { ControlRename } from './types/Rename';
-import { ControlMove } from './types/Move';
 import { ControlCopy } from './types/Copy';
-import { ControlMark } from './types/Mark';
 import { ControlCreate } from './types/Create';
+import { ControlDelete } from './types/Delete';
+import { ControlDownload } from './types/Download';
+import { ControlInfo } from './types/Info';
+import { ControlMark } from './types/Mark';
+import { ControlMore } from './types/More';
+import { ControlMove } from './types/Move';
+import { ControlRename } from './types/Rename';
+import { ControlShare } from './types/Share';
 import { ControlUpload } from './types/Upload';
+import { ControlView } from './types/View';
 
 enum Control {
 	NULL,
@@ -41,7 +41,7 @@ export const getControlType = (type: Control, index: number, buttonType?: 'defau
 		type === Control.UPLOAD &&
 		<ControlUpload key={index} type={buttonType} block={block} className={className} />,
 		type === Control.UPLOAD_FOLDER &&
-    <ControlUpload key={index} type={buttonType} block={block} className={className} folder />,
+		<ControlUpload key={index} type={buttonType} block={block} className={className} folder />,
 		type === Control.INFO &&
 		<ControlInfo key={index} type={buttonType} block={block} className={className} />,
 		type === Control.VIEW &&
@@ -72,11 +72,12 @@ export const ControlList: FC<ControlListProps> = ({ list, type, className }) => 
 					: null
 			)}
 			{list.length > 3 &&
-      <ControlMore
-        list={list.filter((type, index) => index > 2)}
-        type={type}
-        className={className}
-      />}
+				<ControlMore
+					list={list.filter((type, index) => index > 2)}
+					type={type}
+					className={className}
+				/>
+			}
 		</>
 	);
 };

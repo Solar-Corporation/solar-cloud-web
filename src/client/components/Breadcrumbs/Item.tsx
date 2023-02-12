@@ -1,7 +1,7 @@
-import { FC } from 'react';
 import Link from 'next/link';
-import styles from '../../styles/components/Breadcrumbs.module.less';
+import { FC } from 'react';
 import { useAppSelector } from '../../hooks/redux';
+import styles from '../../styles/components/Breadcrumbs.module.less';
 
 interface BreadcrumbsItemProps {
 	link: {

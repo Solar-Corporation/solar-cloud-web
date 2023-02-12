@@ -1,15 +1,15 @@
 import { DeleteOutlined, FileOutlined, HistoryOutlined, StarOutlined, TagsOutlined } from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { RouteNames } from '../../router';
+import { clearSelected } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/CloudLayout.module.less';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
 import { PageHeadingProps } from '../PageHeading';
 import { ButtonUpload } from '../UI/ButtonUpload';
-import { CloudInfoSpace } from './InfoSpace';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { clearSelected } from '../../store/reducers/CloudSlice';
 import Control from '../UI/Control/List';
+import { CloudInfoSpace } from './InfoSpace';
 
 interface CloudLayoutProps {
 	title: string;

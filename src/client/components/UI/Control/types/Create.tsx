@@ -1,6 +1,6 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
-import { PlusOutlined } from '@ant-design/icons';
 
 export const ControlCreate: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {

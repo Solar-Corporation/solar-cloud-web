@@ -1,6 +1,6 @@
+import { DownloadOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { Control, ControlTypeProps } from '../index';
-import { DownloadOutlined } from '@ant-design/icons';
 
 export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const handleClick = () => {

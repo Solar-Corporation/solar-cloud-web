@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { IFile } from '../../models/IFile';
 import styles from '../../styles/components/FileTable.module.less';
+import { ContextMenu } from '../ContextMenu';
+import Control from '../UI/Control/List';
 import { FileTableHeader } from './Header';
 import { FileTableRow } from './Row';
-import Control from '../UI/Control/List';
-import { ContextMenu } from '../ContextMenu';
 
 interface FileTableProps {
 	files: IFile[];

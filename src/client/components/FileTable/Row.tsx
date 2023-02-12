@@ -1,5 +1,3 @@
-import { FC, useEffect, useState } from 'react';
-import { IFile } from '../../models/IFile';
 import {
 	FileExcelFilled,
 	FileImageFilled,
@@ -11,13 +9,15 @@ import {
 	FileZipFilled,
 	FolderFilled
 } from '@ant-design/icons';
-import styles from '../../styles/components/FileTable.module.less';
-import { FileTableColumn } from './Column';
-import { getDateStr } from '../../utils';
-import { RouteNames } from '../../router';
 import { useRouter } from 'next/router';
+import { FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { IFile } from '../../models/IFile';
+import { RouteNames } from '../../router';
 import { clearSelected, selectFile, unselectFile } from '../../store/reducers/CloudSlice';
+import styles from '../../styles/components/FileTable.module.less';
+import { getDateStr } from '../../utils';
+import { FileTableColumn } from './Column';
 
 enum Extension {
 	UNKNOWN = 'Файл',
@@ -155,11 +155,11 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 			</FileTableColumn>
 			<div className={styles.columns}>
 				{file.hasOwnProperty('fileType') &&
-        <FileTableColumn title={extension} className={styles.extension}>{extension}</FileTableColumn>}
+					<FileTableColumn title={extension} className={styles.extension}>{extension}</FileTableColumn>}
 				{file.hasOwnProperty('seeTime') &&
-        <FileTableColumn className={styles.date}>{getDateStr(date)}</FileTableColumn>}
+					<FileTableColumn className={styles.date}>{getDateStr(date)}</FileTableColumn>}
 				{file.hasOwnProperty('size') &&
-        <FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
+					<FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
 			</div>
 		</div>
 	);

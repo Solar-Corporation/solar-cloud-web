@@ -2,11 +2,11 @@ import { Roboto } from '@next/font/google';
 import { ConfigProvider } from 'antd';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import ProgressBar from 'nextjs-progressbar';
 import { Provider } from 'react-redux';
 import { wrapper } from '../client/store';
 import '../client/styles/globals.less';
 import { themeCloud, variables } from '../client/styles/theme';
-import ProgressBar from 'nextjs-progressbar';
 
 const roboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
 

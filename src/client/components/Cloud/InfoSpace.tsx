@@ -1,8 +1,8 @@
+import { CloudServerOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
 import { FC } from 'react';
 import styles from '../../styles/components/CloudInfoSpace.module.less';
 import { variables } from '../../styles/theme';
-import { CloudServerOutlined } from '@ant-design/icons';
 
 interface CloudInfoSpaceProps {
 	used: number;

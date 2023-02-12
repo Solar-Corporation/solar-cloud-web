@@ -1,11 +1,11 @@
-import { FC, useEffect, useState } from 'react';
-import { Control, ControlTypeProps } from '../index';
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
-import styles from '../../../../styles/components/Control.module.less';
+import { FC, useEffect, useState } from 'react';
 import stylesContextMenu from '../../../../styles/components/ContextMenu.module.less';
-import ControlType from '../List';
+import styles from '../../../../styles/components/Control.module.less';
 import { getContextMenuItems } from '../../../ContextMenu';
+import { Control, ControlTypeProps } from '../index';
+import ControlType from '../List';
 
 interface ControlMoreProps extends ControlTypeProps {
 	list: ControlType[];
