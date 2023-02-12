@@ -22,10 +22,10 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 					<BreadcrumbsItem key={index} link={link} />,
 					(index !== links.length - 1) && <RightOutlined key={`separator${index}`} className={styles.separator} />])
 				: <BreadcrumbsItem link={links[0]} active />}
-			{actions && actions.length > 0 && [
-				<RightOutlined className={styles.separator} />,
+			{actions && actions.length > 0 && <>
+				<RightOutlined className={styles.separator} />
 				<ControlList list={actions} type="primary" />
-			]}
+			</>}
 		</div>
 	);
 };
