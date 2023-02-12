@@ -30,8 +30,12 @@ export const Control: FC<ControlProps> = ({
 	                                          type,
 	                                          className
                                           }) => {
+	const handleStopPropagation = (event: any) => {
+		event.stopPropagation();
+	};
+
 	const handleClick = (event: any) => {
-		if (!disablePropagation) event.stopPropagation();
+		if (!disablePropagation) handleStopPropagation(event);
 		if (onClick) onClick();
 	};
 
@@ -43,6 +47,7 @@ export const Control: FC<ControlProps> = ({
 			type={type}
 			disabled={disabled}
 			onClick={handleClick}
+			onContextMenu={handleStopPropagation}
 		>
 			{block ? <span className={`${styles.title} ${roboto.className}`}>{title}</span> : undefined}
 		</Button>
