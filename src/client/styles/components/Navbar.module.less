@@ -8,11 +8,11 @@
 }
 
 .item {
-  display: block;
-  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   width: 100%;
   height: @space-2xl;
-  padding: @space-xs 10px @space-xs 10px;
+  padding: @space-xs - @space-3xs @space-xs;
   font-size: 16px;
   line-height: 16px;
   color: @transparent-5;
@@ -24,6 +24,10 @@
     color: @transparent-7;
     background: @transparent-0-5;
   }
+
+  .title {
+    margin-left: @space-xs;
+  }
 }
 
 .item_active {
@@ -32,8 +36,4 @@
     color: @gold-primary;
     background: @transparent-1;
   }
-}
-
-.itemTitle {
-  margin-left: @space-xs;
 }
