@@ -2,6 +2,9 @@
 @white: #ffffff;
 @default: #212023;
 @secondary: #19191c;
+@background: #1e1e21;
+// #1e1e21
+// 212023 201922
 @dark: #101015;
 @base: #656565;
 @alert: #d32029;
@@ -65,16 +68,16 @@
 @space-6xl: 96px;
 
 // Sizes
-@header-height: 60px;
+@header-height: 64px;
 @sidebar-width: 240px;
-@container-width-indent: @space-xl * 2 + @space-l + @sidebar-width;
+@container-width-indent: @space-xl * 2 + @space-xl + @sidebar-width;
 @container-width: calc(100vw - @container-width-indent);
-@container-height-indent: @header-height + @space-l;
+@container-height-indent: @header-height;
 @container-height: calc(100vh - @container-height-indent);
 @contextMenu-width: @sidebar-width + @space-xl;
 
 // Text
-@text-color-full: #ffffff;
+@text-color-full: rgb(@transparent-base);
 
 // Control
 @control-default-bg-primary: @secondary;
@@ -85,7 +88,7 @@
 @control-ghost-bg-primary: @transparent-1;
 @control-ghost-bg-secondary: @transparent-1-5;
 @control-ghost-typo-primary: @transparent-7-5;
-@control-ghost-typo-secondary: @white;
+@control-ghost-typo-secondary: @transparent-8-5;
 
 // FileTable
 @fileTable-bg-primary: @transparent-0-3;
@@ -93,9 +96,9 @@
 @fileTable-bg-hover: @transparent-1;
 @fileTable-bg-selected: @transparent-1-5;
 @fileTable-typo-primary: @transparent-7-5;
-@fileTable-typo-secondary: @text-color-full;
+@fileTable-typo-secondary: @transparent-8-5;
 
-@fileTable-width-indent: @space-s * 2 + @space-l * 2;
+@fileTable-width-indent: @space-xl * 2;
 @fileTable-width: calc(@container-width - @fileTable-width-indent);
 @fileTable-width-name: 100%;
 @fileTable-width-extension: 190px;

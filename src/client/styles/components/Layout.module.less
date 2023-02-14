@@ -1,14 +1,14 @@
 @import '../variables';
 
 .main {
-  margin: @space-l @space-xl 0 @space-xl;
+  margin: 0 @space-xl;
   display: flex;
   flex-direction: row;
-  gap: @space-l;
+  gap: @space-xl;
 }
 
 .sidebar {
-  width: 240px;
+  width: @sidebar-width;
   margin-top: @space-xs;
   display: flex;
   flex-direction: column;
@@ -35,9 +35,10 @@
   background: @default;
   box-shadow: @shadow-group;
   border-radius: @space-xs @space-xs 0 0;
-  padding: (@space-s - @space-3xs) @space-s @space-xl @space-s;
+  //overflow: hidden;
+  //padding: (@space-s - @space-3xs) @space-2xs @space-m @space-2xs;
 }
 
 .content {
-  margin: (@space-xs - @space-3xs) @space-l 0 @space-l;
+  margin: 0 @space-xl @space-xl @space-xl;
 }

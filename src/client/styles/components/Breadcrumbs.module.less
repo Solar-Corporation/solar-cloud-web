@@ -1,7 +1,6 @@
 @import '../variables';
 
 .container {
-  font-size: 18px;
   height: 32px;
   display: flex;
   gap: @space-xs;
@@ -10,10 +9,11 @@
 
 .item {
   color: @transparent-6;
+  font-size: 18px;
   line-height: 18px;
 
   &:hover {
-    color: @text-color-full;
+    color: @transparent-8-5;
   }
 }
 
@@ -24,6 +24,6 @@
 
 .item_active {
   &, &:hover, &:active {
-    color: @text-color-full;
+    color: @transparent-8-5;
   }
 }

@@ -15,7 +15,7 @@ export const PageHeading: FC<PageHeadingProps> = ({ links, actions, floatControl
 	const [isSticky, setIsSticky] = useState(false);
 
 	const handleStick = () => {
-		if (window.scrollY >= 90) {
+		if (window.scrollY >= 72) {
 			setIsSticky(true);
 		} else {
 			setIsSticky(false);
