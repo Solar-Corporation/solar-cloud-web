@@ -22,9 +22,12 @@ a {
 }
 
 .ant-dropdown {
+  backdrop-filter: saturate(180%) blur(5px);
+
   .ant-dropdown-menu {
     background-color: @dark;
     padding: @space-xs - @space-3xs @space-xs;
+    box-shadow: @shadow-group;
   }
 
   .ant-dropdown-arrow::before {
@@ -33,6 +36,14 @@ a {
 
   .ant-dropdown-menu-item-divider {
     background-color: rgba(253, 253, 253, 0.12) !important;
+  }
+}
+
+.ant-tooltip {
+  backdrop-filter: saturate(180%) blur(5px);
+
+  .ant-tooltip-inner {
+    box-shadow: @shadow-group;
   }
 }
 
