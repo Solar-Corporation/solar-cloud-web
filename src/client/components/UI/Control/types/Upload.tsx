@@ -1,41 +1,35 @@
 import { FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 import { Upload, UploadProps } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useAppSelector } from '../../../../hooks/redux';
-import { IUpload } from '../../../../models/IUpload';
 import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
+import { useRouter } from 'next/router';
 
 interface ControlUploadProps extends ControlTypeProps {
 	folder?: boolean;
 }
 
 export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, folder }) => {
+	const router = useRouter();
 	const { path } = useAppSelector(state => state.cloudReducer.context);
-	const [uploadFiles, { data, error }] = filesAPI.useUploadFilesMutation();
+	const [uploadFiles] = filesAPI.useUploadFilesMutation();
 
-	const handleUpload: UploadProps['beforeUpload'] = (file, fileList) => {
+	const handleUpload: UploadProps['beforeUpload'] = async (file, fileList) => {
 		const formData = new FormData();
 
 		fileList.forEach((file) => {
 			formData.append('files[]', file as RcFile);
 		});
+		formData.append('path', path);
 
-		const upload: IUpload = {
-			path,
-			formData
-		};
-
-		uploadFiles(upload);
+		await uploadFiles(formData).finally(() => {
+			router.replace(router.asPath);
+		});
 
 		return false;
 	};
-
-	useEffect(() => {
-		if (data) console.log('data', data);
-		if (error) console.log('error', error);
-	}, [data, error]);
 
 	return (
 		<Upload
