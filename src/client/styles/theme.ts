@@ -14,6 +14,7 @@ export const themeCloud = {
 		colorLink: variables['@magenta-primary'],
 		colorLinkHover: variables['@magenta-secondary'],
 		colorLinkActive: variables['@magenta-secondary'],
+		colorTextBase: `rgb(${variables['@transparent-base']})`,
 		borderRadius: pxToNumber(variables['@border-radius'])
 	},
 	components: {
