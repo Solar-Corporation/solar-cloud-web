@@ -1,7 +1,7 @@
-import { Roboto } from '@next/font/google';
 import { Button } from 'antd';
 import { FC, ReactNode } from 'react';
 import styles from '../../../styles/components/Control.module.less';
+import { fontRoboto } from '../../../../pages/_app';
 
 export interface ControlTypeProps {
 	type?: 'default' | 'primary' | 'ghost';
@@ -17,8 +17,6 @@ interface ControlProps extends ControlTypeProps {
 	disablePropagation?: boolean;
 	children?: never;
 }
-
-const roboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
 
 export const Control: FC<ControlProps> = ({
 	                                          icon,
@@ -46,10 +44,11 @@ export const Control: FC<ControlProps> = ({
 			className={block ? className ? `${styles.main} ${className}` : styles.main : className}
 			type={type}
 			disabled={disabled}
+			size={block ? 'small' : undefined}
 			onClick={handleClick}
 			onContextMenu={handleStopPropagation}
 		>
-			{block ? <span className={`${styles.title} ${roboto.className}`}>{title}</span> : undefined}
+			{block ? <span className={`${styles.title} ${fontRoboto.className}`}>{title}</span> : undefined}
 		</Button>
 	);
 };

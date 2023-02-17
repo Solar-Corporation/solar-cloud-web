@@ -8,7 +8,7 @@ import { wrapper } from '../client/store';
 import '../client/styles/globals.less';
 import { themeCloud, variables } from '../client/styles/theme';
 
-const roboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
+export const fontRoboto = Roboto({ subsets: ['latin', 'cyrillic'], weight: ['400', '500'] });
 
 function App({ Component, ...rest }: AppProps) {
 	const { store, props } = wrapper.useWrappedStore(rest);
@@ -19,7 +19,7 @@ function App({ Component, ...rest }: AppProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<ConfigProvider theme={themeCloud}>
-				<div className={roboto.className}>
+				<div className={fontRoboto.className}>
 					<ProgressBar color={variables['@magenta-primary']} options={{ showSpinner: false }} />
 					<Component {...props.pageProps} />
 				</div>
