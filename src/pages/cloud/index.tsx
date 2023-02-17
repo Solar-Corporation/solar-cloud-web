@@ -149,7 +149,7 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
 	const url = decodeURIComponent(ctx.resolvedUrl);
-	const path = ctx.query.path || '/';
+	const path = ctx.query.path?.toString() || '/';
 	const links = getLinks(path);
 	setInitialUserData(ctx, dispatch);
 	dispatch(setContext({ url, path }));

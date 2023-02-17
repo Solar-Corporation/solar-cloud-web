@@ -6,7 +6,6 @@ import {
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
 import { IFile } from '../models/IFile';
-import { IUpload } from '../models/IUpload';
 import { AppState } from '../store';
 import { apiUrl } from './config';
 
@@ -36,17 +35,16 @@ export const filesAPI = createApi({
 	reducerPath: 'filesAPI',
 	baseQuery: baseQueryWithRefresh,
 	endpoints: (build) => ({
-		getFiles: build.query<IFile[], string | string[]>({
+		getFiles: build.query<IFile[], string>({
 			query: (path) => ({
 				url: '/files',
 				params: { path }
 			})
 		}),
-		uploadFiles: build.mutation<any, IUpload>({
+		uploadFiles: build.mutation<any, FormData>({
 			query: (data) => ({
 				url: '/files',
 				method: 'POST',
-				credentials: 'include',
 				body: data
 			})
 		})

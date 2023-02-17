@@ -4,7 +4,7 @@ import { IFile } from '../../models/IFile';
 
 interface ICloudContext {
 	url: string;
-	path: string | string[];
+	path: string;
 }
 
 export interface CloudState {
