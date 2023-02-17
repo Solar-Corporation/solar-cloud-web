@@ -6,9 +6,9 @@ import {
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
 import { IFile } from '../models/IFile';
+import { IUpload } from '../models/IUpload';
 import { AppState } from '../store';
 import { apiUrl } from './config';
-
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: `${apiUrl}`,
@@ -21,6 +21,7 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
 	let result = await baseQuery(args, api, extraOptions);
+
 	if (result.error && result.error.status === 401) {
 		const refreshResult = await baseQuery('/refresh', api, extraOptions);
 		console.log('refresh', refreshResult);
@@ -39,6 +40,14 @@ export const filesAPI = createApi({
 			query: (path) => ({
 				url: '/files',
 				params: { path }
+			})
+		}),
+		uploadFiles: build.mutation<any, IUpload>({
+			query: (data) => ({
+				url: '/files',
+				method: 'POST',
+				credentials: 'include',
+				body: data
 			})
 		})
 	})
