@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import { FC, ReactNode } from 'react';
-import styles from '../../../styles/components/Control.module.less';
 import { fontRoboto } from '../../../../pages/_app';
+import styles from '../../../styles/components/Control.module.less';
 
 export interface ControlTypeProps {
 	type?: 'default' | 'primary' | 'ghost';

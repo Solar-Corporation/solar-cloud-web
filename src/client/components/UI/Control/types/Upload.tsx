@@ -1,11 +1,11 @@
 import { FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 import { Upload, UploadProps } from 'antd';
 import { RcFile } from 'antd/es/upload';
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { useAppSelector } from '../../../../hooks/redux';
 import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
-import { useRouter } from 'next/router';
 
 interface ControlUploadProps extends ControlTypeProps {
 	folder?: boolean;
@@ -40,7 +40,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 			beforeUpload={handleUpload}
 		>
 			<Control
-				icon={folder ? <FolderAddOutlined/> : <FileAddOutlined/>}
+				icon={folder ? <FolderAddOutlined /> : <FileAddOutlined />}
 				title={folder ? 'Загрузить папку' : 'Загрузить файлы'}
 				className={className}
 				type={type}
