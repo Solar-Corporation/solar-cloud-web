@@ -1,7 +1,6 @@
 import { FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 import { Upload, UploadProps } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { useAppSelector } from '../../../../hooks/redux';
 import { filesAPI } from '../../../../services/FilesService';
@@ -12,7 +11,6 @@ interface ControlUploadProps extends ControlTypeProps {
 }
 
 export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, folder }) => {
-	const router = useRouter();
 	const { path } = useAppSelector(state => state.cloudReducer.context);
 	const [uploadFiles] = filesAPI.useUploadFilesMutation();
 
@@ -24,9 +22,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 		});
 		formData.append('path', path);
 
-		await uploadFiles(formData).finally(() => {
-			router.replace(router.asPath);
-		});
+		await uploadFiles(formData);
 
 		return false;
 	};

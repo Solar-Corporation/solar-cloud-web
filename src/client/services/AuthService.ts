@@ -4,8 +4,10 @@ import { setCookie } from 'nookies';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
+import { RouteNames } from '../router';
 import { setUser, UserState } from '../store/reducers/UserSlice';
 import { apiUrl } from './config';
+import Router from 'next/router';
 
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const user: UserState = {
@@ -18,7 +20,7 @@ export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<an
 
 export const authAPI = createApi({
 	reducerPath: 'authAPI',
-	baseQuery: fetchBaseQuery({ baseUrl: `${apiUrl}` }),
+	baseQuery: fetchBaseQuery({ baseUrl: apiUrl }),
 	endpoints: (build) => ({
 		userLogin: build.mutation<IToken, IAuth>({
 			query: (data) => ({
@@ -30,15 +32,14 @@ export const authAPI = createApi({
 				try {
 					const { data } = await queryFulfilled;
 					setUserOnQueryFulfilled(data, dispatch);
+					await Router.push(RouteNames.CLOUD);
 				} catch (error) {
 					console.log(error);
 				}
 			}
 		}),
 		userRefresh: build.query<IToken, null>({
-			query: () => ({
-				url: '/refresh'
-			}),
+			query: () => ({ url: '/refresh' }),
 			async onQueryStarted(args, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;

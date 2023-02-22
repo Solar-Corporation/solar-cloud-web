@@ -3,8 +3,6 @@ import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import Logo from '../../client/img/logo.svg';
 import { IAuth } from '../../client/models/IAuth';
 import { RouteNames } from '../../client/router';
@@ -15,18 +13,11 @@ import { variables } from '../../client/styles/theme';
 const { Text } = Typography;
 
 export default function SignIn() {
-	const router = useRouter();
-	const [loginUser, { data, isLoading }] = authAPI.useUserLoginMutation();
+	const [loginUser, { isLoading }] = authAPI.useUserLoginMutation();
 
 	const handleSend = async (values: IAuth) => {
 		await loginUser(values);
 	};
-
-	useEffect(() => {
-		if (data) {
-			router.push(RouteNames.CLOUD);
-		}
-	}, [data]);
 
 	return (
 		<>

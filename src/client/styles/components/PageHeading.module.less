@@ -27,11 +27,11 @@
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  border-radius: 0 0 8px 8px;
-  box-shadow: none;
-  transition: box-shadow 0.1s;
+  background-color: @default;
+  backdrop-filter: @backdrop-filter;
+  transition: background-color 0.05s;
 }
 
 .sticky_active {
-  box-shadow: @shadow-group;
+  background-color: @pageHeading-bg-sticky;
 }
