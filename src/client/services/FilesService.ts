@@ -8,9 +8,10 @@ import {
 import { IFile } from '../models/IFile';
 import { AppState } from '../store';
 import { apiUrl } from './config';
+import Router from 'next/router';
 
 const baseQuery = fetchBaseQuery({
-	baseUrl: `${apiUrl}`,
+	baseUrl: apiUrl,
 	prepareHeaders: (headers, { getState }) => {
 		const token = (getState() as AppState).userReducer.token;
 		if (token) headers.set('Authorization', `Bearer ${token}`);
@@ -42,11 +43,34 @@ export const filesAPI = createApi({
 			})
 		}),
 		uploadFiles: build.mutation<any, FormData>({
-			query: (data) => ({
+			query: (formData) => ({
 				url: '/files',
 				method: 'POST',
+				body: formData
+			}),
+			async onQueryStarted(args, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					await Router.replace(Router.asPath);
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}),
+		createDirectory: build.mutation<any, any>({
+			query: (data) => ({
+				url: '/directories',
+				method: 'POST',
 				body: data
-			})
+			}),
+			async onQueryStarted(args, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					await Router.replace(Router.asPath);
+				} catch (error) {
+					console.log(error);
+				}
+			}
 		})
 	})
 });
