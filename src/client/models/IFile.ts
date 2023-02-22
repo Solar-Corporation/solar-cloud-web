@@ -8,3 +8,8 @@ export interface IFile {
 	mimeType?: string;
 	seeTime?: number;
 }
+
+export interface IDirectory {
+	path: string;
+	name: string;
+}
