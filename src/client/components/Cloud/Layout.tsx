@@ -1,4 +1,11 @@
-import { DeleteOutlined, FileOutlined, HistoryOutlined, StarOutlined, TagsOutlined } from '@ant-design/icons';
+import {
+	DeleteOutlined,
+	FileOutlined,
+	HistoryOutlined,
+	StarOutlined,
+	TagsOutlined,
+	TeamOutlined
+} from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { RouteNames } from '../../router';
@@ -27,6 +34,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.CLOUD },
 		{ icon: <StarOutlined />, title: 'Избранное', href: RouteNames.MARKED },
 		{ icon: <TagsOutlined />, title: 'Теги', href: RouteNames.TAGS },
+		{ icon: <TeamOutlined />, title: 'Общий доступ', href: RouteNames.SHARED},
 		{ icon: <DeleteOutlined />, title: 'Корзина', href: RouteNames.TRASH }
 	];
 

@@ -5,6 +5,7 @@ export enum RouteNames {
 	CLOUD = '/cloud',
 	RECENT = '/cloud/recent',
 	MARKED = '/cloud/marked',
+	SHARED = '/cloud/shared',
 	TAGS = '/cloud/tags',
 	TRASH = '/cloud/trash',
 	SETTINGS = '/settings'
