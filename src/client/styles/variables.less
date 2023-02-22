@@ -1,8 +1,8 @@
 // Colors
 @white: #ffffff;
-@default: #1e1f22;
-@secondary: #191a1c;
-@background: #1d1e21; //1d1e21
+@default: #1d2124;
+@secondary: #161a1d;
+@background: #1b1e21; //1d1e21
 //
 // #1e1e21
 // 202225
@@ -12,9 +12,10 @@
 // gray 292b2f 1f2124 242629
 // dark 252427 1b1a1c 201f21 323133 3d3c3e 20, 19, 20, 0.8
 // dark-old 252427 1a191c 1f1e21
+// dark-new 1e1f22 17181a 1d1e21 303133 3b3c3e 19, 19, 21, 0.8
 //
 //@dark: #111113;
-@dark: rgba(19, 19, 21, 0.8);
+@dark: rgba(17, 21, 23, 0.8);
 @base: #606060;
 @alert: #d32029;
 
@@ -24,10 +25,11 @@
 @gold-secondary: #f3cc62;
 @orange-primary: #e89a3c;
 @orange-secondary: #f3b765;
-@gray-primary: #303133;
-@gray-secondary: #3b3c3e;
+@gray-primary: #2d3134;
+@gray-secondary: #383c3e;
 
 @gradient: linear-gradient(to right, @gold-primary, @magenta-primary);
+@backdrop-filter: saturate(180%) blur(5px);
 
 @blue: #7f9ef3;
 @cyan: #58d1c9;
@@ -114,6 +116,9 @@
 @fileTable-width-extension: 190px;
 @fileTable-width-date: 162px;
 @fileTable-width-size: 120px;
+
+// PageHeading
+@pageHeading-bg-sticky: rgba(29, 33, 36, 0.8);
 
 // InfoSpace
 @infoSpace-bg-primary: @gray-primary;
