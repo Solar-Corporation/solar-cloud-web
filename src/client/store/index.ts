@@ -4,10 +4,12 @@ import { authAPI } from '../services/AuthService';
 import { filesAPI } from '../services/FilesService';
 import cloudReducer from './reducers/CloudSlice';
 import userReducer from './reducers/UserSlice';
+import modalReducer from './reducers/ModalSlice';
 
 const rootReducer = combineReducers({
 	userReducer,
 	cloudReducer,
+	modalReducer,
 	[authAPI.reducerPath]: authAPI.reducer,
 	[filesAPI.reducerPath]: filesAPI.reducer
 });
