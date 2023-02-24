@@ -10,6 +10,8 @@ interface ICloudContext {
 export interface CloudState {
 	selected: IFile[];
 	context: ICloudContext;
+	isContextMenuOpen: boolean;
+	isFilesContextMenuOpen: boolean;
 	space: any;
 }
 
@@ -19,6 +21,8 @@ const initialState: CloudState = {
 		url: '',
 		path: '/'
 	},
+	isContextMenuOpen: false,
+	isFilesContextMenuOpen: false,
 	space: null
 };
 
@@ -37,6 +41,12 @@ export const CloudSlice = createSlice({
 		},
 		setContext(state, action: PayloadAction<ICloudContext>) {
 			state.context = action.payload;
+		},
+		setIsContextMenuOpen(state, action: PayloadAction<boolean>) {
+			state.isContextMenuOpen = action.payload;
+		},
+		setIsFilesContextMenuOpen(state, action: PayloadAction<boolean>) {
+			state.isFilesContextMenuOpen = action.payload;
 		}
 	},
 	extraReducers: {
@@ -50,4 +60,4 @@ export const CloudSlice = createSlice({
 });
 
 export default CloudSlice.reducer;
-export const { selectFile, unselectFile, clearSelected, setContext } = CloudSlice.actions;
+export const { selectFile, unselectFile, clearSelected, setContext, setIsContextMenuOpen, setIsFilesContextMenuOpen } = CloudSlice.actions;
