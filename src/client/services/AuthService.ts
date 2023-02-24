@@ -6,7 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
 import { RouteNames } from '../router';
 import { setUser, UserState } from '../store/reducers/UserSlice';
-import { apiUrl } from './config';
+import { apiUrl, handleApiError } from './config';
 import Router from 'next/router';
 
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
@@ -35,6 +35,7 @@ export const authAPI = createApi({
 					await Router.push(RouteNames.CLOUD);
 				} catch (error) {
 					console.log(error);
+					await handleApiError(error);
 				}
 			}
 		}),
@@ -46,6 +47,7 @@ export const authAPI = createApi({
 					setUserOnQueryFulfilled(data, dispatch);
 				} catch (error) {
 					console.log(error);
+					await handleApiError(error);
 				}
 			}
 		}),
@@ -61,6 +63,7 @@ export const authAPI = createApi({
 					setUserOnQueryFulfilled(data, dispatch);
 				} catch (error) {
 					console.log(error);
+					await handleApiError(error);
 				}
 			}
 		})
