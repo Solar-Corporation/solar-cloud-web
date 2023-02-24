@@ -1,3 +1,5 @@
+import { RcFile } from 'antd/es/upload';
+
 export interface IFile {
 	name: string;
 	path: string;
@@ -12,4 +14,9 @@ export interface IFile {
 export interface IDirectory {
 	path: string;
 	name: string;
+}
+
+export interface IUpload {
+	path: string;
+	files: RcFile[];
 }
