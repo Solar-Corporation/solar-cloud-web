@@ -115,23 +115,24 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 		}];
 	}
 
+	const floatControls = selected.length
+		? selected.length > 1
+			? [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
+			: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
+		: path !== '/' ? [Control.SHARE] : undefined;
+
 	const headingOptions = {
 		links,
 		actions: [Control.CREATE],
 		constControls: [Control.VIEW, Control.INFO],
-		floatControls:
-			selected.length
-				? selected.length > 1
-					? [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
-					: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
-				: path !== '/' ? [Control.SHARE] : undefined,
+		floatControls: floatControls,
 		sticky: true
 	};
 
 	const contextMenu = path !== '/'
-		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.VIEW, Control.INFO]
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.NULL, Control.VIEW, Control.INFO]
 		: [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO];
-	const contextMenuFiles = selected.length > 1
+	const filesContextMenu = selected.length > 1
 		? [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
 		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
 
@@ -141,7 +142,7 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 			headingOptions={headingOptions}
 			contextMenu={contextMenu}
 		>
-			{files && <FileTable files={files} contextMenu={contextMenuFiles} />}
+			{files && <FileTable files={files} contextMenu={filesContextMenu} />}
 		</CloudLayout>
 	);
 }
