@@ -1,48 +1,61 @@
 import { FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
-import { Upload, UploadProps } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import { useAppSelector } from '../../../../hooks/redux';
+import { IDirectory, IUpload } from '../../../../models/IFile';
 import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
+import styles from '../../../../styles/components/Control.module.less';
 
 interface ControlUploadProps extends ControlTypeProps {
 	folder?: boolean;
 }
 
 export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, folder }) => {
+	const inputRef = useRef(null);
 	const { path } = useAppSelector(state => state.cloudReducer.context);
 	const [uploadFiles] = filesAPI.useUploadFilesMutation();
+	const [uploadFolder] = filesAPI.useUploadDirectoryMutation();
 
-	const handleUpload: UploadProps['beforeUpload'] = async (file, fileList) => {
-		const formData = new FormData();
+	const handleClick = () => {
+		// @ts-ignore
+		inputRef.current.click();
+	};
 
-		fileList.forEach((file) => {
-			formData.append('files[]', file as RcFile);
-		});
-		formData.append('path', path);
+	const handleUpload = async (event: any) => {
+		const files: RcFile[] = Array.prototype.slice.call(event.currentTarget.files);
 
-		await uploadFiles(formData);
-
-		return false;
+		if (files.length) {
+			if (folder) {
+				const name = event.target.files[0].webkitRelativePath.split('/')[0];
+				const directory: IDirectory = { path, name };
+				await uploadFolder({ directory, files });
+			} else {
+				const upload: IUpload = { path, files };
+				await uploadFiles(upload);
+			}
+		}
 	};
 
 	return (
-		<Upload
-			name={folder ? 'folder' : 'file'}
-			fileList={[]}
-			directory={folder}
-			multiple={!folder}
-			beforeUpload={handleUpload}
-		>
+		<span className={styles.upload}>
+			<input
+				ref={inputRef}
+				name={folder ? 'folder' : 'file'}
+				type="file"
+				multiple={!folder}
+				onChange={handleUpload}
+				// @ts-ignore
+				webkitdirectory={folder ? 'webkitDirectory' : undefined}
+			/>
 			<Control
-				icon={folder ? <FolderAddOutlined /> : <FileAddOutlined />}
+				icon={folder ? <FolderAddOutlined/> : <FileAddOutlined/>}
 				title={folder ? 'Загрузить папку' : 'Загрузить файлы'}
 				className={className}
 				type={type}
 				block={block}
-				disablePropagation
+				onClick={handleClick}
 			/>
-		</Upload>
+		</span>
 	);
 };
