@@ -21,7 +21,11 @@ export const getLinks = (string) => {
 	if (string !== '/') {
 		const arrFromString = string.split('/');
 		for (let i = 1; i < arrFromString.length; i++) {
-			links.push({ title: arrFromString[i], href: `${RouteNames.CLOUD}?path=/${arrFromString[i]}` });
+			if (i === 1) {
+				links.push({ title: arrFromString[1], href: `${RouteNames.CLOUD}?path=/${arrFromString[1]}` });
+			} else {
+				links.push({ title: arrFromString[i], href: `${links[i-1].href}/${arrFromString[i]}` });
+			}
 		}
 	}
 
