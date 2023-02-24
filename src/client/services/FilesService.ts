@@ -5,10 +5,25 @@ import {
 	fetchBaseQuery,
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
-import { IFile } from '../models/IFile';
+import { message } from 'antd';
+import { RcFile } from 'antd/es/upload';
+import { IDirectory, IFile, IUpload } from '../models/IFile';
+import { RouteNames } from '../router';
 import { AppState } from '../store';
-import { apiUrl } from './config';
+import { setIsModalOpen } from '../store/reducers/ModalSlice';
+import { apiUrl, handleApiError } from './config';
 import Router from 'next/router';
+
+const getFormData = (data: IUpload) => {
+	const formData = new FormData();
+	formData.append('path', data.path);
+
+	data.files.forEach((file) => {
+		formData.append('files[]', file as RcFile);
+	});
+
+	return formData;
+};
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: apiUrl,
@@ -40,35 +55,79 @@ export const filesAPI = createApi({
 			query: (path) => ({
 				url: '/files',
 				params: { path }
-			})
-		}),
-		uploadFiles: build.mutation<any, FormData>({
-			query: (formData) => ({
-				url: '/files',
-				method: 'POST',
-				body: formData
 			}),
 			async onQueryStarted(args, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
-					await Router.replace(Router.asPath);
 				} catch (error) {
 					console.log(error);
 				}
 			}
 		}),
-		createDirectory: build.mutation<any, any>({
+		uploadFiles: build.mutation<any, IUpload>({
 			query: (data) => ({
-				url: '/directories',
+				url: '/files',
 				method: 'POST',
-				body: data
+				body: getFormData(data)
 			}),
 			async onQueryStarted(args, { queryFulfilled }) {
+				const key = `${Date.now}`;
 				try {
+					message.open({
+						key,
+						type: 'loading',
+						content: args.files.length > 1 ? 'Загрузка файлов...' : 'Загрузка файла...',
+						duration: 0
+					});
 					await queryFulfilled;
+					message.open({
+						key,
+						type: 'success',
+						content: args.files.length > 1 ? 'Файлы успешно загружены!' : 'Файл успешно загружен!'
+					});
 					await Router.replace(Router.asPath);
 				} catch (error) {
 					console.log(error);
+					await handleApiError(error, key);
+				}
+			}
+		}),
+		uploadDirectory: build.mutation<any, { directory: IDirectory, files: RcFile[] }>({
+			query: (data) => ({
+				url: '/directories',
+				method: 'POST',
+				body: data.directory
+			}),
+			async onQueryStarted({ directory, files }, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
+					const upload: IUpload = { path, files };
+					await dispatch(filesAPI.endpoints.uploadFiles.initiate(upload));
+				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		createDirectory: build.mutation<any, { directory: IDirectory, relocate: boolean }>({
+			query: (data) => ({
+				url: '/directories',
+				method: 'POST',
+				body: data.directory
+			}),
+			async onQueryStarted({ directory, relocate}, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					dispatch(setIsModalOpen({ createDirectory: false }));
+					message.success('Папка успешно создана!');
+					if (relocate) {
+						const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
+						await Router.push(`${RouteNames.CLOUD}?path=${path}`);
+					} else {
+						await Router.replace(Router.asPath);
+					}
+				} catch (error) {
+					await handleApiError(error);
 				}
 			}
 		})
