@@ -24,7 +24,7 @@ export const FileTable: FC<FileTableProps> = ({ files, disableHeader, contextMen
 
 	const handleOpenChange = (isOpen: boolean) => {
 		dispatch(setIsFilesContextMenuOpen(isOpen));
-	}
+	};
 
 	return (
 		files.length > 0

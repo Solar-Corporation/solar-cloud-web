@@ -4,8 +4,8 @@ import { FC, useRef } from 'react';
 import { useAppSelector } from '../../../../hooks/redux';
 import { IDirectory, IUpload } from '../../../../models/IFile';
 import { filesAPI } from '../../../../services/FilesService';
-import { Control, ControlTypeProps } from '../index';
 import styles from '../../../../styles/components/Control.module.less';
+import { Control, ControlTypeProps } from '../index';
 
 interface ControlUploadProps extends ControlTypeProps {
 	folder?: boolean;
@@ -49,7 +49,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 				webkitdirectory={folder ? 'webkitDirectory' : undefined}
 			/>
 			<Control
-				icon={folder ? <FolderAddOutlined/> : <FileAddOutlined/>}
+				icon={folder ? <FolderAddOutlined /> : <FileAddOutlined />}
 				title={folder ? 'Загрузить папку' : 'Загрузить файлы'}
 				className={className}
 				type={type}

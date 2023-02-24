@@ -13,7 +13,7 @@ const initialState: ModalState = {
 	modal: {
 		createDirectory: false
 	}
-}
+};
 
 export const ModalSlice = createSlice({
 	name: 'modal',

@@ -7,12 +7,12 @@ import {
 } from '@reduxjs/toolkit/dist/query/react';
 import { message } from 'antd';
 import { RcFile } from 'antd/es/upload';
+import Router from 'next/router';
 import { IDirectory, IFile, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
 import { setIsModalOpen } from '../store/reducers/ModalSlice';
 import { apiUrl, handleApiError } from './config';
-import Router from 'next/router';
 
 const getFormData = (data: IUpload) => {
 	const formData = new FormData();
@@ -115,7 +115,7 @@ export const filesAPI = createApi({
 				method: 'POST',
 				body: data.directory
 			}),
-			async onQueryStarted({ directory, relocate}, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ directory, relocate }, { queryFulfilled, dispatch }) {
 				try {
 					await queryFulfilled;
 					dispatch(setIsModalOpen({ createDirectory: false }));

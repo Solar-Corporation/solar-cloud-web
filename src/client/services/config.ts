@@ -9,4 +9,4 @@ export const handleApiError = async (error: any, key?: string) => {
 		type: 'error',
 		content: `${error.error.error || error.error.data.message || error.error.data.error}`
 	});
-}
+};

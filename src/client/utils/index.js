@@ -24,7 +24,7 @@ export const getLinks = (string) => {
 			if (i === 1) {
 				links.push({ title: arrFromString[1], href: `${RouteNames.CLOUD}?path=/${arrFromString[1]}` });
 			} else {
-				links.push({ title: arrFromString[i], href: `${links[i-1].href}/${arrFromString[i]}` });
+				links.push({ title: arrFromString[i], href: `${links[i - 1].href}/${arrFromString[i]}` });
 			}
 		}
 	}

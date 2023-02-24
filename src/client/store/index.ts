@@ -3,8 +3,8 @@ import { createWrapper } from 'next-redux-wrapper';
 import { authAPI } from '../services/AuthService';
 import { filesAPI } from '../services/FilesService';
 import cloudReducer from './reducers/CloudSlice';
-import userReducer from './reducers/UserSlice';
 import modalReducer from './reducers/ModalSlice';
+import userReducer from './reducers/UserSlice';
 
 const rootReducer = combineReducers({
 	userReducer,

@@ -14,7 +14,17 @@ interface AppModalProps {
 	children: ReactNode;
 }
 
-export const AppModal: FC<AppModalProps> = ({ title, okText, cancelText, open, confirmLoading, afterClose, onOk, onCancel, children }) => {
+export const AppModal: FC<AppModalProps> = ({
+	                                            title,
+	                                            okText,
+	                                            cancelText,
+	                                            open,
+	                                            confirmLoading,
+	                                            afterClose,
+	                                            onOk,
+	                                            onCancel,
+	                                            children
+                                            }) => {
 	return (
 		<Modal
 			title={title}

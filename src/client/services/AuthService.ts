@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
+import Router from 'next/router';
 import { setCookie } from 'nookies';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -7,7 +8,6 @@ import { IAuth, IRegister, IToken } from '../models/IAuth';
 import { RouteNames } from '../router';
 import { setUser, UserState } from '../store/reducers/UserSlice';
 import { apiUrl, handleApiError } from './config';
-import Router from 'next/router';
 
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const user: UserState = {

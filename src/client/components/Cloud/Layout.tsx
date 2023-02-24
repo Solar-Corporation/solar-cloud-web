@@ -34,7 +34,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.CLOUD },
 		{ icon: <StarOutlined />, title: 'Избранное', href: RouteNames.MARKED },
 		{ icon: <TagsOutlined />, title: 'Теги', href: RouteNames.TAGS },
-		{ icon: <TeamOutlined />, title: 'Общий доступ', href: RouteNames.SHARED},
+		{ icon: <TeamOutlined />, title: 'Общий доступ', href: RouteNames.SHARED },
 		{ icon: <DeleteOutlined />, title: 'Корзина', href: RouteNames.TRASH }
 	];
 
@@ -44,7 +44,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 
 	const handleOpenChange = (isOpen: boolean) => {
 		dispatch(setIsContextMenuOpen(isOpen));
-	}
+	};
 
 	return (
 		<Layout

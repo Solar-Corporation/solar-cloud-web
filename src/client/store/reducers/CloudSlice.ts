@@ -60,4 +60,11 @@ export const CloudSlice = createSlice({
 });
 
 export default CloudSlice.reducer;
-export const { selectFile, unselectFile, clearSelected, setContext, setIsContextMenuOpen, setIsFilesContextMenuOpen } = CloudSlice.actions;
+export const {
+	selectFile,
+	unselectFile,
+	clearSelected,
+	setContext,
+	setIsContextMenuOpen,
+	setIsFilesContextMenuOpen
+} = CloudSlice.actions;
