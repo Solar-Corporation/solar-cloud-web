@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import ProgressBar from 'nextjs-progressbar';
 import { Provider } from 'react-redux';
+import { ModalList } from '../client/components/Modal/List';
 import { wrapper } from '../client/store';
 import '../client/styles/globals.less';
 import { themeCloud, variables } from '../client/styles/theme';
@@ -23,6 +24,7 @@ function App({ Component, ...rest }: AppProps) {
 					<ProgressBar color={variables['@magenta-primary']} options={{ showSpinner: false }} />
 					<Component {...props.pageProps} />
 				</div>
+				<ModalList />
 			</ConfigProvider>
 		</Provider>
 	);
