@@ -28,6 +28,14 @@ export const themeCloud = {
 			colorPrimaryHover: variables['@secondary'],
 			colorBgContainer: variables['@secondary'],
 			colorBorder: variables['@secondary']
+		},
+		Checkbox: {
+			colorPrimary: variables['@magenta-primary'],
+			colorPrimaryHover: variables['@magenta-secondary'],
+			colorBgContainer: variables['@secondary']
+		},
+		Modal: {
+			colorBgElevated: variables['@default']
 		}
 	}
 };
