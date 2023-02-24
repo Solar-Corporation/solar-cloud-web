@@ -9,7 +9,7 @@ import {
 import { FC, ReactNode } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { RouteNames } from '../../router';
-import { clearSelected } from '../../store/reducers/CloudSlice';
+import { clearSelected, setIsContextMenuOpen } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/CloudLayout.module.less';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
@@ -26,7 +26,7 @@ interface CloudLayoutProps {
 }
 
 export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, contextMenu, children }) => {
-	const { selected } = useAppSelector(state => state.cloudReducer);
+	const { selected, isContextMenuOpen } = useAppSelector(state => state.cloudReducer);
 	const dispatch = useAppDispatch();
 
 	const links: INavbarItem[] = [
@@ -42,6 +42,10 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 		if (selected.length) dispatch(clearSelected());
 	};
 
+	const handleOpenChange = (isOpen: boolean) => {
+		dispatch(setIsContextMenuOpen(isOpen));
+	}
+
 	return (
 		<Layout
 			title={title}
@@ -54,6 +58,8 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 			sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
 			headingOptions={headingOptions}
 			contextMenu={contextMenu}
+			contextMenuOpen={isContextMenuOpen}
+			contextMenuOnOpenChange={handleOpenChange}
 			onClickContainer={handleClearSelected}
 		>
 			{children}

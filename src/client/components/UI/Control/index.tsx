@@ -14,6 +14,7 @@ interface ControlProps extends ControlTypeProps {
 	title: string;
 	onClick?: () => void;
 	disabled?: boolean;
+	loading?: boolean;
 	disablePropagation?: boolean;
 	children?: never;
 }
@@ -23,6 +24,7 @@ export const Control: FC<ControlProps> = ({
 	                                          title,
 	                                          onClick,
 	                                          disabled,
+	                                          loading,
 	                                          disablePropagation,
 	                                          block,
 	                                          type,
@@ -44,11 +46,12 @@ export const Control: FC<ControlProps> = ({
 			className={block ? className ? `${styles.main} ${className}` : styles.main : className}
 			type={type}
 			disabled={disabled}
+			loading={loading}
 			size={block ? 'small' : undefined}
 			onClick={handleClick}
 			onContextMenu={handleStopPropagation}
 		>
-			{block ? <span className={`${styles.title} ${fontRoboto.className}`}>{title}</span> : undefined}
+			{block ? <span className={fontRoboto.className}>{title}</span> : undefined}
 		</Button>
 	);
 };

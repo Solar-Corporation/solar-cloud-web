@@ -12,6 +12,8 @@ interface AppLayoutProps {
 	sidebarBottom?: ReactNode;
 	headingOptions?: PageHeadingProps;
 	contextMenu?: Control[];
+	contextMenuOpen?: boolean;
+	contextMenuOnOpenChange?: (isOpen: boolean) => void;
 	onClickContainer?: () => void;
 	children: ReactNode;
 }
@@ -22,6 +24,8 @@ export const Layout: FC<AppLayoutProps> = ({
 	                                           sidebarBottom,
 	                                           headingOptions,
 	                                           contextMenu,
+	                                           contextMenuOpen,
+	                                           contextMenuOnOpenChange,
 	                                           onClickContainer,
 	                                           children
                                            }) => {
@@ -42,7 +46,7 @@ export const Layout: FC<AppLayoutProps> = ({
 							{sidebarBottom && <div className={styles.stickyBottom}>{sidebarBottom}</div>}
 						</div>
 					}
-					<ContextMenu menu={contextMenu}>
+					<ContextMenu open={contextMenuOpen} onOpenChange={contextMenuOnOpenChange} menu={contextMenu}>
 						<div className={styles.container}>
 							{
 								headingOptions &&

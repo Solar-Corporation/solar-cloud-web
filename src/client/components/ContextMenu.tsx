@@ -6,6 +6,8 @@ import Control, { getControlType } from './UI/Control/List';
 
 interface ContextMenuProps {
 	menu?: Control[];
+	open?: boolean;
+	onOpenChange?: (isOpen: boolean) => void;
 	children: ReactNode;
 }
 
@@ -22,7 +24,7 @@ export const getContextMenuItems = (list: Control[], className?: string): MenuPr
 	);
 };
 
-export const ContextMenu: FC<ContextMenuProps> = ({ menu, children }) => {
+export const ContextMenu: FC<ContextMenuProps> = ({ menu, open, onOpenChange, children }) => {
 	const dropdownRender = (menus: ReactNode) => {
 		const handleClick = (event: any) => {
 			event.stopPropagation();
@@ -41,6 +43,8 @@ export const ContextMenu: FC<ContextMenuProps> = ({ menu, children }) => {
 			<Dropdown
 				menu={{ items: getContextMenuItems(menu, styles.control) }}
 				trigger={['contextMenu']}
+				open={open}
+				onOpenChange={onOpenChange}
 				overlayClassName={styles.main}
 				dropdownRender={dropdownRender}
 			>
