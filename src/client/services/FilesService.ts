@@ -93,10 +93,10 @@ export const filesAPI = createApi({
 			}
 		}),
 		uploadDirectory: build.mutation<any, { directory: IDirectory, files: RcFile[] }>({
-			query: (data) => ({
+			query: ({ directory }) => ({
 				url: '/directories',
 				method: 'POST',
-				body: data.directory
+				body: directory
 			}),
 			async onQueryStarted({ directory, files }, { queryFulfilled, dispatch }) {
 				try {
@@ -110,10 +110,10 @@ export const filesAPI = createApi({
 			}
 		}),
 		createDirectory: build.mutation<any, { directory: IDirectory, relocate: boolean }>({
-			query: (data) => ({
+			query: ({ directory }) => ({
 				url: '/directories',
 				method: 'POST',
-				body: data.directory
+				body: directory
 			}),
 			async onQueryStarted({ directory, relocate }, { queryFulfilled, dispatch }) {
 				try {
@@ -126,6 +126,23 @@ export const filesAPI = createApi({
 					} else {
 						await Router.replace(Router.asPath);
 					}
+				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		renameFile: build.mutation<any, { path: string, new_name: string, isDir: boolean }>({
+			query: ({ path, new_name }) => ({
+				url: `/files${path}`,
+				method: 'PUT',
+				params: { new_name }
+			}),
+			async onQueryStarted({ isDir }, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					dispatch(setIsModalOpen({ renameFile: false }));
+					message.success(isDir ? 'Папка переименована!' : 'Файл переименован!');
+					await Router.replace(Router.asPath);
 				} catch (error) {
 					await handleApiError(error);
 				}
