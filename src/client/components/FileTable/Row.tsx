@@ -7,7 +7,8 @@ import {
 	FileUnknownFilled,
 	FileWordFilled,
 	FileZipFilled,
-	FolderFilled
+	FolderFilled,
+	StarFilled
 } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
@@ -36,10 +37,11 @@ interface FileTableRowProps {
 }
 
 export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
-	const router = useRouter();
+	const { selected, marked } = useAppSelector(state => state.cloudReducer);
+	const [isSelected, setIsSelected] = useState(!!selected.find(selectedFile => selectedFile.path === file.path));
+	const [isMarked, setIsMarked] = useState(file.isFavorite);
 	const dispatch = useAppDispatch();
-	const { selected } = useAppSelector(state => state.cloudReducer);
-	const [isSelected, setIsSelected] = useState<boolean>(!!selected.find(selectedFile => selectedFile.path === file.path));
+	const router = useRouter();
 	const date = new Date(file.seeTime || '');
 	let icon;
 	let extension;
@@ -99,6 +101,10 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 		setIsSelected(!!selected.find(selectedFile => selectedFile.path === file.path));
 	}, [selected]);
 
+	useEffect(() => {
+		setIsMarked(!!marked.find(path => path === file.path));
+	}, [marked]);
+
 	const handleClick = async (event: any) => {
 		switch (event.detail) {
 			case 1: {
@@ -150,7 +156,10 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file }) => {
 			<FileTableColumn title={file.name}>
 				<div className={styles.name}>
 					<span className={styles.icon}>{icon}</span>
-					<span className={styles.nameText}>{file.name}</span>
+					<span className={styles.nameText}>
+						{file.name}
+					</span>
+					{isMarked && <StarFilled className={styles.iconMarked} />}
 				</div>
 			</FileTableColumn>
 			<div className={styles.columns}>
