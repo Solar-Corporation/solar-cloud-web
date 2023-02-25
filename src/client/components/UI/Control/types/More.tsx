@@ -1,6 +1,7 @@
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import { FC, ReactNode, useEffect, useState } from 'react';
+import { useAppSelector } from '../../../../hooks/redux';
 import stylesContextMenu from '../../../../styles/components/ContextMenu.module.less';
 import styles from '../../../../styles/components/Control.module.less';
 import { getContextMenuItems } from '../../../ContextMenu';
@@ -12,6 +13,7 @@ interface ControlMoreProps extends ControlTypeProps {
 }
 
 export const ControlMore: FC<ControlMoreProps> = ({ list, type, block, className }) => {
+	const { modal } = useAppSelector(state => state.modalReducer);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	const dropdownRender = (menus: ReactNode) => {
@@ -32,6 +34,10 @@ export const ControlMore: FC<ControlMoreProps> = ({ list, type, block, className
 			window.removeEventListener('scroll', () => setIsMenuOpen(false));
 		};
 	}, []);
+
+	useEffect(() => {
+		setIsMenuOpen(false);
+	}, [modal]);
 
 	return (
 		<Dropdown

@@ -15,7 +15,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 	const inputRef = useRef(null);
 	const { path } = useAppSelector(state => state.cloudReducer.context);
 	const [uploadFiles] = filesAPI.useUploadFilesMutation();
-	const [uploadFolder] = filesAPI.useUploadDirectoryMutation();
+	const [uploadDirectory] = filesAPI.useUploadDirectoryMutation();
 
 	const handleClick = () => {
 		// @ts-ignore
@@ -29,7 +29,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 			if (folder) {
 				const name = event.target.files[0].webkitRelativePath.split('/')[0];
 				const directory: IDirectory = { path, name };
-				await uploadFolder({ directory, files });
+				await uploadDirectory({ directory, files });
 			} else {
 				const upload: IUpload = { path, files };
 				await uploadFiles(upload);
