@@ -11,6 +11,7 @@ import Router from 'next/router';
 import { IDirectory, IFile, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
+import { markFile, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
 import { setIsModalOpen } from '../store/reducers/ModalSlice';
 import { apiUrl, handleApiError } from './config';
 
@@ -56,9 +57,11 @@ export const filesAPI = createApi({
 				url: '/files',
 				params: { path }
 			}),
-			async onQueryStarted(args, { queryFulfilled }) {
+			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
-					await queryFulfilled;
+					const { data } = await queryFulfilled;
+					const marked = data.filter(file => file.isFavorite);
+					dispatch(setMarked(marked.map(file => file.path)));
 				} catch (error) {
 					console.log(error);
 				}
@@ -143,6 +146,36 @@ export const filesAPI = createApi({
 					dispatch(setIsModalOpen({ renameFile: false }));
 					message.success(isDir ? 'Папка переименована!' : 'Файл переименован!');
 					await Router.replace(Router.asPath);
+				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		markFile: build.mutation<any, { paths: string[] }>({
+			query: (data) => ({
+				url: '/favorites',
+				method: 'POST',
+				body: data
+			}),
+			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					paths.forEach((path) => dispatch(markFile(path)));
+				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		unmarkFile: build.mutation<any, { paths: string[] }>({
+			query: (data) => ({
+				url: '/favorites',
+				method: 'DELETE',
+				body: data
+			}),
+			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					paths.forEach((path) => dispatch(unMarkFile(path)));
 				} catch (error) {
 					await handleApiError(error);
 				}
