@@ -8,7 +8,7 @@ interface AppModalProps {
 	cancelText?: string;
 	open?: boolean;
 	confirmLoading?: boolean;
-	afterClose: () => void;
+	afterClose?: () => void;
 	onOk: () => void;
 	onCancel: () => void;
 	children: ReactNode;
