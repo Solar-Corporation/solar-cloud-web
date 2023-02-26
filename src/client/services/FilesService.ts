@@ -14,6 +14,7 @@ import { AppState } from '../store';
 import { markFile, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
 import { setIsModalOpen } from '../store/reducers/ModalSlice';
 import { apiUrl, handleApiError } from './config';
+import { refreshPage } from '../utils';
 
 const getFormData = (data: IUpload) => {
 	const formData = new FormData();
@@ -88,7 +89,7 @@ export const filesAPI = createApi({
 						type: 'success',
 						content: args.files.length > 1 ? 'Файлы успешно загружены!' : 'Файл успешно загружен!'
 					});
-					await Router.replace(Router.asPath);
+					await refreshPage();
 				} catch (error) {
 					console.log(error);
 					await handleApiError(error, key);
@@ -122,12 +123,12 @@ export const filesAPI = createApi({
 				try {
 					await queryFulfilled;
 					dispatch(setIsModalOpen({ createDirectory: false }));
-					message.success('Папка успешно создана!');
+					message.success('Папка создана!');
 					if (relocate) {
 						const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
 						await Router.push(`${RouteNames.CLOUD}?path=${path}`);
 					} else {
-						await Router.replace(Router.asPath);
+						await refreshPage();
 					}
 				} catch (error) {
 					await handleApiError(error);
@@ -145,7 +146,7 @@ export const filesAPI = createApi({
 					await queryFulfilled;
 					dispatch(setIsModalOpen({ renameFile: false }));
 					message.success(isDir ? 'Папка переименована!' : 'Файл переименован!');
-					await Router.replace(Router.asPath);
+					await refreshPage();
 				} catch (error) {
 					await handleApiError(error);
 				}
@@ -176,6 +177,27 @@ export const filesAPI = createApi({
 				try {
 					await queryFulfilled;
 					paths.forEach((path) => dispatch(unMarkFile(path)));
+				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		deleteFile: build.mutation<any, { paths: string [], isDir: boolean }>({
+			query: ({ paths }) => ({
+				url: '/files',
+				method: 'DELETE',
+				body: { paths }
+			}),
+			async onQueryStarted({ paths, isDir }, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					message.success(
+						paths.length > 1
+							? isDir ? `Папки (${paths.length}) перемещены в корзину` : `Файлы (${paths.length}) перемещены в корзину!`
+							: isDir ? 'Папка перемещена в корзину!' : 'Файл перемещен в корзину!'
+					);
+					dispatch(setIsModalOpen({ deleteFile: false }));
+					await refreshPage();
 				} catch (error) {
 					await handleApiError(error);
 				}
