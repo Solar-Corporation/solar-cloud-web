@@ -9,7 +9,7 @@ const getIsDir = (arr: IFile[]) => {
 	const arrFiltered = arr.filter(file => file.isDir);
 
 	return arr.length === arrFiltered.length;
-}
+};
 
 export const ModalDeleteFile: FC = () => {
 	const [name, setName] = useState('');
@@ -49,7 +49,7 @@ export const ModalDeleteFile: FC = () => {
 					? isDir ? 'Удалить папки' : 'Удалить файлы'
 					: isDir ? 'Удалить папку' : 'Удалить файл'
 			}
-			okText={isLoading ? 'Удаление' : 'Удалить'}
+			okText="Удалить"
 			cancelText="Отменить"
 			open={isOpen}
 			confirmLoading={isLoading}

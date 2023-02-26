@@ -30,7 +30,7 @@ export const ModalRenameFile: FC = () => {
 	return (
 		<AppModal
 			title={selected.length && selected[0].isDir ? 'Переименовать папку' : 'Переименовать файл'}
-			okText={isLoading ? 'Переименование' : 'Переименовать'}
+			okText="Переименовать"
 			cancelText="Отменить"
 			open={isOpen}
 			confirmLoading={isLoading}

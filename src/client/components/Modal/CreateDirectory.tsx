@@ -35,7 +35,7 @@ export const ModalCreateDirectory: FC = () => {
 	return (
 		<AppModal
 			title="Создать папку"
-			okText={isLoading ? 'Создание' : 'Создать'}
+			okText="Создать"
 			cancelText="Отменить"
 			open={isOpen}
 			confirmLoading={isLoading}

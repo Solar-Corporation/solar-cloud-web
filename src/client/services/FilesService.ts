@@ -13,8 +13,8 @@ import { RouteNames } from '../router';
 import { AppState } from '../store';
 import { markFile, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
 import { setIsModalOpen } from '../store/reducers/ModalSlice';
-import { apiUrl, handleApiError } from './config';
 import { refreshPage } from '../utils';
+import { apiUrl, handleApiError } from './config';
 
 const getFormData = (data: IUpload) => {
 	const formData = new FormData();
