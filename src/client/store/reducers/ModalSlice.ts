@@ -4,6 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 export interface IModal {
 	createDirectory?: boolean;
 	renameFile?: boolean;
+	deleteFile?: boolean;
 }
 
 export interface ModalState {
@@ -13,7 +14,8 @@ export interface ModalState {
 const initialState: ModalState = {
 	modal: {
 		createDirectory: false,
-		renameFile: false
+		renameFile: false,
+		deleteFile: false
 	}
 };
 
