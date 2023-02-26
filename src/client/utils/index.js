@@ -1,4 +1,5 @@
 import { RouteNames } from '../router';
+import Router from 'next/router';
 
 export const getDateStr = (date) => {
 	const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;
@@ -13,6 +14,10 @@ export const getDateStr = (date) => {
 
 export const pxToNumber = (string) => {
 	return Number(string.replace(/px/g, ''));
+};
+
+export const refreshPage = async () => {
+	await Router.replace(Router.asPath);
 };
 
 export const getLinks = (string) => {
