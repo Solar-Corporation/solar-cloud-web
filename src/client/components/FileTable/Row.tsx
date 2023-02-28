@@ -11,7 +11,6 @@ import {
 	StarFilled
 } from '@ant-design/icons';
 import { FC, useEffect, useState } from 'react';
-import { useAppSelector } from '../../hooks/redux';
 import { IFile } from '../../models/IFile';
 import styles from '../../styles/components/FileTable.module.less';
 import { getDateStr } from '../../utils';
@@ -32,16 +31,13 @@ enum Extension {
 interface FileTableRowProps {
 	file: IFile;
 	selected: IFile[];
+	marked: string[];
 	onClick?: (event: any, file: IFile, isSelected: boolean) => void;
 	onContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	disableColumns?: boolean;
 }
 
-export const FileTableRow: FC<FileTableRowProps> = ({ file, selected, onClick, onContextMenu, disableColumns }) => {
-	const { marked } = useAppSelector(state => state.cloudReducer);
-	const [isSelected, setIsSelected] = useState(!!selected.find(selectedFile => selectedFile.path === file.path));
-	const [isMarked, setIsMarked] = useState(file.isFavorite);
-	const date = new Date(file.seeTime || '');
+const getFileType = (file: IFile) => {
 	let icon;
 	let extension;
 
@@ -77,6 +73,8 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file, selected, onClick, o
 				extension = Extension.PPT;
 				break;
 			case 'txt':
+			case 'htm':
+			case 'html':
 				icon = <FileTextFilled className={styles.iconText} />;
 				extension = Extension.TEXT;
 				break;
@@ -95,6 +93,15 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file, selected, onClick, o
 				extension = `${Extension.UNKNOWN} "${file.fileType.toUpperCase()}"`;
 		}
 	}
+
+	return { icon, extension };
+};
+
+export const FileTableRow: FC<FileTableRowProps> = ({ file, selected, marked, onClick, onContextMenu, disableColumns }) => {
+	const [isSelected, setIsSelected] = useState(false);
+	const [isMarked, setIsMarked] = useState(file.isFavorite);
+	const date = new Date(file.seeTime || '');
+	const { icon, extension } = getFileType(file);
 
 	useEffect(() => {
 		setIsSelected(!!selected.find(selectedFile => selectedFile.path === file.path));

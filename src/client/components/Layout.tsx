@@ -14,7 +14,7 @@ interface AppLayoutProps {
 	contextMenu?: Control[];
 	contextMenuOpen?: boolean;
 	contextMenuOnOpenChange?: (isOpen: boolean) => void;
-	onClickContainer?: () => void;
+	onContainerClick?: () => void;
 	children: ReactNode;
 }
 
@@ -26,7 +26,7 @@ export const Layout: FC<AppLayoutProps> = ({
 	                                           contextMenu,
 	                                           contextMenuOpen,
 	                                           contextMenuOnOpenChange,
-	                                           onClickContainer,
+	                                           onContainerClick,
 	                                           children
                                            }) => {
 	return (
@@ -36,7 +36,7 @@ export const Layout: FC<AppLayoutProps> = ({
 				<meta name="description" content="description" />
 				<meta charSet="utf-8" />
 			</Head>
-			<div onClick={onClickContainer} onContextMenu={onClickContainer}>
+			<div onClick={onContainerClick} onContextMenu={onContainerClick}>
 				<Header />
 				<main className={styles.main}>
 					{

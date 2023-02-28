@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { IFile } from '../../models/IFile';
 
-interface ICloudContext {
+export interface ICloudContext {
 	url: string;
 	path: string;
 }
