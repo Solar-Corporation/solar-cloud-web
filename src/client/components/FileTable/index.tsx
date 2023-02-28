@@ -11,10 +11,14 @@ import { FileTableRow } from './Row';
 interface FileTableProps {
 	files: IFile[];
 	disableHeader?: boolean;
+	disableColumns?: boolean;
+	selected?: IFile[];
+	onRowClick?: (event: any, file: IFile, isSelected: boolean) => void;
+	onRowContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	contextMenu?: Control[];
 }
 
-export const FileTable: FC<FileTableProps> = ({ files, disableHeader, contextMenu }) => {
+export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableColumns, selected, onRowClick, onRowContextMenu, contextMenu }) => {
 	const { isFilesContextMenuOpen } = useAppSelector(state => state.cloudReducer);
 	const dispatch = useAppDispatch();
 
@@ -37,7 +41,16 @@ export const FileTable: FC<FileTableProps> = ({ files, disableHeader, contextMen
 					onOpenChange={handleOpenChange}
 				>
 					<div onClick={handleClick} onContextMenu={handleClick}>
-						{files.map((file) => <FileTableRow key={file.path} file={file} />)}
+						{files.map((file) => (
+							<FileTableRow
+								key={file.path}
+								file={file}
+								selected={selected || []}
+								onClick={onRowClick}
+								onContextMenu={onRowContextMenu}
+								disableColumns={disableColumns}
+							/>
+						))}
 					</div>
 				</ContextMenu>
 			</div>
