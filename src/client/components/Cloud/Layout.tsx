@@ -7,7 +7,7 @@ import {
 	TeamOutlined
 } from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useCloudReducer } from '../../hooks/cloud';
 import { RouteNames } from '../../router';
 import { clearSelected, setIsContextMenuOpen } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/CloudLayout.module.less';
@@ -26,8 +26,7 @@ interface CloudLayoutProps {
 }
 
 export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, contextMenu, children }) => {
-	const { selected, isContextMenuOpen } = useAppSelector(state => state.cloudReducer);
-	const dispatch = useAppDispatch();
+	const { selected, isContextMenuOpen, dispatch } = useCloudReducer();
 
 	const links: INavbarItem[] = [
 		{ icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
@@ -60,7 +59,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 			contextMenu={contextMenu}
 			contextMenuOpen={isContextMenuOpen}
 			contextMenuOnOpenChange={handleOpenChange}
-			onClickContainer={handleClearSelected}
+			onContainerClick={handleClearSelected}
 		>
 			{children}
 		</Layout>

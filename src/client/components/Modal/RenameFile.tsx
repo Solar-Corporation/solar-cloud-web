@@ -1,16 +1,16 @@
 import { Input } from 'antd';
 import { FC, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useCloudReducer } from '../../hooks/cloud';
+import { useAppSelector } from '../../hooks/redux';
 import { filesAPI } from '../../services/FilesService';
 import { setIsModalOpen } from '../../store/reducers/ModalSlice';
 import { AppModal } from './index';
 
 export const ModalRenameFile: FC = () => {
 	const [name, setName] = useState('');
-	const { selected } = useAppSelector(state => state.cloudReducer);
+	const { selected, dispatch } = useCloudReducer();
 	const { renameFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
 	const [renameFile, { isLoading }] = filesAPI.useRenameFileMutation();
-	const dispatch = useAppDispatch();
 
 	const handleSubmit = async () => {
 		const rename = { path: selected[0].path, new_name: name, isDir: selected[0].isDir };

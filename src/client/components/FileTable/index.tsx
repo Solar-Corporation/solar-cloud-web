@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useCloudReducer } from '../../hooks/cloud';
 import { IFile } from '../../models/IFile';
 import { setIsFilesContextMenuOpen } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/FileTable.module.less';
@@ -13,14 +13,14 @@ interface FileTableProps {
 	disableHeader?: boolean;
 	disableColumns?: boolean;
 	selected?: IFile[];
+	marked?: string[];
 	onRowClick?: (event: any, file: IFile, isSelected: boolean) => void;
 	onRowContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	contextMenu?: Control[];
 }
 
-export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableColumns, selected, onRowClick, onRowContextMenu, contextMenu }) => {
-	const { isFilesContextMenuOpen } = useAppSelector(state => state.cloudReducer);
-	const dispatch = useAppDispatch();
+export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableColumns, selected, marked, onRowClick, onRowContextMenu, contextMenu }) => {
+	const { isFilesContextMenuOpen, dispatch } = useCloudReducer();
 
 	const handleClick = (event: any) => {
 		event.stopPropagation();
@@ -46,6 +46,7 @@ export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableCol
 								key={file.path}
 								file={file}
 								selected={selected || []}
+								marked={marked || []}
 								onClick={onRowClick}
 								onContextMenu={onRowContextMenu}
 								disableColumns={disableColumns}

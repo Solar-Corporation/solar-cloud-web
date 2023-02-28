@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useCloudReducer } from '../../hooks/cloud';
+import { useAppSelector } from '../../hooks/redux';
 import { IFile } from '../../models/IFile';
 import { filesAPI } from '../../services/FilesService';
 import { setIsModalOpen } from '../../store/reducers/ModalSlice';
@@ -15,10 +16,9 @@ export const ModalDeleteFile: FC = () => {
 	const [name, setName] = useState('');
 	const [length, setLength] = useState(0);
 	const [isDir, setIsDir] = useState(false);
-	const { selected } = useAppSelector(state => state.cloudReducer);
+	const { selected, dispatch } = useCloudReducer();
 	const { deleteFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
 	const [deleteFile, { isLoading }] = filesAPI.useDeleteFileMutation();
-	const dispatch = useAppDispatch();
 
 	const handleSubmit = async () => {
 		const paths = {
