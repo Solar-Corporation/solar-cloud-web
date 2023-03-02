@@ -5,12 +5,17 @@
   display: flex;
   gap: @space-xs;
   align-items: center;
+  //max-width: calc(@container-width * 0.75);
 }
 
 .item {
   color: @transparent-6;
   font-size: 18px;
   line-height: 18px;
+  max-width: calc(@container-width * 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     color: @transparent-8-5;
