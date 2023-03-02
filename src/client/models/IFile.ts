@@ -20,3 +20,8 @@ export interface IUpload {
 	path: string;
 	files: RcFile[];
 }
+
+export interface IMove {
+	pathFrom: string;
+	pathTo: string;
+}
