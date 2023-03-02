@@ -8,7 +8,7 @@ import {
 import { message } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import Router from 'next/router';
-import { IDirectory, IFile, IUpload } from '../models/IFile';
+import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
 import { markFile, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
@@ -66,6 +66,23 @@ export const filesAPI = createApi({
 				} catch (error) {
 					console.log(error);
 				}
+			}
+		}),
+		getFolders: build.mutation<IFile[], { path: string, filesPath: string[]}>({
+			query: ({ path }) => ({
+				url: '/files',
+				method: 'GET',
+				params: { path }
+			}),
+			async onQueryStarted(args, { queryFulfilled} ) {
+				try {
+					await queryFulfilled;
+				} catch (error) {
+					await handleApiError(error);
+				}
+			},
+			transformResponse(response: IFile[], meta, { filesPath }) {
+				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
 			}
 		}),
 		uploadFiles: build.mutation<any, IUpload>({
@@ -193,10 +210,31 @@ export const filesAPI = createApi({
 					await queryFulfilled;
 					message.success(
 						paths.length > 1
-							? isDir ? `Папки (${paths.length}) перемещены в корзину` : `Файлы (${paths.length}) перемещены в корзину!`
+							? isDir ? `Папки (${paths.length}) перемещены в корзину!` : `Файлы (${paths.length}) перемещены в корзину!`
 							: isDir ? 'Папка перемещена в корзину!' : 'Файл перемещен в корзину!'
 					);
 					dispatch(setIsModalOpen({ deleteFile: false }));
+					await refreshPage();
+				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		moveFile: build.mutation<any, { paths: IMove[], isDir: boolean, destination: string }>({
+			query: ({ paths }) => ({
+				url: '/files',
+				method: 'PATCH',
+				body: { paths }
+			}),
+			async onQueryStarted({ paths, isDir, destination }, { queryFulfilled, dispatch }) {
+				try {
+					await queryFulfilled;
+					message.success(
+						paths.length > 1
+							? isDir ? `Папки (${paths.length}) перемещены в "${destination}"!` : `Файлы (${paths.length}) перемещены в "${destination}"!`
+							: isDir ? `Папка перемещена в "${destination}"!` : `Файл перемещен в "${destination}"!`
+					);
+					dispatch(setIsModalOpen({ moveFile: false }));
 					await refreshPage();
 				} catch (error) {
 					await handleApiError(error);
