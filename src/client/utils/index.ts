@@ -1,3 +1,4 @@
+import { IFile } from '../models/IFile';
 import { RouteNames } from '../router';
 import Router from 'next/router';
 
@@ -139,6 +140,8 @@ export const getFilesPlaceholder = () => [
 		seeTime: 1673380864000
 	}
 ];
+
+export const getIsDir = (arr: IFile[]) => arr.length === arr.filter(file => file.isDir).length;
 
 // export async function hash(string) {
 //   const utf8 = new TextEncoder().encode(string);
