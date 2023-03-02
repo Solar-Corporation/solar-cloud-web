@@ -8,4 +8,39 @@
   p {
     margin: 0;
   }
+
+  .selectHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 24px;
+    margin-bottom: @space-xs - @space-3xs;
+
+    .title {
+      min-width: 430px * 0.85;
+      max-width: 430px * 0.85;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .select {
+    max-height: 52px * 4;
+    border-radius: @border-radius;
+    overflow: overlay;
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      font-size: 24px;
+      color: @magenta-primary;
+    }
+  }
+
+  .fileTable {
+    width: 430 - @space-xl * 2;
+    max-width: 430 - @space-xl * 2;
+  }
 }
