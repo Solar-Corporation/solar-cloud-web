@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FC, CSSProperties } from 'react';
+import { CSSProperties, FC } from 'react';
 import styles from '../../styles/components/Breadcrumbs.module.less';
 
 interface BreadcrumbsItemProps {

@@ -2,10 +2,10 @@ import { RightOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import styles from '../../styles/components/Breadcrumbs.module.less';
+import { variables } from '../../styles/theme';
 import { pxToNumber } from '../../utils';
 import Control, { ControlList } from '../UI/Control/List';
 import { BreadcrumbsItem } from './Item';
-import { variables } from '../../styles/theme';
 
 export interface IBreadcrumbsItem {
 	title: string;
