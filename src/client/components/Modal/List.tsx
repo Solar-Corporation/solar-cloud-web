@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { ModalCreateDirectory } from './CreateDirectory';
 import { ModalDeleteFile } from './DeleteFile';
+import { ModalMoveFile } from './MoveFile';
 import { ModalRenameFile } from './RenameFile';
 
 export const ModalList: FC = () => {
@@ -8,6 +9,7 @@ export const ModalList: FC = () => {
 		<>
 			<ModalCreateDirectory />
 			<ModalRenameFile />
+			<ModalMoveFile />
 			<ModalDeleteFile />
 		</>
 	);
