@@ -49,6 +49,15 @@ export const getFilesPlaceholder = () => [
 		isFavorite: false,
 		seeTime: 1673379696000
 	}, {
+		name: 'Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
+		path: '/Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
+		size: '—',
+		fileType: '',
+		mimeType: 'text/plain',
+		isDir: true,
+		isFavorite: false,
+		seeTime: 1673379696000
+	}, {
 		name: 'Архив 1.zip',
 		path: '/Архив 1.zip',
 		size: '10 MiB',
