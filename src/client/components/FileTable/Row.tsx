@@ -97,7 +97,14 @@ const getFileType = (file: IFile) => {
 	return { icon, extension };
 };
 
-export const FileTableRow: FC<FileTableRowProps> = ({ file, selected, marked, onClick, onContextMenu, disableColumns }) => {
+export const FileTableRow: FC<FileTableRowProps> = ({
+	                                                    file,
+	                                                    selected,
+	                                                    marked,
+	                                                    onClick,
+	                                                    onContextMenu,
+	                                                    disableColumns
+                                                    }) => {
 	const [isSelected, setIsSelected] = useState(false);
 	const [isMarked, setIsMarked] = useState(file.isFavorite);
 	const date = new Date(file.seeTime || '');
@@ -128,12 +135,12 @@ export const FileTableRow: FC<FileTableRowProps> = ({ file, selected, marked, on
 			</FileTableColumn>
 			{!disableColumns && <div className={styles.columns}>
 				{file.hasOwnProperty('fileType') &&
-            <FileTableColumn title={extension} className={styles.extension}>{extension}</FileTableColumn>}
+					<FileTableColumn title={extension} className={styles.extension}>{extension}</FileTableColumn>}
 				{file.hasOwnProperty('seeTime') &&
-            <FileTableColumn className={styles.date}>{getDateStr(date)}</FileTableColumn>}
+					<FileTableColumn className={styles.date}>{getDateStr(date)}</FileTableColumn>}
 				{file.hasOwnProperty('size') &&
-            <FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
-      </div>}
+					<FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
+			</div>}
 		</div>
 	);
 };

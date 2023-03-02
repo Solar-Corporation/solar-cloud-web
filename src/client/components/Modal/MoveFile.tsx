@@ -6,10 +6,10 @@ import { useAppSelector } from '../../hooks/redux';
 import { IFile, IMove } from '../../models/IFile';
 import { filesAPI } from '../../services/FilesService';
 import { setIsModalOpen } from '../../store/reducers/ModalSlice';
+import styles from '../../styles/components/Modal.module.less';
 import { getIsDir, getLinks } from '../../utils';
 import { FileTable } from '../FileTable';
 import { AppModal } from './index';
-import styles from '../../styles/components/Modal.module.less';
 
 export const ModalMoveFile: FC = () => {
 	const [length, setLength] = useState(0);
@@ -32,7 +32,11 @@ export const ModalMoveFile: FC = () => {
 		}));
 		console.log(paths);
 
-		await moveFile({ paths, isDir, destination: selected.length ? selected[0].name : getLinks(path[index])[index].title });
+		await moveFile({
+			paths,
+			isDir,
+			destination: selected.length ? selected[0].name : getLinks(path[index])[index].title
+		});
 	};
 
 	const handleClose = () => {
@@ -117,29 +121,30 @@ export const ModalMoveFile: FC = () => {
 		>
 			<div>
 				<div className={styles.selectHeader}>
-					<div className={styles.title}>Место перемещения: {selected.length ? selected[0].name :getLinks(path[index])[index].title}</div>
+					<div className={styles.title}>Место
+						перемещения: {selected.length ? selected[0].name : getLinks(path[index])[index].title}</div>
 					{index > 0 &&
 						<Button
-		          type="ghost"
-		          title="Вернуться обратно"
-              size="small"
-              icon={<RollbackOutlined />}
-              disabled={isLoading || isLoadingQuery}
-              onClick={handleBack}
-            />}
+							type="ghost"
+							title="Вернуться обратно"
+							size="small"
+							icon={<RollbackOutlined />}
+							disabled={isLoading || isLoadingQuery}
+							onClick={handleBack}
+						/>}
 				</div>
 				<div className={styles.select}>
 					{isLoadingQuery
-						? <div className={styles.loading}><LoadingOutlined/></div>
+						? <div className={styles.loading}><LoadingOutlined /></div>
 						: files &&
-              <FileTable
-                files={files}
-                className={styles.fileTable}
-                selected={selected}
-                onRowClick={handleRowClick}
-                disableHeader
-                disableColumns
-              />}
+						<FileTable
+							files={files}
+							className={styles.fileTable}
+							selected={selected}
+							onRowClick={handleRowClick}
+							disableHeader
+							disableColumns
+						/>}
 				</div>
 			</div>
 		</AppModal>

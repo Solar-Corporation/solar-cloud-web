@@ -20,7 +20,17 @@ interface FileTableProps {
 	className?: string;
 }
 
-export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableColumns, selected, marked, onRowClick, onRowContextMenu, contextMenu, className }) => {
+export const FileTable: FC<FileTableProps> = ({
+	                                              files,
+	                                              disableHeader,
+	                                              disableColumns,
+	                                              selected,
+	                                              marked,
+	                                              onRowClick,
+	                                              onRowContextMenu,
+	                                              contextMenu,
+	                                              className
+                                              }) => {
 	const { isFilesContextMenuOpen, dispatch } = useCloudReducer();
 
 	const handleClick = (event: any) => {

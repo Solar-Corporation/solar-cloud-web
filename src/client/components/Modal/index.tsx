@@ -19,16 +19,16 @@ interface AppModalProps {
 
 export const AppModal: FC<AppModalProps> = ({
 	                                            title,
-																							width,
+	                                            width,
 	                                            okText,
 	                                            cancelText,
 	                                            open,
 	                                            confirmLoading,
-																							confirmDisabled,
+	                                            confirmDisabled,
 	                                            afterClose,
 	                                            onOk,
 	                                            onCancel,
-																							onContainerClick,
+	                                            onContainerClick,
 	                                            children
                                             }) => {
 	return (

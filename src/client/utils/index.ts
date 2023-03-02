@@ -1,6 +1,6 @@
+import Router from 'next/router';
 import { IFile } from '../models/IFile';
 import { RouteNames } from '../router';
-import Router from 'next/router';
 
 export const getDateStr = (date: Date) => {
 	const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;

@@ -68,13 +68,13 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		getFolders: build.mutation<IFile[], { path: string, filesPath: string[]}>({
+		getFolders: build.mutation<IFile[], { path: string, filesPath: string[] }>({
 			query: ({ path }) => ({
 				url: '/files',
 				method: 'GET',
 				params: { path }
 			}),
-			async onQueryStarted(args, { queryFulfilled} ) {
+			async onQueryStarted(args, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
 				} catch (error) {

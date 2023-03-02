@@ -30,7 +30,7 @@ export const ModalRenameFile: FC = () => {
 		if (selected.length) {
 			if (!isLoading) setName(selected[0].name);
 		}
-	}
+	};
 
 	useEffect(() => {
 		handleUpdate();
