@@ -34,7 +34,7 @@ export const ModalDeleteFile: FC = () => {
 				setIsDir(getIsDir(selected));
 			}
 		}
-	}, [selected]);
+	}, [selected, isLoading]);
 
 	return (
 		<AppModal

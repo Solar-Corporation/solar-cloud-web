@@ -93,7 +93,7 @@ export const ModalMoveFile: FC = () => {
 				setIsDir(getIsDir(globalSelected));
 			}
 		}
-	}, [globalSelected]);
+	}, [globalSelected, isLoading]);
 
 	useEffect(() => {
 		if (isOpen && (!isLoading || !isLoadingQuery)) {

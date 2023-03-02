@@ -34,7 +34,7 @@ export const ModalRenameFile: FC = () => {
 
 	useEffect(() => {
 		handleUpdate();
-	}, [selected]);
+	}, [selected, isLoading]);
 
 	useEffect(() => {
 		if (isOpen) {

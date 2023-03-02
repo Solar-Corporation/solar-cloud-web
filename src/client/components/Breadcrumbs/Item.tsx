@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FC } from 'react';
+import { FC, CSSProperties } from 'react';
 import styles from '../../styles/components/Breadcrumbs.module.less';
 
 interface BreadcrumbsItemProps {
@@ -7,14 +7,16 @@ interface BreadcrumbsItemProps {
 		title: string;
 		href: string;
 	};
+	style?: CSSProperties;
 	active?: boolean;
 }
 
-export const BreadcrumbsItem: FC<BreadcrumbsItemProps> = ({ link, active }) => {
+export const BreadcrumbsItem: FC<BreadcrumbsItemProps> = ({ link, style, active }) => {
 	return (
 		<Link
 			href={link.href}
 			title={link.title}
+			style={style}
 			className={active ? `${styles.item} ${styles.item_active}` : styles.item}
 		>
 			{link.title}
