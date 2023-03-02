@@ -27,7 +27,7 @@ export const themeCloud = {
 			colorPrimary: variables['@secondary'],
 			colorPrimaryHover: variables['@secondary'],
 			colorBgContainer: variables['@secondary'],
-			colorBorder: variables['@secondary']
+			colorBorder: 'transparent'
 		},
 		Checkbox: {
 			colorPrimary: variables['@magenta-primary'],
