@@ -5,6 +5,7 @@ export interface IModal {
 	createDirectory?: boolean;
 	renameFile?: boolean;
 	deleteFile?: boolean;
+	moveFile?: boolean;
 }
 
 export interface ModalState {
@@ -15,7 +16,8 @@ const initialState: ModalState = {
 	modal: {
 		createDirectory: false,
 		renameFile: false,
-		deleteFile: false
+		deleteFile: false,
+		moveFile: false
 	}
 };
 
