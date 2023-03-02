@@ -1,16 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 import { useCloudReducer } from '../../hooks/cloud';
 import { useAppSelector } from '../../hooks/redux';
-import { IFile } from '../../models/IFile';
 import { filesAPI } from '../../services/FilesService';
 import { setIsModalOpen } from '../../store/reducers/ModalSlice';
+import { getIsDir } from '../../utils';
 import { AppModal } from './index';
-
-const getIsDir = (arr: IFile[]) => {
-	const arrFiltered = arr.filter(file => file.isDir);
-
-	return arr.length === arrFiltered.length;
-};
 
 export const ModalDeleteFile: FC = () => {
 	const [name, setName] = useState('');
@@ -50,7 +44,6 @@ export const ModalDeleteFile: FC = () => {
 					: isDir ? 'Удалить папку' : 'Удалить файл'
 			}
 			okText="Удалить"
-			cancelText="Отменить"
 			open={isOpen}
 			confirmLoading={isLoading}
 			onOk={handleSubmit}

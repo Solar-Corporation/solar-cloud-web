@@ -17,9 +17,10 @@ interface FileTableProps {
 	onRowClick?: (event: any, file: IFile, isSelected: boolean) => void;
 	onRowContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	contextMenu?: Control[];
+	className?: string;
 }
 
-export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableColumns, selected, marked, onRowClick, onRowContextMenu, contextMenu }) => {
+export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableColumns, selected, marked, onRowClick, onRowContextMenu, contextMenu, className }) => {
 	const { isFilesContextMenuOpen, dispatch } = useCloudReducer();
 
 	const handleClick = (event: any) => {
@@ -33,7 +34,11 @@ export const FileTable: FC<FileTableProps> = ({ files, disableHeader, disableCol
 	return (
 		files.length > 0
 			?
-			<div className={disableHeader ? `${styles.main} ${styles.disableHeader}` : styles.main}>
+			<div className={
+				className
+					? disableHeader ? `${styles.main} ${styles.disableHeader} ${className}` : `${styles.main} ${className}`
+					: disableHeader ? `${styles.main} ${styles.disableHeader}` : styles.main
+			}>
 				{!disableHeader && <FileTableHeader columns={files[0]} />}
 				<ContextMenu
 					menu={contextMenu}
