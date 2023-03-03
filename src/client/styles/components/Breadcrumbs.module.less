@@ -5,14 +5,17 @@
   display: flex;
   gap: @space-xs;
   align-items: center;
-  //max-width: calc(@container-width * 0.75);
+  max-width: calc(@container-width * 0.65);
+
+  button {
+    min-width: 32px;
+  }
 }
 
 .item {
   color: @transparent-6;
   font-size: 18px;
   line-height: 18px;
-  max-width: calc(@container-width * 0.5);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
