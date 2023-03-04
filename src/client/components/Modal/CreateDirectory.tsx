@@ -13,7 +13,7 @@ export const ModalCreateDirectory: FC = () => {
 	const [relocate, setRelocate] = useState(false);
 	const { path } = useAppSelector(state => state.cloudReducer.context);
 	const { createDirectory: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [createDirectory, { isLoading }] = filesAPI.useCreateDirectoryMutation();
+	const [createDirectory, { isLoading, reset }] = filesAPI.useCreateDirectoryMutation();
 	const dispatch = useAppDispatch();
 
 	const handleUpdate = () => {
@@ -27,6 +27,14 @@ export const ModalCreateDirectory: FC = () => {
 
 	const handleClose = () => {
 		dispatch(setIsModalOpen({ createDirectory: false }));
+	};
+
+	const handleCancel = () => {
+		if (isLoading) {
+			reset();
+		} else {
+			handleClose();
+		}
 	};
 
 	const handleChange = (event: CheckboxChangeEvent) => {
@@ -51,7 +59,8 @@ export const ModalCreateDirectory: FC = () => {
 			confirmDisabled={!name}
 			afterClose={handleUpdate}
 			onOk={handleSubmit}
-			onCancel={handleClose}
+			onCancel={handleCancel}
+			onClose={handleClose}
 		>
 			<Input
 				ref={inputRef}

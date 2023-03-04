@@ -11,7 +11,7 @@ export const ModalRenameFile: FC = () => {
 	const [name, setName] = useState('');
 	const { selected, dispatch } = useCloudReducer();
 	const { renameFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [renameFile, { isLoading }] = filesAPI.useRenameFileMutation();
+	const [renameFile, { isLoading, reset }] = filesAPI.useRenameFileMutation();
 
 	const handleSubmit = async () => {
 		if (name !== selected[0].name) {
@@ -24,6 +24,14 @@ export const ModalRenameFile: FC = () => {
 
 	const handleClose = () => {
 		dispatch(setIsModalOpen({ renameFile: false }));
+	};
+
+	const handleCancel = () => {
+		if (isLoading) {
+			reset();
+		} else {
+			handleClose();
+		}
 	};
 
 	const handleUpdate = () => {
@@ -53,7 +61,8 @@ export const ModalRenameFile: FC = () => {
 			confirmLoading={isLoading}
 			confirmDisabled={!name}
 			onOk={handleSubmit}
-			onCancel={handleClose}
+			onCancel={handleCancel}
+			onClose={handleClose}
 			afterClose={handleUpdate}
 		>
 			<Input

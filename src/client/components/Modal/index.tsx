@@ -11,10 +11,11 @@ interface AppModalProps {
 	confirmLoading?: boolean;
 	confirmDisabled?: boolean;
 	afterClose?: () => void;
-	onOk: () => void;
-	onCancel: () => void;
+	onOk?: () => void;
+	onCancel?: () => void;
+	onClose?: () => void;
 	onContainerClick?: () => void;
-	children: ReactNode;
+	children?: ReactNode;
 }
 
 export const AppModal: FC<AppModalProps> = ({
@@ -28,6 +29,7 @@ export const AppModal: FC<AppModalProps> = ({
 	                                            afterClose,
 	                                            onOk,
 	                                            onCancel,
+	                                            onClose,
 	                                            onContainerClick,
 	                                            children
                                             }) => {
@@ -39,7 +41,7 @@ export const AppModal: FC<AppModalProps> = ({
 			footer={[
 				<Button
 					key="cancel"
-					type="ghost"
+					type="text"
 					onClick={onCancel}
 				>
 					{cancelText || 'Отменить'}
@@ -55,7 +57,7 @@ export const AppModal: FC<AppModalProps> = ({
 				</Button>
 			]}
 			afterClose={afterClose}
-			onCancel={onCancel}
+			onCancel={onClose}
 		>
 			<div className={styles.container} onClick={onContainerClick}>
 				{children}

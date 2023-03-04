@@ -20,7 +20,7 @@ export const ModalMoveFile: FC = () => {
 
 	const { context, selected: globalSelected, dispatch } = useCloudReducer();
 	const { moveFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [moveFile, { isLoading }] = filesAPI.useMoveFileMutation();
+	const [moveFile, { isLoading, reset }] = filesAPI.useMoveFileMutation();
 	const [getFolders, { data: files, isLoading: isLoadingQuery }] = filesAPI.useGetFoldersMutation();
 
 	const handleSubmit = async () => {
@@ -41,6 +41,14 @@ export const ModalMoveFile: FC = () => {
 
 	const handleClose = () => {
 		dispatch(setIsModalOpen({ moveFile: false }));
+	};
+
+	const handleCancel = () => {
+		if (isLoading) {
+			reset();
+		} else {
+			handleClose();
+		}
 	};
 
 	const handleUpdate = () => {
@@ -115,7 +123,8 @@ export const ModalMoveFile: FC = () => {
 			confirmLoading={isLoading}
 			confirmDisabled={context.path === (selected.length ? selected[0].path : path[index])}
 			onOk={handleSubmit}
-			onCancel={handleClose}
+			onCancel={handleCancel}
+			onClose={handleClose}
 			afterClose={handleUpdate}
 			onContainerClick={handleClick}
 		>

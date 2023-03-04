@@ -12,7 +12,7 @@ export const ModalDeleteFile: FC = () => {
 	const [isDir, setIsDir] = useState(false);
 	const { selected, dispatch } = useCloudReducer();
 	const { deleteFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [deleteFile, { isLoading }] = filesAPI.useDeleteFileMutation();
+	const [deleteFile, { isLoading, reset }] = filesAPI.useDeleteFileMutation();
 
 	const handleSubmit = async () => {
 		const paths = {
@@ -24,6 +24,14 @@ export const ModalDeleteFile: FC = () => {
 
 	const handleClose = () => {
 		dispatch(setIsModalOpen({ deleteFile: false }));
+	};
+
+	const handleCancel = () => {
+		if (isLoading) {
+			reset();
+		} else {
+			handleClose();
+		}
 	};
 
 	useEffect(() => {
@@ -47,7 +55,8 @@ export const ModalDeleteFile: FC = () => {
 			open={isOpen}
 			confirmLoading={isLoading}
 			onOk={handleSubmit}
-			onCancel={handleClose}
+			onCancel={handleCancel}
+			onClose={handleClose}
 		>
 			<p>Вы уверены что хотите переместить {
 				length > 1
