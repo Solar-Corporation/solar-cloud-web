@@ -152,6 +152,8 @@ export const getFilesPlaceholder = () => [
 
 export const getIsDir = (arr: IFile[]) => arr.length === arr.filter(file => file.isDir).length;
 
+export const getHasDir = (arr: IFile[]) => !!arr.find(file => file.isDir);
+
 // export async function hash(string) {
 //   const utf8 = new TextEncoder().encode(string);
 //   const hashBuffer = await crypto.subtle.digest("SHA-256", utf8);
