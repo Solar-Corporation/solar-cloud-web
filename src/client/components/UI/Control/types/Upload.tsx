@@ -23,7 +23,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 	};
 
 	const handleUpload = async (event: any) => {
-		const files: RcFile[] = Array.prototype.slice.call(event.currentTarget.files);
+		const files: RcFile[] = Array.prototype.slice.call(event.target.files);
 
 		if (files.length) {
 			if (folder) {
@@ -35,6 +35,8 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 				await uploadFiles(upload);
 			}
 		}
+
+		event.target.value = '';
 	};
 
 	return (

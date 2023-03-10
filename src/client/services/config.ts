@@ -7,6 +7,6 @@ export const handleApiError = async (error: any, key?: string) => {
 	await message.open({
 		key: key,
 		type: 'error',
-		content: `${error.error.error || error.error.data.message || error.error.data.error}`
+		content: `${error.error.error || error.error.data?.message || error.error.data?.error || error.meta.response.statusText}`
 	});
 };
