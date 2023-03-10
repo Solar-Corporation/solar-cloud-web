@@ -38,47 +38,45 @@ interface ControlListProps {
 export const getControlType = (type: Control, index: number, buttonType?: ButtonProps['type'], block?: boolean, className?: string) => {
 	return [
 		type === Control.CREATE &&
-		<ControlCreate key={index} type={buttonType} block={block} className={className} />,
+    <ControlCreate key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.UPLOAD &&
-		<ControlUpload key={index} type={buttonType} block={block} className={className} />,
+    <ControlUpload key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.UPLOAD_FOLDER &&
-		<ControlUpload key={index} type={buttonType} block={block} className={className} folder />,
+    <ControlUpload key={index} type={buttonType} block={block} className={className} folder/>,
 		type === Control.INFO &&
-		<ControlInfo key={index} type={buttonType} block={block} className={className} />,
+    <ControlInfo key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.VIEW &&
-		<ControlView key={index} type={buttonType} block={block} className={className} />,
+    <ControlView key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.SHARE &&
-		<ControlShare key={index} type={buttonType} block={block} className={className} />,
+    <ControlShare key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.DOWNLOAD &&
-		<ControlDownload key={index} type={buttonType} block={block} className={className} />,
+    <ControlDownload key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.DELETE &&
-		<ControlDelete key={index} type={buttonType} block={block} className={className} />,
+    <ControlDelete key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.RENAME &&
-		<ControlRename key={index} type={buttonType} block={block} className={className} />,
+    <ControlRename key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.MOVE &&
-		<ControlMove key={index} type={buttonType} block={block} className={className} />,
+    <ControlMove key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.COPY &&
-		<ControlCopy key={index} type={buttonType} block={block} className={className} />,
+    <ControlCopy key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.MARK &&
-		<ControlMark key={index} type={buttonType} block={block} className={className} />
+    <ControlMark key={index} type={buttonType} block={block} className={className}/>
 	];
 };
 
 export const ControlList: FC<ControlListProps> = ({ list, type, className }) => {
 	return (
 		<>
-			{list.map((control, index) =>
-				(index < 3)
-					? getControlType(control, index, type, false, className)
-					: null
-			)}
-			{list.length > 3 &&
-				<ControlMore
-					list={list.filter((type, index) => index > 2)}
-					type={type}
-					className={className}
-				/>
+			{list.length > 4
+				? list.filter((control, index )=> index < 3).map((control, index) => getControlType(control, index, type, false, className))
+				: list.map((control, index) => getControlType(control, index, type, false, className))
 			}
+			{list.length > 4 &&
+        <ControlMore
+          list={list.filter((type, index) => index > 2)}
+          type={type}
+          className={className}
+        />}
 		</>
 	);
 };

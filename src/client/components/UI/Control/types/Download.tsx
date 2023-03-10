@@ -6,7 +6,7 @@ import { Control, ControlTypeProps } from '../index';
 
 export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const { selected } = useCloudReducer();
-	const [downloadFile] = filesAPI.useDownloadFileMutation();
+	const [downloadFile, { isLoading }] = filesAPI.useDownloadFileMutation();
 
 	const handleClick = () => {
 		selected.forEach(async (file) => {
@@ -21,6 +21,7 @@ export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }
 			title="Скачать"
 			onClick={handleClick}
 			className={className}
+			loading={isLoading}
 			type={type}
 			block={block}
 		/>
