@@ -10,7 +10,7 @@ import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, setContext, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
-import { getFilesPlaceholder, getLinks } from '../../client/utils';
+import { getFilesPlaceholder, getHasDir, getLinks } from '../../client/utils';
 
 export default function Cloud({ files, path, links }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
@@ -19,8 +19,12 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 
 	const floatControls = selected.length
 		? selected.length > 1
-			? [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
-			: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
+			? getHasDir(selected)
+				? [Control.SHARE, Control.DELETE, Control.MOVE, Control.COPY]
+				: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
+			: getHasDir(selected)
+				? [Control.SHARE, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
+				: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
 		: path !== '/' ? [Control.SHARE] : undefined;
 
 	const headingOptions = {
@@ -35,8 +39,12 @@ export default function Cloud({ files, path, links }: InferGetServerSidePropsTyp
 		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.NULL, Control.VIEW, Control.INFO]
 		: [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO];
 	const filesContextMenu = selected.length > 1
-		? [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
-		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
+		? getHasDir(selected)
+			? [Control.SHARE, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
+			: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
+		: getHasDir(selected)
+			?	[Control.SHARE, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO]
+			: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
