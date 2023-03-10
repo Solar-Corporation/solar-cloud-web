@@ -1,3 +1,4 @@
+import { ButtonProps } from 'antd';
 import { FC } from 'react';
 import { ControlCopy } from './types/Copy';
 import { ControlCreate } from './types/Create';
@@ -30,11 +31,11 @@ enum Control {
 
 interface ControlListProps {
 	list: Control[];
-	type?: 'default' | 'primary' | 'ghost';
+	type?: ButtonProps['type'];
 	className?: string;
 }
 
-export const getControlType = (type: Control, index: number, buttonType?: 'default' | 'primary' | 'ghost', block?: boolean, className?: string) => {
+export const getControlType = (type: Control, index: number, buttonType?: ButtonProps['type'], block?: boolean, className?: string) => {
 	return [
 		type === Control.CREATE &&
 		<ControlCreate key={index} type={buttonType} block={block} className={className} />,

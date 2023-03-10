@@ -45,10 +45,10 @@ export const PageHeading: FC<PageHeadingProps> = ({ links, actions, floatControl
 			{((floatControls && floatControls.length > 0) || (constControls && constControls.length > 0)) &&
 				<div className={styles.controls}>
 					{floatControls && <>
-						<ControlList list={floatControls} type="ghost" />
+						<ControlList list={floatControls} type="text" />
 						<div className={styles.controlsDivider} />
 					</>}
-					{constControls && <ControlList list={constControls} type="ghost" />}
+					{constControls && <ControlList list={constControls} type="text" />}
 				</div>}
 		</div>
 	);

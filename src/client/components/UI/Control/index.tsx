@@ -1,10 +1,10 @@
-import { Button } from 'antd';
+import { Button, ButtonProps } from 'antd';
 import { FC, ReactNode } from 'react';
 import { fontRoboto } from '../../../../pages/_app';
 import styles from '../../../styles/components/Control.module.less';
 
 export interface ControlTypeProps {
-	type?: 'default' | 'primary' | 'ghost';
+	type?: ButtonProps['type'];
 	block?: boolean;
 	className?: string;
 }
