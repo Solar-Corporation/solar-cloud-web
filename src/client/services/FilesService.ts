@@ -85,7 +85,7 @@ export const filesAPI = createApi({
 				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
 			}
 		}),
-		uploadFiles: build.mutation<any, IUpload>({
+		uploadFile: build.mutation<any, IUpload>({
 			query: (data) => ({
 				url: '/files',
 				method: 'POST',
@@ -124,7 +124,7 @@ export const filesAPI = createApi({
 					await queryFulfilled;
 					const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
 					const upload: IUpload = { path, files };
-					await dispatch(filesAPI.endpoints.uploadFiles.initiate(upload));
+					await dispatch(filesAPI.endpoints.uploadFile.initiate(upload));
 				} catch (error) {
 					await handleApiError(error);
 				}
@@ -154,7 +154,7 @@ export const filesAPI = createApi({
 		}),
 		renameFile: build.mutation<any, { path: string, new_name: string, isDir: boolean }>({
 			query: ({ path, new_name }) => ({
-				url: `/files${path}`,
+				url: `/files/${encodeURIComponent(path)}`,
 				method: 'PUT',
 				params: { new_name }
 			}),
@@ -237,6 +237,27 @@ export const filesAPI = createApi({
 					dispatch(setIsModalOpen({ moveFile: false }));
 					await refreshPage();
 				} catch (error) {
+					await handleApiError(error);
+				}
+			}
+		}),
+		downloadFile: build.mutation<Blob, { name: string, path: string}>({
+			query: ({ path }) => ({
+				url: `/files/${encodeURIComponent(path)}`,
+				method: 'GET',
+				responseHandler: ((response) => response.blob()),
+				redirect: 'follow'
+			}),
+			async onQueryStarted({ name, path }, { queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled;
+					const link = document.createElement('a');
+					link.href = URL.createObjectURL(data);
+					link.download = name;
+					link.click();
+					link.remove();
+				} catch (error) {
+					console.log(error);
 					await handleApiError(error);
 				}
 			}
