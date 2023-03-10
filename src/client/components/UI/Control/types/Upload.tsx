@@ -14,7 +14,7 @@ interface ControlUploadProps extends ControlTypeProps {
 export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, folder }) => {
 	const inputRef = useRef(null);
 	const { path } = useAppSelector(state => state.cloudReducer.context);
-	const [uploadFiles] = filesAPI.useUploadFilesMutation();
+	const [uploadFile] = filesAPI.useUploadFileMutation();
 	const [uploadDirectory] = filesAPI.useUploadDirectoryMutation();
 
 	const handleClick = () => {
@@ -32,7 +32,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 				await uploadDirectory({ directory, files });
 			} else {
 				const upload: IUpload = { path, files };
-				await uploadFiles(upload);
+				await uploadFile(upload);
 			}
 		}
 
