@@ -3,12 +3,12 @@ import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '../../client/img/logo.svg';
-import { IAuth } from '../../client/models/IAuth';
-import { RouteNames } from '../../client/router';
-import { authAPI } from '../../client/services/AuthService';
-import styles from '../../client/styles/pages/Login.module.less';
-import { variables } from '../../client/styles/theme';
+import Logo from '../client/img/logo.svg';
+import { IAuth } from '../client/models/IAuth';
+import { RouteNames } from '../client/router';
+import { authAPI } from '../client/services/AuthService';
+import styles from '../client/styles/pages/Login.module.less';
+import { variables } from '../client/styles/theme';
 
 const { Text } = Typography;
 

@@ -4,12 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Logo from '../../client/img/logo.svg';
-import { IRegister } from '../../client/models/IAuth';
-import { RouteNames } from '../../client/router';
-import { authAPI } from '../../client/services/AuthService';
-import styles from '../../client/styles/pages/Signup.module.less';
-import { variables } from '../../client/styles/theme';
+import Logo from '../client/img/logo.svg';
+import { IRegister } from '../client/models/IAuth';
+import { RouteNames } from '../client/router';
+import { authAPI } from '../client/services/AuthService';
+import styles from '../client/styles/pages/Signup.module.less';
+import { variables } from '../client/styles/theme';
 
 const { Text } = Typography;
 
@@ -33,7 +33,7 @@ export default function Signup() {
 
 	useEffect(() => {
 		if (data) {
-			router.push(RouteNames.CLOUD);
+			router.push(RouteNames.FILES);
 		}
 	}, [data]);
 

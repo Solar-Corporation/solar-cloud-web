@@ -30,7 +30,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 
 	const links: INavbarItem[] = [
 		{ icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
-		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.CLOUD },
+		{ icon: <FileOutlined />, title: 'Все файлы', href: RouteNames.FILES, additionalHref: RouteNames.DIRECTORY },
 		{ icon: <StarOutlined />, title: 'Избранное', href: RouteNames.MARKED },
 		{ icon: <TagsOutlined />, title: 'Теги', href: RouteNames.TAGS },
 		{ icon: <TeamOutlined />, title: 'Общий доступ', href: RouteNames.SHARED },

@@ -22,15 +22,15 @@ export const refreshPage = async () => {
 };
 
 export const getLinks = (str: string) => {
-	const links: { title: string, href: string }[] = [{ title: 'Все файлы', href: RouteNames.CLOUD }];
+	const links: { title: string, href: string }[] = [{ title: 'Все файлы', href: RouteNames.FILES }];
 
 	if (str !== '/') {
 		const arrFromString = str.split('/');
 		for (let i = 1; i < arrFromString.length; i++) {
 			if (i === 1) {
-				links.push({ title: arrFromString[1], href: `${RouteNames.CLOUD}?path=/${arrFromString[1]}` });
+				links.push({ title: arrFromString[i], href: `${RouteNames.FILES}/${encodeURIComponent(`/${arrFromString[i]}`)}` });
 			} else {
-				links.push({ title: arrFromString[i], href: `${links[i - 1].href}/${arrFromString[i]}` });
+				links.push({ title: arrFromString[i], href: `${links[i - 1].href}${encodeURIComponent(`/${arrFromString[i]}`)}` });
 			}
 		}
 	}

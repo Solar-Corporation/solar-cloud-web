@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../client/img/logo.svg';
+import { RouteNames } from '../client/router';
 import styles from '../client/styles/pages/Home.module.less';
 
 export default function Home() {
@@ -16,7 +17,7 @@ export default function Home() {
 			<main className={styles.main}>
 				<div className={styles.container}>
 					<Image src={Logo} alt="" className={styles.image} />
-					<Link href="/cloud">
+					<Link href={RouteNames.APP}>
 						<Button type="primary" size="large">
 							Перейти в облако
 						</Button>

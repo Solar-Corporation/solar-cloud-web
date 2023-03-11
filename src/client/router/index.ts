@@ -2,11 +2,13 @@ export enum RouteNames {
 	HOME = '/',
 	LOGIN = '/sign-in',
 	SIGNUP = '/sign-up',
-	CLOUD = '/cloud',
-	RECENT = '/cloud/recent',
-	MARKED = '/cloud/marked',
-	SHARED = '/cloud/shared',
-	TAGS = '/cloud/tags',
-	TRASH = '/cloud/trash',
-	SETTINGS = '/settings'
+	APP = '/app',
+	FILES = '/app/files',
+	DIRECTORY = '/app/files/[directory]',
+	RECENT = '/app/recent',
+	MARKED = '/app/marked',
+	SHARED = '/app/shared',
+	TAGS = '/app/tags',
+	TRASH = '/app/trash',
+	SETTINGS = '/app/settings'
 }

@@ -5,7 +5,7 @@ import styles from '../../styles/components/Header.module.less';
 
 export const HeaderLogo: FC = () => {
 	return (
-		<Link title="На главную" href={RouteNames.CLOUD} className={styles.logo}>
+		<Link title="На главную" href={RouteNames.FILES} className={styles.logo}>
 			<svg width="3831" height="512" viewBox="0 0 3831 512" fill="none" xmlns="http://www.w3.org/2000/svg"
 			     className={styles.logo}>
 				<path fillRule="evenodd" clipRule="evenodd"
