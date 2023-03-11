@@ -32,7 +32,7 @@ export const authAPI = createApi({
 				try {
 					const { data } = await queryFulfilled;
 					setUserOnQueryFulfilled(data, dispatch);
-					await Router.push(RouteNames.CLOUD);
+					await Router.push(RouteNames.FILES);
 				} catch (error) {
 					console.log(error);
 					await handleApiError(error);
