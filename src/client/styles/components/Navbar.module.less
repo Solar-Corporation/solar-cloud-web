@@ -31,9 +31,21 @@
 }
 
 .item_active {
+  position: relative;
+
   &, &:hover, &:active {
-    font-weight: 500;
-    color: @gold-primary;
-    background: @transparent-1;
+    color: @transparent-8;
+    background: @transparent-0-5;
+  }
+
+  &:after {
+    background: @gold-primary;
+    border-radius: 2px;
+    content: "";
+    height: 24px;
+    left: calc(@space-xs * -1);
+    position: absolute;
+    top: calc(50% - 12px);
+    width: 3px;
   }
 }
