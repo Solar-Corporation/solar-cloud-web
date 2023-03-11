@@ -7,6 +7,7 @@ export interface INavbarItem {
 	icon: ReactNode;
 	title: string;
 	href: string;
+	additionalHref?: string;
 }
 
 interface NavbarProps {
@@ -23,7 +24,7 @@ export const Navbar: FC<NavbarProps> = ({ links }) => {
 					key={index}
 					href={link.href}
 					className={
-						router.pathname === link.href
+						(router.pathname === link.href) || (router.pathname === link.additionalHref)
 							? `${styles.item} ${styles.item_active}`
 							: styles.item
 					}

@@ -2,11 +2,13 @@ import Link from 'next/link';
 import { CSSProperties, FC } from 'react';
 import styles from '../../styles/components/Breadcrumbs.module.less';
 
+export interface IBreadcrumbsItem {
+	title: string;
+	href: string;
+}
+
 interface BreadcrumbsItemProps {
-	link: {
-		title: string;
-		href: string;
-	};
+	link: IBreadcrumbsItem;
 	style?: CSSProperties;
 	active?: boolean;
 }

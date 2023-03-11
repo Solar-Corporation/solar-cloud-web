@@ -3,12 +3,7 @@ import { FC } from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import styles from '../../styles/components/Breadcrumbs.module.less';
 import Control, { ControlList } from '../UI/Control/List';
-import { BreadcrumbsItem } from './Item';
-
-export interface IBreadcrumbsItem {
-	title: string;
-	href: string;
-}
+import { BreadcrumbsItem, IBreadcrumbsItem } from './Item';
 
 interface BreadcrumbsProps {
 	links: IBreadcrumbsItem[];
@@ -26,7 +21,7 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ links, actions }) => {
 						key={index}
 						link={link}
 						style={index === 0 ? { minWidth: 'min-content' } : undefined}
-						active={url === link.href}
+						active={url === decodeURIComponent(link.href)}
 					/>,
 					(index !== links.length - 1) && <RightOutlined key={`separator${index}`} className={styles.separator} />])
 				: <BreadcrumbsItem link={links[0]} active />}

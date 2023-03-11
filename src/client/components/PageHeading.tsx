@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/components/PageHeading.module.less';
-import { Breadcrumbs, IBreadcrumbsItem } from './Breadcrumbs';
+import { Breadcrumbs } from './Breadcrumbs';
+import { IBreadcrumbsItem } from './Breadcrumbs/Item';
 import Control, { ControlList } from './UI/Control/List';
 
 export interface PageHeadingProps {
