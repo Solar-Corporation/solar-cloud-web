@@ -1,8 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/components/PageHeading.module.less';
+import { pxToNumber } from '../utils';
 import { Breadcrumbs } from './Breadcrumbs';
 import { IBreadcrumbsItem } from './Breadcrumbs/Item';
 import Control, { ControlList } from './UI/Control/List';
+import { variables } from '../styles/theme';
 
 export interface PageHeadingProps {
 	links: IBreadcrumbsItem[];
@@ -16,7 +18,7 @@ export const PageHeading: FC<PageHeadingProps> = ({ links, actions, floatControl
 	const [isSticky, setIsSticky] = useState(false);
 
 	const handleStick = () => {
-		if (window.scrollY >= 72) {
+		if (window.scrollY >= (pxToNumber(variables['@header-height']) + 10)) {
 			setIsSticky(true);
 		} else {
 			setIsSticky(false);
