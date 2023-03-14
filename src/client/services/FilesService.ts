@@ -16,12 +16,16 @@ import { setIsModalOpen } from '../store/reducers/ModalSlice';
 import { refreshPage } from '../utils';
 import { apiUrl, handleApiError } from './config';
 
-const getFormData = (data: IUpload) => {
+const getFormData = ({ path, files }: IUpload) => {
 	const formData = new FormData();
-	formData.append('path', data.path);
+	formData.append('path', path);
 
-	data.files.forEach((file) => {
-		formData.append('files[]', file as RcFile);
+	files.forEach((file) => {
+		formData.append('files[]', new File(
+			[file],
+			encodeURIComponent(file.name),
+			{ type: file.type, lastModified: file.lastModified }) as RcFile
+		);
 	});
 
 	return formData;
@@ -42,9 +46,9 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 	if (result.error && result.error.status === 401) {
 		const refreshResult = await baseQuery('/refresh', api, extraOptions);
 		console.log('refresh', refreshResult);
-		// if (refreshResult.data) {
-		// 	result = await baseQuery(args, api, extraOptions);
-		// }
+		if (refreshResult.data) {
+			result = await baseQuery(args, api, extraOptions);
+		}
 	}
 	return result;
 };
@@ -66,6 +70,9 @@ export const filesAPI = createApi({
 				} catch (error) {
 					console.log(error);
 				}
+			},
+			transformResponse(response: IFile[]) {
+				return response.map(file => ({ ...file, name: decodeURIComponent(file.name)}));
 			}
 		}),
 		getFolders: build.mutation<IFile[], { path: string, filesPath: string[] }>({
@@ -143,7 +150,7 @@ export const filesAPI = createApi({
 					message.success('Папка создана!');
 					if (relocate) {
 						const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
-						await Router.push(`${RouteNames.CLOUD}?path=${path}`);
+						await Router.push(`${RouteNames.FILES}/${encodeURIComponent(path)}`);
 					} else {
 						await refreshPage();
 					}
