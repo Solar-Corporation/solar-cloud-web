@@ -89,7 +89,17 @@ export const filesAPI = createApi({
 				}
 			},
 			transformResponse(response: IFile[], meta, { filesPath }) {
-				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
+				return response?.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
+			}
+		}),
+		getMarkedFiles: build.query<IFile[], string>({
+			query: () => ({ url: '/favorites' }),
+			async onQueryStarted(args, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+				} catch (error) {
+					console.log(error);
+				}
 			}
 		}),
 		uploadFile: build.mutation<any, IUpload>({
@@ -113,7 +123,11 @@ export const filesAPI = createApi({
 						type: 'success',
 						content: args.files.length > 1 ? 'Файлы успешно загружены!' : 'Файл успешно загружен!'
 					});
-					await refreshPage();
+					if (Router.asPath === RouteNames.FILES || Router.asPath === RouteNames.DIRECTORY) {
+						await refreshPage();
+					} else {
+						await Router.push(RouteNames.FILES);
+					}
 				} catch (error) {
 					console.log(error);
 					await handleApiError(error, key);
@@ -185,7 +199,11 @@ export const filesAPI = createApi({
 			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
 				try {
 					await queryFulfilled;
-					paths.forEach((path) => dispatch(markFile(path)));
+					if (Router.asPath !== RouteNames.MARKED) {
+						paths.forEach((path) => dispatch(markFile(path)));
+					} else {
+						await refreshPage();
+					}
 				} catch (error) {
 					await handleApiError(error);
 				}
@@ -200,7 +218,11 @@ export const filesAPI = createApi({
 			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
 				try {
 					await queryFulfilled;
-					paths.forEach((path) => dispatch(unMarkFile(path)));
+					if (Router.asPath !== RouteNames.MARKED) {
+						paths.forEach((path) => dispatch(unMarkFile(path)));
+					} else {
+						await refreshPage();
+					}
 				} catch (error) {
 					await handleApiError(error);
 				}
