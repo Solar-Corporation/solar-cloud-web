@@ -22,11 +22,7 @@ export const ControlMark: FC<ControlTypeProps> = ({ type, block, className }) =>
 
 	useEffect(() => {
 		if (selected.length) {
-			if (marked.length) {
-				setIsMarked(!!marked.find(path => path === selected[0].path));
-			} else {
-				setIsMarked(selected[0].isFavorite);
-			}
+			setIsMarked(!!marked.find(path => path === selected[0].path));
 		}
 	}, [selected, marked]);
 

@@ -115,9 +115,7 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 	}, [selected]);
 
 	useEffect(() => {
-		if (marked.length) {
-			setIsMarked(!!marked.find(path => path === file.path));
-		}
+		setIsMarked(!!marked.find(path => path === file.path));
 	}, [marked]);
 
 	return (
