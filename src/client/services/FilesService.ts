@@ -89,7 +89,7 @@ export const filesAPI = createApi({
 				}
 			},
 			transformResponse(response: IFile[], meta, { filesPath }) {
-				return response?.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
+				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
 			}
 		}),
 		getMarkedFiles: build.query<IFile[], string>({
@@ -100,6 +100,22 @@ export const filesAPI = createApi({
 				} catch (error) {
 					console.log(error);
 				}
+			},
+			transformResponse(response: IFile[]) {
+				return response.map(file => ({ ...file, name: decodeURIComponent(file.name)}));
+			}
+		}),
+		getTrashFiles: build.query<IFile[], string>({
+			query: () => ({ url: '/trash' }),
+			async onQueryStarted(args, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			transformResponse(response: IFile[]) {
+				return response.map(file => ({ ...file, name: decodeURIComponent(file.name)}));
 			}
 		}),
 		uploadFile: build.mutation<any, IUpload>({
