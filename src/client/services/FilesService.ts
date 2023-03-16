@@ -94,9 +94,10 @@ export const filesAPI = createApi({
 		}),
 		getMarkedFiles: build.query<IFile[], string>({
 			query: () => ({ url: '/favorites' }),
-			async onQueryStarted(args, { queryFulfilled }) {
+			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
-					await queryFulfilled;
+					const { data } = await queryFulfilled;
+					dispatch(setMarked(data.map(file => file.path)));
 				} catch (error) {
 					console.log(error);
 				}
@@ -107,9 +108,11 @@ export const filesAPI = createApi({
 		}),
 		getTrashFiles: build.query<IFile[], string>({
 			query: () => ({ url: '/trash' }),
-			async onQueryStarted(args, { queryFulfilled }) {
+			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
-					await queryFulfilled;
+					const { data } = await queryFulfilled;
+					const marked = data.filter(file => file.isFavorite);
+					dispatch(setMarked(marked.map(file => file.path)));
 				} catch (error) {
 					console.log(error);
 				}
