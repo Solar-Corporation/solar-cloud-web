@@ -293,8 +293,7 @@ export const filesAPI = createApi({
 			query: ({ path }) => ({
 				url: `/files/${encodeURIComponent(path)}`,
 				method: 'GET',
-				responseHandler: ((response) => response.blob()),
-				redirect: 'follow'
+				responseHandler: ((response) => response.blob())
 			}),
 			async onQueryStarted({ name, path }, { queryFulfilled }) {
 				try {
@@ -304,6 +303,42 @@ export const filesAPI = createApi({
 					link.download = name;
 					link.click();
 					link.remove();
+				} catch (error) {
+					console.log(error);
+					await handleApiError(error);
+				}
+			}
+		}),
+		clearTrash: build.mutation<any, string>({
+			query: () => ({
+				url: '/trash',
+				method: 'DELETE'
+			}),
+			async onQueryStarted(args, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					await refreshPage();
+				} catch (error) {
+					console.log(error);
+					await handleApiError(error);
+				}
+			}
+		}),
+		recoverFile: build.mutation<any, { paths: string[], isDir: boolean }>({
+			query: ({ paths }) => ({
+				url: '/trash',
+				method: 'PUT',
+				body: { paths }
+			}),
+			async onQueryStarted({ paths, isDir }, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					message.success(
+						paths.length > 1
+							? isDir ? `Папки (${paths.length}) восстановлены!` : `Файлы (${paths.length}) восстановлены!`
+							: isDir ? `Папка восстановлена!` : `Файл восстановлен!`
+					);
+					await refreshPage();
 				} catch (error) {
 					console.log(error);
 					await handleApiError(error);
