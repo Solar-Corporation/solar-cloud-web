@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { ModalClearTrash } from './ClearTrash';
 import { ModalCreateDirectory } from './CreateDirectory';
 import { ModalDeleteFile } from './DeleteFile';
 import { ModalMoveFile } from './MoveFile';
@@ -11,6 +12,7 @@ export const ModalList: FC = () => {
 			<ModalRenameFile />
 			<ModalMoveFile />
 			<ModalDeleteFile />
+			<ModalClearTrash />
 		</>
 	);
 };
