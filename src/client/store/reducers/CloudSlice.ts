@@ -8,6 +8,7 @@ export interface ICloudContext {
 }
 
 export interface CloudState {
+	current: IFile[];
 	selected: IFile[];
 	marked: string[];
 	context: ICloudContext;
@@ -17,6 +18,7 @@ export interface CloudState {
 }
 
 const initialState: CloudState = {
+	current: [],
 	selected: [],
 	marked: [],
 	context: {
@@ -32,11 +34,17 @@ export const CloudSlice = createSlice({
 	name: 'cloud',
 	initialState,
 	reducers: {
+		setCurrent(state, action: PayloadAction<IFile[]>) {
+			state.current = action.payload;
+		},
 		selectFile(state, action: PayloadAction<IFile>) {
 			state.selected.push(action.payload);
 		},
 		unselectFile(state, action: PayloadAction<IFile>) {
 			state.selected = state.selected.filter(file => file.path !== action.payload.path);
+		},
+		selectAll(state) {
+			state.selected = state.current;
 		},
 		clearSelected(state) {
 			state.selected = initialState.selected;
@@ -72,8 +80,10 @@ export const CloudSlice = createSlice({
 
 export default CloudSlice.reducer;
 export const {
+	setCurrent,
 	selectFile,
 	unselectFile,
+	selectAll,
 	clearSelected,
 	markFile,
 	unMarkFile,
