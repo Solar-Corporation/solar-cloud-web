@@ -1,5 +1,6 @@
 import { ButtonProps } from 'antd';
 import { FC } from 'react';
+import { ControlClear } from './types/Clear';
 import { ControlCopy } from './types/Copy';
 import { ControlCreate } from './types/Create';
 import { ControlDelete } from './types/Delete';
@@ -8,6 +9,7 @@ import { ControlInfo } from './types/Info';
 import { ControlMark } from './types/Mark';
 import { ControlMore } from './types/More';
 import { ControlMove } from './types/Move';
+import { ControlRecover } from './types/Recover';
 import { ControlRename } from './types/Rename';
 import { ControlShare } from './types/Share';
 import { ControlUpload } from './types/Upload';
@@ -26,7 +28,10 @@ enum Control {
 	RENAME,
 	MOVE,
 	COPY,
-	MARK
+	MARK,
+	CLEAR,
+	CLEAR_FILE,
+	RECOVER
 }
 
 interface ControlListProps {
@@ -60,7 +65,13 @@ export const getControlType = (type: Control, index: number, buttonType?: Button
 		type === Control.COPY &&
     <ControlCopy key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.MARK &&
-    <ControlMark key={index} type={buttonType} block={block} className={className}/>
+    <ControlMark key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.CLEAR &&
+    <ControlClear key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.CLEAR_FILE &&
+    <ControlClear key={index} type={buttonType} block={block} className={className} file/>,
+		type === Control.RECOVER &&
+    <ControlRecover key={index} type={buttonType} block={block} className={className}/>
 	];
 };
 
@@ -68,15 +79,15 @@ export const ControlList: FC<ControlListProps> = ({ list, type, className }) => 
 	return (
 		<>
 			{list.length > 4
-				? list.filter((control, index )=> index < 3).map((control, index) => getControlType(control, index, type, false, className))
+				? list.filter((control, index) => index < 3).map((control, index) => getControlType(control, index, type, false, className))
 				: list.map((control, index) => getControlType(control, index, type, false, className))
 			}
 			{list.length > 4 &&
-        <ControlMore
-          list={list.filter((type, index) => index > 2)}
-          type={type}
-          className={className}
-        />}
+          <ControlMore
+              list={list.filter((type, index) => index > 2)}
+              type={type}
+              className={className}
+          />}
 		</>
 	);
 };
