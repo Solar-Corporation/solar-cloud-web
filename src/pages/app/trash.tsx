@@ -1,5 +1,4 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useRouter } from 'next/router';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { FileTable } from '../../client/components/FileTable';
 import Control from '../../client/components/UI/Control/List';
@@ -11,14 +10,15 @@ import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 import { getFilesPlaceholder } from '../../client/utils';
-import { getFilesContextMenu, getFloatControls } from './files';
 
 export default function Trash({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
-	const router = useRouter();
 	if (!files) files = getFilesPlaceholder();
 
-	const floatControls = getFloatControls(selected);
+	const floatControls = selected.length
+	? [Control.RECOVER, Control.CLEAR_FILE]
+	: [Control.CLEAR];
+
 	const headingOptions = {
 		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
 		constControls: [Control.VIEW, Control.INFO],
@@ -26,7 +26,7 @@ export default function Trash({ files }: InferGetServerSidePropsType<typeof getS
 		sticky: true
 	};
 
-	const filesContextMenu = getFilesContextMenu(selected);
+	const filesContextMenu = [Control.RECOVER, Control.CLEAR_FILE, Control.NULL, Control.INFO];
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
@@ -51,11 +51,7 @@ export default function Trash({ files }: InferGetServerSidePropsType<typeof getS
 				break;
 			}
 			case 2: {
-				if (file.isDir) {
-					await router.push(`${RouteNames.FILES}/${encodeURIComponent(file.path)}`);
-				} else {
-					console.log('double click!');
-				}
+				console.log('double click!');
 				break;
 			}
 			default:
