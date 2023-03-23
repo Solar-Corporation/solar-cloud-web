@@ -1,5 +1,6 @@
 import { DeleteFilled } from '@ant-design/icons';
 import { FC } from 'react';
+import { useCloudReducer } from '../../../../hooks/cloud';
 import { useAppDispatch } from '../../../../hooks/redux';
 import { setIsFilesContextMenuOpen } from '../../../../store/reducers/CloudSlice';
 import { setIsModalOpen } from '../../../../store/reducers/ModalSlice';
@@ -10,7 +11,7 @@ interface ControlClearProps extends ControlTypeProps{
 }
 
 export const ControlClear: FC<ControlClearProps> = ({ type, block, className, file }) => {
-	const dispatch = useAppDispatch();
+	const { current, dispatch } = useCloudReducer();
 
 	const handleClick = () => {
 		dispatch(setIsFilesContextMenuOpen(false));
@@ -23,6 +24,7 @@ export const ControlClear: FC<ControlClearProps> = ({ type, block, className, fi
 			title={file ? 'Удалить навсегда' : 'Очистить корзину'}
 			onClick={handleClick}
 			className={className}
+			disabled={file ? false : !current?.length}
 			type={type}
 			block={block}
 		/>

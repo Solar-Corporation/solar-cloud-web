@@ -11,7 +11,7 @@ import Router from 'next/router';
 import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
-import { markFile, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
+import { markFile, setCurrent, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
 import { setIsModalOpen } from '../store/reducers/ModalSlice';
 import { refreshPage } from '../utils';
 import { apiUrl, handleApiError } from './config';
@@ -50,6 +50,7 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 			result = await baseQuery(args, api, extraOptions);
 		}
 	}
+
 	return result;
 };
 
@@ -67,6 +68,7 @@ export const filesAPI = createApi({
 					const { data } = await queryFulfilled;
 					const marked = data.filter(file => file.isFavorite);
 					dispatch(setMarked(marked.map(file => file.path)));
+					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
 				}
@@ -98,6 +100,7 @@ export const filesAPI = createApi({
 				try {
 					const { data } = await queryFulfilled;
 					dispatch(setMarked(data.map(file => file.path)));
+					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
 				}
@@ -113,6 +116,7 @@ export const filesAPI = createApi({
 					const { data } = await queryFulfilled;
 					const marked = data.filter(file => file.isFavorite);
 					dispatch(setMarked(marked.map(file => file.path)));
+					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
 				}
