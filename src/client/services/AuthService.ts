@@ -7,7 +7,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
 import { RouteNames } from '../router';
 import { setUser, UserState } from '../store/reducers/UserSlice';
-import { apiUrl, handleApiError } from './config';
+import { apiUrl } from './config';
+import { handleApiError } from '../components/Notifications';
 
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const user: UserState = {
