@@ -47,6 +47,34 @@ a {
   }
 }
 
+.ant-notification {
+  color: @transparent-8-5;
+
+  .ant-notification-notice {
+    background: @dark;
+    backdrop-filter: @backdrop-filter;
+    box-shadow: @shadow-group;
+
+    .ant-notification-notice-message {
+      color: @transparent-8-5;
+    }
+
+    .ant-notification-notice-close {
+      color: @transparent-4-5;
+      &:hover {
+        color: @transparent-8-5;
+        background: @transparent-1;
+      }
+    }
+  }
+
+  .anticon-loading {
+    color: @magenta-primary;
+  }
+}
+
+
+
 .ant-btn-default {
   box-shadow: none;
   border: none;
