@@ -13,7 +13,6 @@ interface AppModalProps {
 	afterClose?: () => void;
 	onOk?: () => void;
 	onCancel?: () => void;
-	onClose?: () => void;
 	onContainerClick?: () => void;
 	children?: ReactNode;
 }
@@ -29,7 +28,6 @@ export const AppModal: FC<AppModalProps> = ({
 	                                            afterClose,
 	                                            onOk,
 	                                            onCancel,
-	                                            onClose,
 	                                            onContainerClick,
 	                                            children
                                             }) => {
@@ -57,7 +55,7 @@ export const AppModal: FC<AppModalProps> = ({
 				</Button>
 			]}
 			afterClose={afterClose}
-			onCancel={onClose}
+			onCancel={onCancel}
 		>
 			<div className={styles.container} onClick={onContainerClick}>
 				{children}

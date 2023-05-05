@@ -12,9 +12,14 @@ export const ModalDeleteFile: FC = () => {
 	const [isDir, setIsDir] = useState(false);
 	const { selected, dispatch } = useCloudReducer();
 	const { deleteFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [deleteFile, { isLoading, reset }] = filesAPI.useDeleteFileMutation();
+	const [deleteFile] = filesAPI.useDeleteFileMutation();
+
+	const handleClose = () => {
+		dispatch(setIsModalOpen({ deleteFile: false }));
+	};
 
 	const handleSubmit = async () => {
+		handleClose();
 		const paths = {
 			paths: selected.map(file => file.path),
 			isDir
@@ -22,27 +27,13 @@ export const ModalDeleteFile: FC = () => {
 		await deleteFile(paths);
 	};
 
-	const handleClose = () => {
-		dispatch(setIsModalOpen({ deleteFile: false }));
-	};
-
-	const handleCancel = () => {
-		if (isLoading) {
-			reset();
-		} else {
-			handleClose();
-		}
-	};
-
 	useEffect(() => {
 		if (selected.length) {
-			if (!isLoading) {
-				setLength(selected.length);
-				setName(selected[0].name);
-				setIsDir(getIsDir(selected));
-			}
+			setLength(selected.length);
+			setName(selected[0].name);
+			setIsDir(getIsDir(selected));
 		}
-	}, [selected, isLoading]);
+	}, [selected]);
 
 	return (
 		<AppModal
@@ -53,10 +44,8 @@ export const ModalDeleteFile: FC = () => {
 			}
 			okText="Удалить"
 			open={isOpen}
-			confirmLoading={isLoading}
 			onOk={handleSubmit}
-			onCancel={handleCancel}
-			onClose={handleClose}
+			onCancel={handleClose}
 		>
 			<p>Вы уверены что хотите переместить {
 				length > 1

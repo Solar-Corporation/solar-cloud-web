@@ -11,14 +11,11 @@ export const ModalRenameFile: FC = () => {
 	const [name, setName] = useState('');
 	const { selected, dispatch } = useCloudReducer();
 	const { renameFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [renameFile, { isLoading, reset }] = filesAPI.useRenameFileMutation();
+	const [renameFile] = filesAPI.useRenameFileMutation();
 
-	const handleSubmit = async () => {
-		if (name !== selected[0].name) {
-			const rename = { path: selected[0].path, new_name: name, isDir: selected[0].isDir };
-			await renameFile(rename);
-		} else {
-			handleClose();
+	const handleUpdate = () => {
+		if (selected.length) {
+			setName(selected[0].name);
 		}
 	};
 
@@ -26,23 +23,17 @@ export const ModalRenameFile: FC = () => {
 		dispatch(setIsModalOpen({ renameFile: false }));
 	};
 
-	const handleCancel = () => {
-		if (isLoading) {
-			reset();
-		} else {
-			handleClose();
-		}
-	};
-
-	const handleUpdate = () => {
-		if (selected.length) {
-			if (!isLoading) setName(selected[0].name);
+	const handleSubmit = async () => {
+		handleClose();
+		if (name !== selected[0].name) {
+			const rename = { path: selected[0].path, new_name: name, isDir: selected[0].isDir };
+			await renameFile(rename);
 		}
 	};
 
 	useEffect(() => {
 		handleUpdate();
-	}, [selected, isLoading]);
+	}, [selected]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -58,11 +49,9 @@ export const ModalRenameFile: FC = () => {
 			title={selected.length && selected[0].isDir ? 'Переименовать папку' : 'Переименовать файл'}
 			okText="Переименовать"
 			open={isOpen}
-			confirmLoading={isLoading}
 			confirmDisabled={!name}
 			onOk={handleSubmit}
-			onCancel={handleCancel}
-			onClose={handleClose}
+			onCancel={handleClose}
 			afterClose={handleUpdate}
 		>
 			<Input
@@ -70,7 +59,6 @@ export const ModalRenameFile: FC = () => {
 				name="newFileName"
 				placeholder="Введите новое название файла"
 				size="large"
-				disabled={isLoading}
 				value={name}
 				onChange={(event) => setName(event.currentTarget.value)}
 			/>

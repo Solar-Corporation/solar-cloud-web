@@ -12,9 +12,14 @@ export const ModalClearTrash: FC = () => {
 	const [isDir, setIsDir] = useState(false);
 	const { selected, dispatch } = useCloudReducer();
 	const { clearTrash: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [clearTrash, { isLoading, reset }] = filesAPI.useClearTrashMutation();
+	const [clearTrash] = filesAPI.useClearTrashMutation();
+
+	const handleClose = () => {
+		dispatch(setIsModalOpen({ clearTrash: false }));
+	};
 
 	const handleSubmit = async () => {
+		handleClose();
 		const paths = {
 			paths: selected.map(file => file.path),
 			isDir
@@ -22,31 +27,17 @@ export const ModalClearTrash: FC = () => {
 		await clearTrash('');
 	};
 
-	const handleClose = () => {
-		dispatch(setIsModalOpen({ clearTrash: false }));
-	};
-
-	const handleCancel = () => {
-		if (isLoading) {
-			reset();
-		} else {
-			handleClose();
-		}
-	};
-
 	useEffect(() => {
-		if (!isLoading) {
-			if (selected.length) {
-				setLength(selected.length);
-				setName(selected[0].name);
-				setIsDir(getIsDir(selected));
-			} else {
-				setLength(0);
-				setName('');
-				setIsDir(false);
-			}
+		if (selected.length) {
+			setLength(selected.length);
+			setName(selected[0].name);
+			setIsDir(getIsDir(selected));
+		} else {
+			setLength(0);
+			setName('');
+			setIsDir(false);
 		}
-	}, [selected, isLoading]);
+	}, [selected]);
 
 	return (
 		<AppModal
@@ -59,10 +50,8 @@ export const ModalClearTrash: FC = () => {
 			}
 			okText={length ? 'Удалить' : 'Очистить'}
 			open={isOpen}
-			confirmLoading={isLoading}
 			onOk={handleSubmit}
-			onCancel={handleCancel}
-			onClose={handleClose}
+			onCancel={handleClose}
 		>
 			<p>{
 				length

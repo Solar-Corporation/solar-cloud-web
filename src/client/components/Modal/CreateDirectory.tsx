@@ -13,28 +13,21 @@ export const ModalCreateDirectory: FC = () => {
 	const [relocate, setRelocate] = useState(false);
 	const { path } = useAppSelector(state => state.cloudReducer.context);
 	const { createDirectory: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [createDirectory, { isLoading, reset }] = filesAPI.useCreateDirectoryMutation();
+	const [createDirectory] = filesAPI.useCreateDirectoryMutation();
 	const dispatch = useAppDispatch();
 
 	const handleUpdate = () => {
-		if (!isLoading) setName('Новая папка');
-	};
-
-	const handleSubmit = async () => {
-		const directory: IDirectory = { path, name };
-		await createDirectory({ directory, relocate });
+		setName('Новая папка');
 	};
 
 	const handleClose = () => {
 		dispatch(setIsModalOpen({ createDirectory: false }));
 	};
 
-	const handleCancel = () => {
-		if (isLoading) {
-			reset();
-		} else {
-			handleClose();
-		}
+	const handleSubmit = async () => {
+		handleClose();
+		const directory: IDirectory = { path, name };
+		await createDirectory({ directory, relocate });
 	};
 
 	const handleChange = (event: CheckboxChangeEvent) => {
@@ -55,23 +48,20 @@ export const ModalCreateDirectory: FC = () => {
 			title="Создать папку"
 			okText="Создать"
 			open={isOpen}
-			confirmLoading={isLoading}
 			confirmDisabled={!name}
 			afterClose={handleUpdate}
 			onOk={handleSubmit}
-			onCancel={handleCancel}
-			onClose={handleClose}
+			onCancel={handleClose}
 		>
 			<Input
 				ref={inputRef}
 				name="directoryName"
 				placeholder="Введите название папки"
 				size="large"
-				disabled={isLoading}
 				value={name}
 				onChange={(event) => setName(event.currentTarget.value)}
 			/>
-			<Checkbox checked={relocate} disabled={isLoading} onChange={handleChange}>
+			<Checkbox checked={relocate} onChange={handleChange}>
 				Перейти в созданную папку
 			</Checkbox>
 		</AppModal>

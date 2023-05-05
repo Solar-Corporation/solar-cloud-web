@@ -20,17 +20,30 @@ export const ModalMoveFile: FC = () => {
 
 	const { context, selected: globalSelected, dispatch } = useCloudReducer();
 	const { moveFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [moveFile, { isLoading, reset }] = filesAPI.useMoveFileMutation();
-	const [getFolders, { data: files, isLoading: isLoadingQuery }] = filesAPI.useGetFoldersMutation();
+	const [moveFile] = filesAPI.useMoveFileMutation();
+	const [getFolders, { data: files, isLoading }] = filesAPI.useGetFoldersMutation();
+
+	const handleUpdate = () => {
+		if (globalSelected.length) {
+			setPath(['/']);
+			setIndex(0);
+			setSelected([]);
+		}
+	};
+
+	const handleClose = () => {
+		dispatch(setIsModalOpen({ moveFile: false }));
+	};
 
 	const handleSubmit = async () => {
+		handleClose();
+
 		const paths: IMove[] = globalSelected.map((file) => ({
 			pathFrom: file.path,
 			pathTo: selected.length
 				? selected[0].path
 				: path[index]
 		}));
-		console.log(paths);
 
 		await moveFile({
 			paths,
@@ -39,27 +52,6 @@ export const ModalMoveFile: FC = () => {
 		});
 	};
 
-	const handleClose = () => {
-		dispatch(setIsModalOpen({ moveFile: false }));
-	};
-
-	const handleCancel = () => {
-		if (isLoading) {
-			reset();
-		} else {
-			handleClose();
-		}
-	};
-
-	const handleUpdate = () => {
-		if (globalSelected.length) {
-			if (!isLoading) {
-				setPath(['/']);
-				setIndex(0);
-				setSelected([]);
-			}
-		}
-	};
 
 	const handleBack = () => {
 		setIndex(index => index - 1);
@@ -67,28 +59,24 @@ export const ModalMoveFile: FC = () => {
 	};
 
 	const handleClick = () => {
-		if (!isLoading) {
-			setSelected([]);
-		}
+		setSelected([]);
 	};
 
 	const handleRowClick = (event: any, file: IFile, isSelected: boolean) => {
-		if (!isLoading) {
-			switch (event.detail) {
-				case 1: {
-					if (isSelected) {
-						setSelected([]);
-					} else {
-						setSelected([file]);
-					}
-					break;
-				}
-				case 2: {
-					path.push(file.path);
+		switch (event.detail) {
+			case 1: {
+				if (isSelected) {
 					setSelected([]);
-					setIndex(index => index + 1);
-					break;
+				} else {
+					setSelected([file]);
 				}
+				break;
+			}
+			case 2: {
+				path.push(file.path);
+				setSelected([]);
+				setIndex(index => index + 1);
+				break;
 			}
 		}
 	};
@@ -96,15 +84,13 @@ export const ModalMoveFile: FC = () => {
 	useEffect(() => {
 		handleUpdate();
 		if (globalSelected.length) {
-			if (!isLoading) {
-				setLength(globalSelected.length);
-				setIsDir(getIsDir(globalSelected));
-			}
+			setLength(globalSelected.length);
+			setIsDir(getIsDir(globalSelected));
 		}
-	}, [globalSelected, isLoading]);
+	}, [globalSelected]);
 
 	useEffect(() => {
-		if (isOpen && (!isLoading || !isLoadingQuery)) {
+		if (isOpen && !isLoading) {
 			getFolders({
 				path: path[index],
 				filesPath: globalSelected.filter(file => file.isDir).map(file => file.path)
@@ -120,11 +106,9 @@ export const ModalMoveFile: FC = () => {
 			}
 			okText="Переместить"
 			open={isOpen}
-			confirmLoading={isLoading}
 			confirmDisabled={context.path === (selected.length ? selected[0].path : path[index])}
 			onOk={handleSubmit}
-			onCancel={handleCancel}
-			onClose={handleClose}
+			onCancel={handleClose}
 			afterClose={handleUpdate}
 			onContainerClick={handleClick}
 		>
@@ -133,27 +117,27 @@ export const ModalMoveFile: FC = () => {
 					<div className={styles.title}>Место
 						перемещения: {selected.length ? selected[0].name : getLinks(path[index])[index].title}</div>
 					{index > 0 &&
-						<Button
-							type="ghost"
-							title="Вернуться обратно"
-							size="small"
-							icon={<RollbackOutlined />}
-							disabled={isLoading || isLoadingQuery}
-							onClick={handleBack}
-						/>}
+              <Button
+                  type="ghost"
+                  title="Вернуться обратно"
+                  size="small"
+                  icon={<RollbackOutlined/>}
+                  disabled={isLoading}
+                  onClick={handleBack}
+              />}
 				</div>
 				<div className={styles.select}>
-					{isLoadingQuery
-						? <div className={styles.loading}><LoadingOutlined /></div>
+					{isLoading
+						? <div className={styles.loading}><LoadingOutlined/></div>
 						: files &&
-						<FileTable
-							files={files}
-							className={styles.fileTable}
-							selected={selected}
-							onRowClick={handleRowClick}
-							disableHeader
-							disableColumns
-						/>}
+              <FileTable
+                  files={files}
+                  className={styles.fileTable}
+                  selected={selected}
+                  onRowClick={handleRowClick}
+                  disableHeader
+                  disableColumns
+              />}
 				</div>
 			</div>
 		</AppModal>

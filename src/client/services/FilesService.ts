@@ -5,16 +5,15 @@ import {
 	fetchBaseQuery,
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
-import { message } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import Router from 'next/router';
 import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
 import { markFile, setCurrent, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
-import { setIsModalOpen } from '../store/reducers/ModalSlice';
 import { refreshPage } from '../utils';
-import { apiUrl, handleApiError } from './config';
+import { apiUrl } from './config';
+import { handleApiSuccess, handleApiLoading, handleApiError } from '../components/Notifications';
 
 const getFormData = ({ path, files }: IUpload) => {
 	const formData = new FormData();
@@ -74,7 +73,7 @@ export const filesAPI = createApi({
 				}
 			},
 			transformResponse(response: IFile[]) {
-				return response.map(file => ({ ...file, name: decodeURIComponent(file.name)}));
+				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
 			}
 		}),
 		getFolders: build.mutation<IFile[], { path: string, filesPath: string[] }>({
@@ -106,7 +105,7 @@ export const filesAPI = createApi({
 				}
 			},
 			transformResponse(response: IFile[]) {
-				return response.map(file => ({ ...file, name: decodeURIComponent(file.name)}));
+				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
 			}
 		}),
 		getTrashFiles: build.query<IFile[], string>({
@@ -122,7 +121,7 @@ export const filesAPI = createApi({
 				}
 			},
 			transformResponse(response: IFile[]) {
-				return response.map(file => ({ ...file, name: decodeURIComponent(file.name)}));
+				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
 			}
 		}),
 		uploadFile: build.mutation<any, IUpload>({
@@ -131,29 +130,28 @@ export const filesAPI = createApi({
 				method: 'POST',
 				body: getFormData(data)
 			}),
-			async onQueryStarted(args, { queryFulfilled }) {
-				const key = `${Date.now}`;
+			async onQueryStarted({ files }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
-					message.open({
+					handleApiLoading({
 						key,
-						type: 'loading',
-						content: args.files.length > 1 ? 'Загрузка файлов...' : 'Загрузка файла...',
-						duration: 0
+						message: files.length > 1 ? 'Загрузка файлов...' : 'Загрузка файла...',
+						description: `Загрузка ${files.length > 1 ? `файлов (${files.length})` : 'файла'} в процессе...`
 					});
 					await queryFulfilled;
-					message.open({
+					handleApiSuccess({
 						key,
-						type: 'success',
-						content: args.files.length > 1 ? 'Файлы успешно загружены!' : 'Файл успешно загружен!'
+						message: 'Загрузка завершена!',
+						description: files.length > 1 ? `Файлы (${files.length}) успешно загружены.` : 'Файл успешно загружен.'
 					});
-					if (Router.asPath === RouteNames.FILES || Router.asPath === RouteNames.DIRECTORY) {
+					if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
 						await refreshPage();
 					} else {
 						await Router.push(RouteNames.FILES);
 					}
 				} catch (error) {
 					console.log(error);
-					await handleApiError(error, key);
+					handleApiError(error, key);
 				}
 			}
 		}),
@@ -180,11 +178,18 @@ export const filesAPI = createApi({
 				method: 'POST',
 				body: directory
 			}),
-			async onQueryStarted({ directory, relocate }, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ directory, relocate }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
+					handleApiLoading({
+						key,
+						message: 'Создание папки...',
+					});
 					await queryFulfilled;
-					dispatch(setIsModalOpen({ createDirectory: false }));
-					message.success('Папка создана!');
+					handleApiSuccess({
+						key,
+						message: 'Папка создана!'
+					});
 					if (relocate) {
 						const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
 						await Router.push(`${RouteNames.FILES}/${encodeURIComponent(path)}`);
@@ -192,7 +197,7 @@ export const filesAPI = createApi({
 						await refreshPage();
 					}
 				} catch (error) {
-					await handleApiError(error);
+					await handleApiError(error, key);
 				}
 			}
 		}),
@@ -202,14 +207,23 @@ export const filesAPI = createApi({
 				method: 'PUT',
 				params: { new_name }
 			}),
-			async onQueryStarted({ isDir }, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ isDir }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
+					handleApiLoading({
+						key,
+						message: 'Изменение...',
+						description: `Изменение названия ${isDir ? 'папки' : 'файла'} в процессе...`
+					});
 					await queryFulfilled;
-					dispatch(setIsModalOpen({ renameFile: false }));
-					message.success(isDir ? 'Папка переименована!' : 'Файл переименован!');
+					handleApiSuccess({
+						key,
+						message: 'Изменение завершено!',
+						description: isDir ? 'Папка успешно переименована.' : 'Файл успешно переименован.'
+					});
 					await refreshPage();
 				} catch (error) {
-					await handleApiError(error);
+					await handleApiError(error, key);
 				}
 			}
 		}),
@@ -222,7 +236,7 @@ export const filesAPI = createApi({
 			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
 				try {
 					await queryFulfilled;
-					if (Router.asPath !== RouteNames.MARKED) {
+					if (Router.pathname !== RouteNames.MARKED) {
 						paths.forEach((path) => dispatch(markFile(path)));
 					} else {
 						await refreshPage();
@@ -257,18 +271,27 @@ export const filesAPI = createApi({
 				method: 'DELETE',
 				body: { paths }
 			}),
-			async onQueryStarted({ paths, isDir }, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ paths, isDir }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
+					handleApiLoading({
+						key,
+						message: 'Удаление...',
+						description: paths.length > 1
+							? `Перемещение ${isDir ? 'папок' : 'файлов'} (${paths.length}) в корзину...`
+							: `Перемещение ${isDir ? 'папки' : 'файла'} в корзину...`
+					});
 					await queryFulfilled;
-					message.success(
-						paths.length > 1
-							? isDir ? `Папки (${paths.length}) перемещены в корзину!` : `Файлы (${paths.length}) перемещены в корзину!`
-							: isDir ? 'Папка перемещена в корзину!' : 'Файл перемещен в корзину!'
-					);
-					dispatch(setIsModalOpen({ deleteFile: false }));
+					handleApiSuccess({
+						key,
+						message: 'Удаление завершено!',
+						description: paths.length > 1
+							? isDir ? `Папки (${paths.length}) перемещены в корзину.` : `Файлы (${paths.length}) перемещены в корзину.`
+							: isDir ? 'Папка перемещена в корзину.' : 'Файл перемещен в корзину.'
+					});
 					await refreshPage();
 				} catch (error) {
-					await handleApiError(error);
+					await handleApiError(error, key);
 				}
 			}
 		}),
@@ -278,22 +301,28 @@ export const filesAPI = createApi({
 				method: 'PATCH',
 				body: { paths }
 			}),
-			async onQueryStarted({ paths, isDir, destination }, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ paths, isDir, destination }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
+					handleApiLoading({
+						key,
+						message: 'Перемещение...',
+					});
 					await queryFulfilled;
-					message.success(
-						paths.length > 1
-							? isDir ? `Папки (${paths.length}) перемещены в "${destination}"!` : `Файлы (${paths.length}) перемещены в "${destination}"!`
-							: isDir ? `Папка перемещена в "${destination}"!` : `Файл перемещен в "${destination}"!`
-					);
-					dispatch(setIsModalOpen({ moveFile: false }));
+					handleApiSuccess({
+						key,
+						message: 'Перемещение завершено!',
+						description: paths.length > 1
+							? isDir ? `Папки (${paths.length}) перемещены в "${destination}".` : `Файлы (${paths.length}) перемещены в "${destination}".`
+							: isDir ? `Папка перемещена в "${destination}".` : `Файл перемещен в "${destination}".`
+					});
 					await refreshPage();
 				} catch (error) {
-					await handleApiError(error);
+					await handleApiError(error, key);
 				}
 			}
 		}),
-		downloadFile: build.mutation<Blob, { name: string, path: string}>({
+		downloadFile: build.mutation<Blob, { name: string, path: string }>({
 			query: ({ path }) => ({
 				url: `/files/${encodeURIComponent(path)}`,
 				method: 'GET',
@@ -319,12 +348,21 @@ export const filesAPI = createApi({
 				method: 'DELETE'
 			}),
 			async onQueryStarted(args, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
+					handleApiLoading({
+						key,
+						message: 'Очистка корзины...'
+					});
 					await queryFulfilled;
+					handleApiSuccess({
+						key,
+						message: 'Корзина очищена!'
+					});
 					await refreshPage();
 				} catch (error) {
 					console.log(error);
-					await handleApiError(error);
+					await handleApiError(error, key);
 				}
 			}
 		}),
@@ -335,13 +373,23 @@ export const filesAPI = createApi({
 				body: { paths }
 			}),
 			async onQueryStarted({ paths, isDir }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
 				try {
+					handleApiLoading({
+						key,
+						message: 'Восстановление...',
+						description: paths.length > 1
+							? `Восстановление ${isDir ? 'папок' : 'файлов'} (${paths.length}) в процессе...`
+							: `Восстановление ${isDir ? 'папки' : 'файла'} в процессе...`
+					});
 					await queryFulfilled;
-					message.success(
-						paths.length > 1
-							? isDir ? `Папки (${paths.length}) восстановлены!` : `Файлы (${paths.length}) восстановлены!`
-							: isDir ? `Папка восстановлена!` : `Файл восстановлен!`
-					);
+					handleApiSuccess({
+						key,
+						message: 'Восстановление завершено!',
+						description: paths.length > 1
+							? isDir ? `Папки (${paths.length}) восстановлены.` : `Файлы (${paths.length}) восстановлены.`
+							: isDir ? `Папка восстановлена.` : `Файл восстановлен.`
+					});
 					await refreshPage();
 				} catch (error) {
 					console.log(error);
