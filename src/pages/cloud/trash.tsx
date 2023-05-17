@@ -1,5 +1,4 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useRouter } from 'next/router';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { FileTable } from '../../client/components/FileTable';
 import Control from '../../client/components/UI/Control/List';
@@ -11,22 +10,23 @@ import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 import { getFilesPlaceholder } from '../../client/utils';
-import { getFilesContextMenu, getFloatControls } from './files';
 
-export default function Marked({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Trash({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
-	const router = useRouter();
 	if (!files) files = getFilesPlaceholder();
 
-	const floatControls = getFloatControls(selected);
+	const floatControls = selected.length
+		? [Control.RECOVER, Control.CLEAR_FILE]
+		: [Control.CLEAR];
+
 	const headingOptions = {
-		links: [{ title: 'Избранное', href: RouteNames.MARKED }],
+		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
 		constControls: [Control.VIEW, Control.INFO],
 		floatControls: floatControls,
 		sticky: true
 	};
 
-	const filesContextMenu = getFilesContextMenu(selected);
+	const filesContextMenu = [Control.RECOVER, Control.CLEAR_FILE, Control.NULL, Control.INFO];
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
@@ -51,11 +51,7 @@ export default function Marked({ files }: InferGetServerSidePropsType<typeof get
 				break;
 			}
 			case 2: {
-				if (file.isDir) {
-					await router.push(`${RouteNames.FILES}/${encodeURIComponent(file.path)}`);
-				} else {
-					console.log('double click!');
-				}
+				console.log('double click!');
 				break;
 			}
 			default:
@@ -72,7 +68,7 @@ export default function Marked({ files }: InferGetServerSidePropsType<typeof get
 
 	return (
 		<CloudLayout
-			title="Избранное"
+			title="Корзина"
 			headingOptions={headingOptions}
 		>
 			{files && (
@@ -91,10 +87,15 @@ export default function Marked({ files }: InferGetServerSidePropsType<typeof get
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
-
 	setInitialUserData(ctx, dispatch);
+	const { data: files, error } = await store.dispatch(filesAPI.endpoints.getTrashFiles.initiate());
 
-	const { data: files } = await store.dispatch(filesAPI.endpoints.getMarkedFiles.initiate(''));
-
+	// @ts-ignore
+	if (error && error.status === 401) return {
+		redirect: {
+			permanent: true,
+			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.TRASH}`
+		}
+	};
 	return { props: { files: files || null } };
 });
