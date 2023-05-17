@@ -1,14 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
 import Router from 'next/router';
-import { setCookie } from 'nookies';
+import { destroyCookie, setCookie } from 'nookies';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { handleApiError } from '../components/Notifications';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
 import { RouteNames } from '../router';
-import { setUser, UserState } from '../store/reducers/UserSlice';
+import { clearUser, setUser, UserState } from '../store/reducers/UserSlice';
 import { apiUrl } from './config';
-import { handleApiError } from '../components/Notifications';
 
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const user: UserState = {
@@ -17,6 +17,11 @@ export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<an
 	};
 	setCookie(null, 'accessToken', data.access, { maxAge: 30 * 24 * 60 * 60, path: '/' });
 	dispatch(setUser(user));
+};
+
+export const clearUserOnQueryFulfilled = async (dispatch: ThunkDispatch<any, any, AnyAction>) => {
+	destroyCookie(null, 'accessToken');
+	dispatch(clearUser());
 };
 
 export const authAPI = createApi({
@@ -66,6 +71,13 @@ export const authAPI = createApi({
 					console.log(error);
 					await handleApiError(error);
 				}
+			}
+		}),
+		userLogout: build.mutation<null, void>({
+			query: () => ({ url: '/sign-out', method: 'DELETE' }),
+			async onQueryStarted(args, { dispatch, queryFulfilled }) {
+				await queryFulfilled;
+				await clearUserOnQueryFulfilled(dispatch);
 			}
 		})
 	})
