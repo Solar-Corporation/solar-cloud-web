@@ -23,11 +23,13 @@ export const handleApiLoading = (config: ArgsProps) => {
 	});
 };
 
-export const handleApiError = (error: any, key?: string) => {
-	notification.error({
-		...notificationConfig,
-		key,
-		message: 'Произошла ошибка!',
-		description: `${error.error.error || error.error.data?.message || error.error.data?.error || error.meta.response.statusText}`
-	});
+export const handleApiError = async (error: any, key?: string) => {
+	if (error.error.status !== 401) {
+		notification.error({
+			...notificationConfig,
+			key,
+			message: 'Произошла ошибка!',
+			description: `${error.error.error || error.error.data?.message || error.error.data?.error || error.meta.response.statusText}`
+		});
+	}
 };
