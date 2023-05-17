@@ -12,6 +12,7 @@ import { RouteNames } from '../router';
 import { AppState } from '../store';
 import { markFile, setCurrent, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
 import { refreshPage } from '../utils';
+import { clearUserOnQueryFulfilled } from './AuthService';
 import { apiUrl } from './config';
 import { handleApiSuccess, handleApiLoading, handleApiError } from '../components/Notifications';
 
@@ -44,9 +45,12 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 
 	if (result.error && result.error.status === 401) {
 		const refreshResult = await baseQuery('/refresh', api, extraOptions);
-		console.log('refresh', refreshResult);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
+		} else {
+			await baseQuery('/sign-out', api, extraOptions);
+			await clearUserOnQueryFulfilled(api.dispatch);
+			if (typeof window !== 'undefined') await Router.push(RouteNames.LOGIN);
 		}
 	}
 
@@ -93,7 +97,7 @@ export const filesAPI = createApi({
 				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
 			}
 		}),
-		getMarkedFiles: build.query<IFile[], string>({
+		getMarkedFiles: build.query<IFile[], void>({
 			query: () => ({ url: '/favorites' }),
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
@@ -108,7 +112,7 @@ export const filesAPI = createApi({
 				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
 			}
 		}),
-		getTrashFiles: build.query<IFile[], string>({
+		getTrashFiles: build.query<IFile[], void>({
 			query: () => ({ url: '/trash' }),
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
