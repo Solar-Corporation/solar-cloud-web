@@ -2,6 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { CloudLayout } from '../../../client/components/Cloud/Layout';
 import { FileTable } from '../../../client/components/FileTable';
+import { ResultEmpty } from '../../../client/components/Result/Empty';
 import Control from '../../../client/components/UI/Control/List';
 import { useCloudReducer } from '../../../client/hooks/cloud';
 import { IFile } from '../../../client/models/IFile';
@@ -10,13 +11,12 @@ import { filesAPI } from '../../../client/services/FilesService';
 import { wrapper } from '../../../client/store';
 import { clearSelected, selectFile, setContext, unselectFile } from '../../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../../client/store/reducers/UserSlice';
-import { getFilesPlaceholder, getLinks } from '../../../client/utils';
+import { getLinks } from '../../../client/utils';
 import { getFilesContextMenu, getFloatControls } from './index';
 
 export default function Directory({ files, links }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
 	const router = useRouter();
-	if (!files) files = getFilesPlaceholder();
 
 	const floatControls = getFloatControls(selected, [Control.SHARE]);
 	const headingOptions = {
@@ -78,16 +78,15 @@ export default function Directory({ files, links }: InferGetServerSidePropsType<
 			headingOptions={headingOptions}
 			contextMenu={contextMenu}
 		>
-			{files && (
-				<FileTable
-					files={files}
-					contextMenu={filesContextMenu}
-					selected={selected}
-					marked={marked}
-					onRowClick={handleRowClick}
-					onRowContextMenu={handleRowContextMenu}
-				/>
-			)}
+			<FileTable
+				files={files}
+				contextMenu={filesContextMenu}
+				selected={selected}
+				marked={marked}
+				empty={<ResultEmpty folderName={links[links.length - 1].title}/>}
+				onRowClick={handleRowClick}
+				onRowContextMenu={handleRowContextMenu}
+			/>
 		</CloudLayout>
 	);
 }
@@ -104,6 +103,6 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: files, error } = await store.dispatch(filesAPI.endpoints.getFiles.initiate(path));
 
 	// @ts-ignore
-	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN }};
+	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
 	return { props: { files: files || null, links } };
 });

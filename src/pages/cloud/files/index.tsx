@@ -10,7 +10,7 @@ import { filesAPI } from '../../../client/services/FilesService';
 import { wrapper } from '../../../client/store';
 import { clearSelected, selectFile, setContext, unselectFile } from '../../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../../client/store/reducers/UserSlice';
-import { getFilesPlaceholder, getHasDir, getLinks } from '../../../client/utils';
+import { getHasDir, getLinks } from '../../../client/utils';
 
 export const getFloatControls = (selected: IFile[], initial?: Control[]) => selected.length
 	? selected.length > 1
@@ -27,13 +27,12 @@ export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
 		? [Control.SHARE, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
 		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
 	: getHasDir(selected)
-		?	[Control.SHARE, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO]
+		? [Control.SHARE, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO]
 		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
 
 export default function Files({ files, links }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
 	const router = useRouter();
-	if (!files) files = getFilesPlaceholder();
 
 	const floatControls = getFloatControls(selected);
 	const headingOptions = {
@@ -95,16 +94,14 @@ export default function Files({ files, links }: InferGetServerSidePropsType<type
 			headingOptions={headingOptions}
 			contextMenu={contextMenu}
 		>
-			{files && (
-				<FileTable
-					files={files}
-					contextMenu={filesContextMenu}
-					selected={selected}
-					marked={marked}
-					onRowClick={handleRowClick}
-					onRowContextMenu={handleRowContextMenu}
-				/>
-			)}
+			<FileTable
+				files={files}
+				contextMenu={filesContextMenu}
+				selected={selected}
+				marked={marked}
+				onRowClick={handleRowClick}
+				onRowContextMenu={handleRowContextMenu}
+			/>
 		</CloudLayout>
 	);
 }
@@ -121,6 +118,6 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: files, error } = await store.dispatch(filesAPI.endpoints.getFiles.initiate(path));
 
 	// @ts-ignore
-	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN }};
+	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
 	return { props: { files: files || null, links } };
 });

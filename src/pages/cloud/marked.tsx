@@ -2,6 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { FileTable } from '../../client/components/FileTable';
+import { ResultEmptyMarked } from '../../client/components/Result/EmptyMarked';
 import Control from '../../client/components/UI/Control/List';
 import { useCloudReducer } from '../../client/hooks/cloud';
 import { IFile } from '../../client/models/IFile';
@@ -10,13 +11,11 @@ import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
-import { getFilesPlaceholder } from '../../client/utils';
 import { getFilesContextMenu, getFloatControls } from './files';
 
 export default function Marked({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
 	const router = useRouter();
-	if (!files) files = getFilesPlaceholder();
 
 	const floatControls = getFloatControls(selected);
 	const headingOptions = {
@@ -75,16 +74,15 @@ export default function Marked({ files }: InferGetServerSidePropsType<typeof get
 			title="Избранное"
 			headingOptions={headingOptions}
 		>
-			{files && (
-				<FileTable
-					files={files}
-					contextMenu={filesContextMenu}
-					selected={selected}
-					marked={marked}
-					onRowClick={handleRowClick}
-					onRowContextMenu={handleRowContextMenu}
-				/>
-			)}
+			<FileTable
+				files={files}
+				contextMenu={filesContextMenu}
+				selected={selected}
+				marked={marked}
+				empty={<ResultEmptyMarked/>}
+				onRowClick={handleRowClick}
+				onRowContextMenu={handleRowContextMenu}
+			/>
 		</CloudLayout>
 	);
 }
