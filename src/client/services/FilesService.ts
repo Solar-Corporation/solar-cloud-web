@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit/dist/query/react';
 import { RcFile } from 'antd/es/upload';
 import Router from 'next/router';
+import { handleApiError, handleApiLoading, handleApiSuccess } from '../components/Notifications';
 import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
@@ -14,7 +15,6 @@ import { markFile, setCurrent, setMarked, unMarkFile } from '../store/reducers/C
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { apiUrl } from './config';
-import { handleApiSuccess, handleApiLoading, handleApiError } from '../components/Notifications';
 
 const getFormData = ({ path, files }: IUpload) => {
 	const formData = new FormData();
@@ -148,14 +148,13 @@ export const filesAPI = createApi({
 						message: 'Загрузка завершена!',
 						description: files.length > 1 ? `Файлы (${files.length}) успешно загружены.` : 'Файл успешно загружен.'
 					});
-					if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
-						await refreshPage();
-					} else {
-						await Router.push(RouteNames.FILES);
-					}
 				} catch (error) {
-					console.log(error);
 					handleApiError(error, key);
+				}
+				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
+					await refreshPage();
+				} else {
+					await Router.push(RouteNames.FILES);
 				}
 			}
 		}),
