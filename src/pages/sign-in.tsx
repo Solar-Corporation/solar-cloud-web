@@ -3,6 +3,8 @@ import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import Logo from '../client/img/logo.svg';
 import { IAuth } from '../client/models/IAuth';
 import { RouteNames } from '../client/router';
@@ -14,9 +16,15 @@ const { Text } = Typography;
 
 export default function SignIn() {
 	const [loginUser, { isLoading }] = authAPI.useUserLoginMutation();
+	const redirect = useSearchParams().get('return_to');
+	const router = useRouter();
 
 	const handleSend = async (values: IAuth) => {
-		await loginUser(values);
+		try {
+			await loginUser(values).unwrap();
+			await router.push(redirect || RouteNames.APP);
+		} catch (e) {
+		}
 	};
 
 	return (

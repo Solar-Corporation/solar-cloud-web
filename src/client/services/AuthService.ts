@@ -1,12 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
-import Router from 'next/router';
 import { destroyCookie, setCookie } from 'nookies';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { handleApiError } from '../components/Notifications';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
-import { RouteNames } from '../router';
 import { clearUser, setUser, UserState } from '../store/reducers/UserSlice';
 import { apiUrl } from './config';
 
@@ -38,9 +36,7 @@ export const authAPI = createApi({
 				try {
 					const { data } = await queryFulfilled;
 					setUserOnQueryFulfilled(data, dispatch);
-					await Router.push(RouteNames.FILES);
 				} catch (error) {
-					console.log(error);
 					await handleApiError(error);
 				}
 			}
