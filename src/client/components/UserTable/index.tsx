@@ -4,6 +4,7 @@ import { IUser } from '../../models/IUser';
 import { setIsFilesContextMenuOpen } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/FileTable.module.less';
 import { ContextMenu } from '../ContextMenu';
+import { ResultEmptyUsers } from '../Result/EmptyUsers';
 import { ResultError } from '../Result/Error';
 import Control from '../UI/Control/List';
 import { UserTableHeader } from './Header';
@@ -41,7 +42,7 @@ export const UserTable: FC<UserTableProps> = ({ users, contextMenu }) => {
 							</div>
 						</ContextMenu>
 					</div>
-				) : null
-			: <ResultError/>
+				) : <ResultEmptyUsers />
+			: <ResultError />
 	);
 };
