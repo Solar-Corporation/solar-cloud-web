@@ -1,11 +1,13 @@
 import { ButtonProps } from 'antd';
 import { FC } from 'react';
+import { ControlAccept } from './types/Accept';
 import { ControlClear } from './types/Clear';
 import { ControlCopy } from './types/Copy';
 import { ControlCreate } from './types/Create';
 import { ControlDelete } from './types/Delete';
 import { ControlDownload } from './types/Download';
 import { ControlInfo } from './types/Info';
+import { ControlLogout } from './types/Logout';
 import { ControlMark } from './types/Mark';
 import { ControlMore } from './types/More';
 import { ControlMove } from './types/Move';
@@ -25,13 +27,17 @@ enum Control {
 	SHARE,
 	DOWNLOAD,
 	DELETE,
+	DELETE_USER,
 	RENAME,
 	MOVE,
 	COPY,
 	MARK,
 	CLEAR,
 	CLEAR_FILE,
-	RECOVER
+	RECOVER,
+	LOGOUT,
+	ACCEPT,
+	DECLINE
 }
 
 interface ControlListProps {
@@ -58,6 +64,8 @@ export const getControlType = (type: Control, index: number, buttonType?: Button
     <ControlDownload key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.DELETE &&
     <ControlDelete key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.DELETE_USER &&
+    <ControlDelete key={index} type={buttonType} block={block} className={className} user/>,
 		type === Control.RENAME &&
     <ControlRename key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.MOVE &&
@@ -71,7 +79,13 @@ export const getControlType = (type: Control, index: number, buttonType?: Button
 		type === Control.CLEAR_FILE &&
     <ControlClear key={index} type={buttonType} block={block} className={className} file/>,
 		type === Control.RECOVER &&
-    <ControlRecover key={index} type={buttonType} block={block} className={className}/>
+    <ControlRecover key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.LOGOUT &&
+		<ControlLogout key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.ACCEPT &&
+    <ControlAccept key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.DECLINE &&
+    <ControlAccept key={index} type={buttonType} block={block} className={className} decline/>,
 	];
 };
 
