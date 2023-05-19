@@ -11,7 +11,7 @@ import { handleApiError, handleApiLoading, handleApiSuccess } from '../component
 import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
-import { markFile, setCurrent, setMarked, unMarkFile } from '../store/reducers/CloudSlice';
+import { markFile, setCurrent, setMarked, unmarkFile, setShared } from '../store/reducers/CloudSlice';
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { apiUrl } from './config';
@@ -75,8 +75,8 @@ export const filesAPI = createApi({
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
 					const { data } = await queryFulfilled;
-					const marked = data.filter(file => file.isFavorite);
-					dispatch(setMarked(marked.map(file => file.path)));
+					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.path)));
+					dispatch(setShared(data.filter(file => file.isShared).map(file => file.path)));
 					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
@@ -109,6 +109,7 @@ export const filesAPI = createApi({
 				try {
 					const { data } = await queryFulfilled;
 					dispatch(setMarked(data.map(file => file.path)));
+					dispatch(setShared(data.filter(file => file.isShared).map(file => file.path)));
 					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
@@ -123,8 +124,8 @@ export const filesAPI = createApi({
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
 					const { data } = await queryFulfilled;
-					const marked = data.filter(file => file.isFavorite);
-					dispatch(setMarked(marked.map(file => file.path)));
+					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.path)));
+					dispatch(setShared(data.filter(file => file.isShared).map(file => file.path)));
 					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
@@ -265,7 +266,7 @@ export const filesAPI = createApi({
 				try {
 					await queryFulfilled;
 					if (Router.asPath !== RouteNames.MARKED) {
-						paths.forEach((path) => dispatch(unMarkFile(path)));
+						paths.forEach((path) => dispatch(unmarkFile(path)));
 					} else {
 						await refreshPage();
 					}
