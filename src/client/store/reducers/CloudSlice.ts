@@ -11,6 +11,7 @@ export interface CloudState {
 	current: IFile[];
 	selected: IFile[];
 	marked: string[];
+	userSelected: any[];
 	context: ICloudContext;
 	isContextMenuOpen: boolean;
 	isFilesContextMenuOpen: boolean;
@@ -21,6 +22,7 @@ const initialState: CloudState = {
 	current: [],
 	selected: [],
 	marked: [],
+	userSelected: [],
 	context: {
 		url: '',
 		path: '/'
@@ -58,6 +60,15 @@ export const CloudSlice = createSlice({
 		setMarked(state, action: PayloadAction<string[]>) {
 			state.marked = action.payload;
 		},
+		selectUser(state, action: PayloadAction<any>) {
+			state.userSelected.push(action.payload);
+		},
+		unselectUser(state, action: PayloadAction<any>) {
+			state.userSelected = state.userSelected.filter(user => user.id !== action.payload.id);
+		},
+		clearUserSelected(state) {
+			state.userSelected = initialState.userSelected;
+		},
 		setContext(state, action: PayloadAction<ICloudContext>) {
 			state.context = action.payload;
 		},
@@ -88,6 +99,9 @@ export const {
 	markFile,
 	unMarkFile,
 	setMarked,
+	selectUser,
+	unselectUser,
+	clearUserSelected,
 	setContext,
 	setIsContextMenuOpen,
 	setIsFilesContextMenuOpen
