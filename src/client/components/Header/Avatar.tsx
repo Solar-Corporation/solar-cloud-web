@@ -35,7 +35,7 @@ export const HeaderAvatar: FC = () => {
 		<Dropdown
 			menu={{ items }}
 			trigger={['click']}
-			overlayClassName={stylesContextMenu.main}
+			overlayClassName={`${stylesContextMenu.main} ${styles.avatar__menu}`}
 			arrow
 		>
 			<div className={styles.avatar} title="Профиль">
