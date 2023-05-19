@@ -9,6 +9,8 @@ import { ParamsInterceptor } from './common/interceptors/params.interceptor';
 import config from './config/app.config';
 import { FavoriteModule } from './favorite/favorite.module';
 import { FileModule } from './file/file.module';
+import { S3Module } from './s3/s3.module';
+import { ShareModule } from './share/share.module';
 import { TrashModule } from './trash/trash.module';
 
 declare const module: any;
@@ -40,6 +42,8 @@ export class AppModule {
 				FavoriteModule,
 				TrashModule,
 				renderModule,
+				S3Module,
+				ShareModule,
 			],
 			controllers: [AppController],
 			providers: [ParamsInterceptor],
