@@ -3,8 +3,10 @@ import { FC } from 'react';
 import { ControlAccept } from './types/Accept';
 import { ControlClear } from './types/Clear';
 import { ControlCopy } from './types/Copy';
+import { ControlCopyLink } from './types/CopyLink';
 import { ControlCreate } from './types/Create';
 import { ControlDelete } from './types/Delete';
+import { ControlDeleteLink } from './types/DeleteLink';
 import { ControlDownload } from './types/Download';
 import { ControlInfo } from './types/Info';
 import { ControlLogout } from './types/Logout';
@@ -28,9 +30,11 @@ enum Control {
 	DOWNLOAD,
 	DELETE,
 	DELETE_USER,
+	DELETE_LINK,
 	RENAME,
 	MOVE,
 	COPY,
+	COPY_LINK,
 	MARK,
 	CLEAR,
 	CLEAR_FILE,
@@ -66,12 +70,16 @@ export const getControlType = (type: Control, index: number, buttonType?: Button
     <ControlDelete key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.DELETE_USER &&
     <ControlDelete key={index} type={buttonType} block={block} className={className} user/>,
+		type === Control.DELETE_LINK &&
+		<ControlDeleteLink key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.RENAME &&
     <ControlRename key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.MOVE &&
     <ControlMove key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.COPY &&
     <ControlCopy key={index} type={buttonType} block={block} className={className}/>,
+		type === Control.COPY_LINK &&
+		<ControlCopyLink key={index} type={buttonType} block={block} className={className} />,
 		type === Control.MARK &&
     <ControlMark key={index} type={buttonType} block={block} className={className}/>,
 		type === Control.CLEAR &&
