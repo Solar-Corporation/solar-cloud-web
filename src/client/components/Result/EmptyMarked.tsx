@@ -7,7 +7,7 @@ export const ResultEmptyMarked: FC = () => {
 	return (
 		<div className={styles.container}>
 			<Result
-				icon={<StarFilled className={styles.icon} />}
+				icon={<StarFilled className={styles.icon__marked} />}
 				title="Нет избранных файлов"
 			/>
 		</div>

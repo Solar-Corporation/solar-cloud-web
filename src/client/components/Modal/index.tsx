@@ -34,7 +34,7 @@ export const AppModal: FC<AppModalProps> = ({
 	return (
 		<Modal
 			title={title}
-			width={width || 430}
+			width={width || 470}
 			open={open}
 			footer={[
 				<Button

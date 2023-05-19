@@ -39,28 +39,16 @@ export const Layout: FC<AppLayoutProps> = ({
 			<div onClick={onContainerClick} onContextMenu={onContainerClick}>
 				<Header />
 				<main className={styles.main}>
-					{
-						(sidebarTop || sidebarBottom) &&
+					{(sidebarTop || sidebarBottom) && (
 						<div className={styles.sidebar}>
 							{sidebarTop && <div className={styles.stickyTop}>{sidebarTop}</div>}
 							{sidebarBottom && <div className={styles.stickyBottom}>{sidebarBottom}</div>}
 						</div>
-					}
+					)}
 					<ContextMenu open={contextMenuOpen} onOpenChange={contextMenuOnOpenChange} menu={contextMenu}>
-						<div className={styles.container}>
-							{
-								headingOptions &&
-								<PageHeading
-									links={headingOptions.links}
-									actions={headingOptions.actions}
-									floatControls={headingOptions.floatControls}
-									constControls={headingOptions.constControls}
-									sticky={headingOptions.sticky}
-								/>
-							}
-							<div className={styles.content}>
-								{children}
-							</div>
+						<div style={!(sidebarTop || sidebarBottom) ? {width: '100%'} : undefined} className={styles.container}>
+							{headingOptions && <PageHeading {...headingOptions}/>}
+							<div className={styles.content}>{children}</div>
 						</div>
 					</ContextMenu>
 				</main>

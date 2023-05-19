@@ -11,7 +11,7 @@ export const ResultEmpty: FC<ResultEmptyProps> = ({ folderName }) => {
 	return (
 		<div className={styles.container}>
 			<Result
-				icon={<FileAddFilled className={styles.icon} />}
+				icon={<FileAddFilled className={styles.icon__file} />}
 				title="Нет файлов"
 				subTitle={`Нажмите на кнопку "Загрузить", чтобы загрузить файлы в папку "${folderName || 'Все файлы'}"`}
 			/>

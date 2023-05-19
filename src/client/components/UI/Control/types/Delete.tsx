@@ -5,12 +5,20 @@ import { setIsFilesContextMenuOpen } from '../../../../store/reducers/CloudSlice
 import { setIsModalOpen } from '../../../../store/reducers/ModalSlice';
 import { Control, ControlTypeProps } from '../index';
 
-export const ControlDelete: FC<ControlTypeProps> = ({ type, block, className }) => {
+interface ControlDeleteProps extends ControlTypeProps {
+	user?: boolean;
+}
+
+export const ControlDelete: FC<ControlDeleteProps> = ({ type, block, className, user }) => {
 	const dispatch = useAppDispatch();
 
 	const handleClick = () => {
 		dispatch(setIsFilesContextMenuOpen(false));
-		dispatch(setIsModalOpen({ deleteFile: true }));
+		if (!user) {
+			dispatch(setIsModalOpen({ deleteFile: true }));
+		} else {
+			dispatch(setIsModalOpen({ deleteUser: true }));
+		}
 	};
 
 	return (

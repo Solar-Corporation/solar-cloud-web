@@ -9,7 +9,7 @@ import {
 import { FC, ReactNode } from 'react';
 import { useCloudReducer } from '../../hooks/cloud';
 import { RouteNames } from '../../router';
-import { clearSelected, setIsContextMenuOpen } from '../../store/reducers/CloudSlice';
+import { clearSelected, clearUserSelected, setIsContextMenuOpen } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/CloudLayout.module.less';
 import { Layout } from '../Layout';
 import { INavbarItem, Navbar } from '../Navbar';
@@ -26,7 +26,7 @@ interface CloudLayoutProps {
 }
 
 export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, contextMenu, children }) => {
-	const { selected, isContextMenuOpen, dispatch } = useCloudReducer();
+	const { selected, userSelected, isContextMenuOpen, dispatch } = useCloudReducer();
 
 	const links: INavbarItem[] = [
 		// { icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
@@ -39,6 +39,7 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 
 	const handleClearSelected = () => {
 		if (selected.length) dispatch(clearSelected());
+		if (userSelected.length) dispatch(clearUserSelected());
 	};
 
 	const handleOpenChange = (isOpen: boolean) => {

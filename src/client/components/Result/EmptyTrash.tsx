@@ -7,7 +7,7 @@ export const ResultEmptyTrash: FC = () => {
 	return (
 		<div className={styles.container}>
 			<Result
-				icon={<DeleteFilled className={styles.icon} />}
+				icon={<DeleteFilled className={styles.icon__trash} />}
 				title="Корзина пуста"
 			/>
 		</div>

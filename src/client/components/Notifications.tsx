@@ -23,7 +23,7 @@ export const handleApiLoading = (config: ArgsProps) => {
 	});
 };
 
-export const handleApiError = async (error: any, key?: string) => {
+export const handleApiError = (error: any, key?: string) => {
 	if (error.error.status !== 401) {
 		notification.error({
 			...notificationConfig,
