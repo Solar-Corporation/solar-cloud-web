@@ -15,8 +15,8 @@ import { getHasDir, getLinks } from '../../../client/utils';
 export const getFloatControls = (selected: IFile[], initial?: Control[]) => selected.length
 	? selected.length > 1
 		? getHasDir(selected)
-			? [Control.SHARE, Control.DELETE, Control.MOVE, Control.COPY]
-			: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
+			? [Control.DELETE, Control.MOVE, Control.COPY]
+			: [Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
 		: getHasDir(selected)
 			? [Control.SHARE, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
 			: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
@@ -24,14 +24,14 @@ export const getFloatControls = (selected: IFile[], initial?: Control[]) => sele
 
 export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
 	? getHasDir(selected)
-		? [Control.SHARE, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
-		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
+		? [Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
+		: [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
 	: getHasDir(selected)
 		? [Control.SHARE, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO]
 		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
 
 export default function Files({ files, links }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { selected, marked, dispatch } = useCloudReducer();
+	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
 	const floatControls = getFloatControls(selected);
@@ -99,6 +99,7 @@ export default function Files({ files, links }: InferGetServerSidePropsType<type
 				contextMenu={filesContextMenu}
 				selected={selected}
 				marked={marked}
+				shared={shared}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
 			/>
