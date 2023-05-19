@@ -1,4 +1,10 @@
 node_modules
 npm-debug.log
+target
+public
+dist
+.next
+.gitlab
+files
 Dockerfile
 .dockerignore
