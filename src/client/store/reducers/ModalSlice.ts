@@ -2,9 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
 export interface IModal {
+	acceptUser?: boolean;
 	createDirectory?: boolean;
 	renameFile?: boolean;
+	declineUser?: boolean;
 	deleteFile?: boolean;
+	deleteUser?: boolean;
 	clearTrash?: boolean;
 	moveFile?: boolean;
 }
@@ -15,9 +18,12 @@ export interface ModalState {
 
 const initialState: ModalState = {
 	modal: {
+		acceptUser: false,
 		createDirectory: false,
 		renameFile: false,
+		declineUser: false,
 		deleteFile: false,
+		deleteUser: false,
 		clearTrash: false,
 		moveFile: false
 	}
