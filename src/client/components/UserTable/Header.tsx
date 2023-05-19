@@ -1,11 +1,7 @@
 import { FC } from 'react';
 import styles from '../../styles/components/FileTable.module.less';
 
-interface UserTableHeaderProps {
-	columns: any;
-}
-
-export const UserTableHeader: FC<UserTableHeaderProps> = ({ columns }) => {
+export const UserTableHeader: FC = () => {
 	return (
 		<div className={styles.header}>
 			<div className={styles.headerName}>Фамилия Имя Отчество</div>

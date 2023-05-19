@@ -30,7 +30,7 @@ export const UserTable: FC<UserTableProps> = ({ users, contextMenu }) => {
 			? users.length
 				? (
 					<div className={styles.main}>
-						<UserTableHeader columns={users[0]}/>
+						<UserTableHeader />
 						<ContextMenu
 							menu={contextMenu}
 							open={isFilesContextMenuOpen}
