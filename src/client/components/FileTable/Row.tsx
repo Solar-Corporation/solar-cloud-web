@@ -7,7 +7,7 @@ import {
 	FileUnknownFilled,
 	FileWordFilled,
 	FileZipFilled,
-	FolderFilled,
+	FolderFilled, LinkOutlined,
 	StarFilled
 } from '@ant-design/icons';
 import { FC, useEffect, useState } from 'react';
@@ -32,6 +32,7 @@ interface FileTableRowProps {
 	file: IFile;
 	selected: IFile[];
 	marked: string[];
+	shared: string[];
 	onClick?: (event: any, file: IFile, isSelected: boolean) => void;
 	onContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	disableColumns?: boolean;
@@ -101,12 +102,14 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 	                                                    file,
 	                                                    selected,
 	                                                    marked,
+																											shared,
 	                                                    onClick,
 	                                                    onContextMenu,
 	                                                    disableColumns
                                                     }) => {
 	const [isSelected, setIsSelected] = useState(false);
 	const [isMarked, setIsMarked] = useState(file.isFavorite);
+	const [isShared, setIsShared] = useState(file.isShared || false);
 	const date = new Date(file.seeTime || '');
 	const { icon, extension } = getFileType(file);
 
@@ -118,6 +121,10 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 		setIsMarked(!!marked.find(path => path === file.path));
 	}, [marked]);
 
+	useEffect(() => {
+		setIsShared(!!shared.find(path => path === file.path));
+	}, [shared]);
+
 	return (
 		<div
 			className={isSelected ? `${styles.selected} ${styles.row}` : styles.row}
@@ -126,7 +133,9 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 		>
 			<FileTableColumn title={file.name}>
 				<div className={styles.name}>
-					<span className={styles.icon}>{icon}</span>
+					<span className={styles.icon}>
+						{icon}
+					</span>
 					<span className={styles.nameText}>
 						{file.name}
 					</span>
@@ -141,6 +150,11 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 				{file.hasOwnProperty('size') &&
 					<FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
 			</div>}
+			{isShared && (
+				<span className={file.isDir ? `${styles.icon__shared} ${styles.icon__shared__dir}` : styles.icon__shared}>
+					<LinkOutlined />
+				</span>
+			)}
 		</div>
 	);
 };

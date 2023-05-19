@@ -16,6 +16,7 @@ interface FileTableProps {
 	disableColumns?: boolean;
 	selected?: IFile[];
 	marked?: string[];
+	shared?: string[];
 	onRowClick?: (event: any, file: IFile, isSelected: boolean) => void;
 	onRowContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	contextMenu?: Control[];
@@ -29,6 +30,7 @@ export const FileTable: FC<FileTableProps> = ({
 	                                              disableColumns,
 	                                              selected,
 	                                              marked,
+																								shared,
 	                                              onRowClick,
 	                                              onRowContextMenu,
 	                                              contextMenu,
@@ -67,6 +69,7 @@ export const FileTable: FC<FileTableProps> = ({
 										file={file}
 										selected={selected || []}
 										marked={marked || []}
+										shared={shared || []}
 										onClick={onRowClick}
 										onContextMenu={onRowContextMenu}
 										disableColumns={disableColumns}
