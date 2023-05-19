@@ -11,6 +11,7 @@ export interface CloudState {
 	current: IFile[];
 	selected: IFile[];
 	marked: string[];
+	shared: string[];
 	userSelected: any[];
 	context: ICloudContext;
 	isContextMenuOpen: boolean;
@@ -22,6 +23,7 @@ const initialState: CloudState = {
 	current: [],
 	selected: [],
 	marked: [],
+	shared: [],
 	userSelected: [],
 	context: {
 		url: '',
@@ -54,11 +56,20 @@ export const CloudSlice = createSlice({
 		markFile(state, action: PayloadAction<string>) {
 			state.marked.push(action.payload);
 		},
-		unMarkFile(state, action: PayloadAction<string>) {
+		unmarkFile(state, action: PayloadAction<string>) {
 			state.marked = state.marked.filter(path => path !== action.payload);
 		},
 		setMarked(state, action: PayloadAction<string[]>) {
 			state.marked = action.payload;
+		},
+		shareFile(state, action: PayloadAction<string>) {
+			state.shared.push(action.payload);
+		},
+		unshareFile(state, action: PayloadAction<string>) {
+			state.shared = state.shared.filter(path => path !== action.payload);
+		},
+		setShared(state, action: PayloadAction<string[]>) {
+			state.shared = action.payload;
 		},
 		selectUser(state, action: PayloadAction<any>) {
 			state.userSelected.push(action.payload);
@@ -97,8 +108,11 @@ export const {
 	selectAll,
 	clearSelected,
 	markFile,
-	unMarkFile,
+	unmarkFile,
 	setMarked,
+	shareFile,
+	unshareFile,
+	setShared,
 	selectUser,
 	unselectUser,
 	clearUserSelected,
