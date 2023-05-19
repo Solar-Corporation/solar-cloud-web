@@ -1,5 +1,6 @@
 import Router from 'next/router';
 import { IFile } from '../models/IFile';
+import { IUser } from '../models/IUser';
 import { RouteNames } from '../router';
 
 export const getDateStr = (date: Date) => {
@@ -153,6 +154,8 @@ export const getFilesPlaceholder = () => [
 export const getIsDir = (arr: IFile[]) => arr.length === arr.filter(file => file.isDir).length;
 
 export const getHasDir = (arr: IFile[]) => !!arr.find(file => file.isDir);
+
+export const getIsActive = (arr: IUser[]) => arr.length === arr.filter(user => !user.isActive).length;
 
 // export async function hash(string) {
 //   const utf8 = new TextEncoder().encode(string);
