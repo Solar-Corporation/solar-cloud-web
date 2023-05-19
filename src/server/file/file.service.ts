@@ -1,105 +1,104 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import path from 'path';
-import { Transaction } from 'sequelize';
-import { Readable } from 'stream';
+import { BucketService, Space } from '../s3/bucket.service';
+import { HashPath, ItemService, Properties, StreamFile } from '../s3/item.service';
+import { StorageService } from '../s3/storage.service';
 
-import { FileService as RsFileService, FsItem, UserFile } from '../../../solar-s3';
 import { UserDto } from '../user/dto/user.dto';
-import { DirCreateDto, FileDto, FileUploadDto, MovePath, RenameDto } from './dto/file.dto';
-import { FileDatabaseService } from './file-database.service';
+import { FileUploadDto, MovePath } from './dto/file.dto';
 
 @Injectable()
 export class FileService {
 
 	private readonly basePath;
+	private readonly baseName;
 
 	constructor(
-		private readonly fileDatabaseService: FileDatabaseService,
+		private readonly itemService: ItemService,
+		private readonly bucketService: BucketService,
 		private readonly configService: ConfigService,
+		private readonly storageService: StorageService,
 	) {
 		this.basePath = this.configService.get('app.path');
+		this.baseName = this.configService.get('app.name');
 	}
 
 	async saveFile(fileUploadDto: FileUploadDto, { uuid }: UserDto): Promise<void> {
-		const { files, path: filePath } = fileUploadDto;
-		for (const file of files) {
+		const { files, hash, dir } = fileUploadDto;
 
-			const { buffer, originalName }: any = file;
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		const key = (dir) ? await this.itemService.addDir(bucket, hash, dir) : hash;
 
-			const userFile: UserFile = {
-				filePath: path.join(this.basePath, uuid, filePath, originalName),
-				buffer: buffer,
-			};
+		await this.itemService.addFiles(bucket, key, files);
+	}
 
-			await RsFileService.saveFile(userFile, uuid, this.basePath);
+	async getFile({ uuid }: UserDto, hash: string): Promise<StreamFile> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.getFile(bucket, hash);
+	}
+
+	async rename({ uuid }: UserDto, hash: string, name: string): Promise<void> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		await this.itemService.rename(bucket, hash, name);
+	}
+
+	async getFileTree({ uuid }: UserDto, hash: string): Promise<Array<Properties>> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.getItems(bucket, hash);
+	}
+
+
+	async delete({ uuid }: UserDto, hashes: Array<string>): Promise<void> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		for (const hash of hashes)
+			await this.itemService.setDelete(bucket, hash);
+	}
+
+	async createDir({ uuid }: UserDto, hash: string, name: string): Promise<string> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.addDir(bucket, hash, name);
+	}
+
+
+	async moveFiles({ uuid }: UserDto, movePaths: Array<MovePath>): Promise<void> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		for (const { hashFrom, hashTo } of movePaths) {
+
+			if (hashFrom === hashTo)
+				throw new ConflictException('Пути должны отличаться!');
+
+			await this.itemService.move(bucket, hashFrom, hashTo);
 		}
 	}
 
-	async getFile(shortFilePath: string, { uuid }: UserDto): Promise<FileDto> {
-		const fullFilePath = path.join(this.basePath, uuid, shortFilePath);
+	async copyFiles({ uuid }: UserDto, movePaths: Array<MovePath>): Promise<void> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		for (const { hashFrom, hashTo } of movePaths) {
 
-		const userFile = await RsFileService.getFile(fullFilePath);
-		return {
-			fileMime: userFile.mimeType!,
-			filePath: shortFilePath,
-			isDelete: false,
-			name: path.basename(fullFilePath),
-			sizeActual: userFile.size!,
-			stream: Readable.from(userFile.buffer!),
-			type: path.extname(fullFilePath),
-			updateAt: new Date(userFile.seeTime!),
-		};
-	}
+			if (hashFrom === hashTo)
+				throw new ConflictException('Пути должны отличаться!');
 
-	async rename({ path: renamePath, newName }: RenameDto, { uuid }: UserDto, transaction: Transaction): Promise<void> {
-		const fullPath = path.join(this.basePath, uuid, renamePath);
-		const renameFilePath = fullPath.replace(path.basename(fullPath), newName);
-
-		await this.fileDatabaseService.updateFilePath({ path: fullPath, newName: renameFilePath }, transaction);
-
-		await RsFileService.rename(fullPath, renameFilePath);
-	}
-
-	async getFileTree({ uuid }: UserDto, filePath: string): Promise<Array<FsItem>> {
-		const userFilePath = path.join(this.basePath, uuid, filePath);
-		return await RsFileService.getDirItems(userFilePath);
-	}
-
-	async delete({ uuid }: UserDto, deletePaths: Array<string>, transaction: Transaction): Promise<void> {
-		for (const deletePath of deletePaths) {
-			const fullPath = path.join(this.basePath, uuid, path.normalize(deletePath));
-
-			if (fullPath === path.join(this.basePath, uuid, '/'))
-				throw new ConflictException('You cannot remove the root directory!');
-
-			const deleteMarked = await RsFileService.markAsDelete(fullPath);
-			const deleteDate = new Date(deleteMarked.time);
-			deleteMarked.time = new Date(deleteDate.setDate(deleteDate.getDate() + 30));
-
-			await this.fileDatabaseService.markAsDelete(deleteMarked, transaction);
+			await this.itemService.copy(bucket, hashFrom, hashTo);
 		}
 	}
 
-	async createDir({ uuid }: UserDto, dirCreate: DirCreateDto): Promise<void> {
-		const dirPath = path.join(this.basePath, uuid, dirCreate.path, dirCreate.name);
-		await RsFileService.createDir(dirPath);
+	async getPath({ uuid }: UserDto, hash: string): Promise<Array<HashPath>> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.getPath(bucket, hash);
 	}
 
-	async moveFiles({ uuid }: UserDto, movePaths: Array<MovePath>, transaction: Transaction): Promise<void> {
-		for (const { pathFrom, pathTo } of movePaths) {
-			const fullPathFrom = path.join(this.basePath, uuid, pathFrom);
-			const fullPathTo = path.join(this.basePath, uuid, pathTo);
-
-			if (fullPathFrom === fullPathTo)
-				throw new ConflictException('Paths must be different!');
-
-			await this.fileDatabaseService.updateFilePath({
-				path: path.parse(fullPathFrom).dir,
-				newName: fullPathTo,
-			}, transaction);
-
-			await RsFileService.movePath(fullPathFrom, fullPathTo);
-		}
+	async getSpace({ uuid }: UserDto): Promise<Space> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.getSpace(bucket);
 	}
 }

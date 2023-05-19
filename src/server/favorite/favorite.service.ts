@@ -1,43 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import path from 'path';
-import { Transaction } from 'sequelize';
-import { FileService as RsFileService, FsItem } from '../../../solar-s3';
+import { BucketService } from '../s3/bucket.service';
+import { ItemService, Properties } from '../s3/item.service';
+import { StorageService } from '../s3/storage.service';
 import { UserDto } from '../user/dto/user.dto';
-import { FavoriteDatabaseService } from './favorite-database.service';
+
 
 @Injectable()
 export class FavoriteService {
 
 	private readonly basePath;
+	private readonly baseName;
 
 	constructor(
+		private readonly itemService: ItemService,
+		private readonly bucketService: BucketService,
 		private readonly configService: ConfigService,
-		private readonly favoriteDatabaseService: FavoriteDatabaseService,
+		private readonly storageService: StorageService,
 	) {
 		this.basePath = this.configService.get('app.path');
+		this.baseName = this.configService.get('app.name');
 	}
 
-	async setFavorite({ uuid, id }: UserDto,
+	async setFavorite({ uuid }: UserDto,
 	                  favorites: Array<string>,
 	                  state: boolean,
-	                  transaction: Transaction,
 	): Promise<void> {
-		for (const favorite of favorites) {
-			const fullPath = path.join(this.basePath, uuid, favorite);
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
 
+		for (const favorite of favorites)
 			if (state)
-				await this.favoriteDatabaseService.addFavorite(id, fullPath, transaction);
+				await this.itemService.setFavorite(bucket, favorite);
 			else
-				await this.favoriteDatabaseService.deleteFavorite(id, fullPath, transaction);
-
-			await RsFileService.setFavorite(fullPath, state);
-
-		}
+				await this.itemService.unsetFavorite(bucket, favorite);
 	}
 
-	async getFavorites({ id }: UserDto): Promise<Array<FsItem>> {
-		const paths = await this.favoriteDatabaseService.getFavoritesPaths(id);
-		return await RsFileService.getFilesMetadata(paths, false);
+	async getFavorites({ uuid }: UserDto): Promise<Array<Properties>> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.getFavorites(bucket);
 	}
 }

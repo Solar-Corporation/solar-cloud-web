@@ -1,37 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import path from 'path';
-import { Transaction } from 'sequelize';
+import { BucketService } from '../s3/bucket.service';
+import { ItemService, Properties } from '../s3/item.service';
+import { StorageService } from '../s3/storage.service';
 
-import { FileService as RsFileService, FsItem } from '../../../solar-s3';
 import { UserDto } from '../user/dto/user.dto';
-import { TrashDatabaseService } from './trash-database.service';
 
 @Injectable()
 export class TrashService {
 	private readonly basePath;
+	private readonly baseName;
 
 	constructor(
-		private readonly trashDatabaseService: TrashDatabaseService,
+		private readonly itemService: ItemService,
+		private readonly bucketService: BucketService,
 		private readonly configService: ConfigService,
+		private readonly storageService: StorageService,
 	) {
 		this.basePath = this.configService.get('app.path');
+		this.baseName = this.configService.get('app.name');
 	}
 
-	async getDeleteFiles({ uuid }: UserDto): Promise<Array<FsItem>> {
-		const paths = await this.trashDatabaseService.getDeleteFiles(uuid);
-		return await RsFileService.getFilesMetadata(paths, true);
+	async getDeleteFiles({ uuid }: UserDto): Promise<Array<Properties>> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.getDeletes(bucket);
 	}
 
-	async restoreDeleteFiles({ uuid }: UserDto, paths: Array<string>, transaction: Transaction): Promise<void> {
-		const restorePaths = paths.map(deletePath => path.join(this.basePath, uuid, deletePath));
-		await this.trashDatabaseService.restoreDeleteFiles(restorePaths, transaction);
-		await RsFileService.restoreDeletePaths(restorePaths);
+	async restoreDeleteFiles({ uuid }: UserDto, hashes: Array<string>): Promise<void> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		for (const hash of hashes)
+			await this.itemService.unsetDelete(bucket, hash);
 	}
 
-	async deletePaths({ uuid }: UserDto, transaction: Transaction): Promise<void> {
-		const paths = await this.trashDatabaseService.deleteFiles(uuid, transaction);
-		await RsFileService.deletePaths(paths);
+	async deletePaths({ uuid }: UserDto): Promise<void> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		await this.itemService.clearTrash(bucket);
 	}
 }
 

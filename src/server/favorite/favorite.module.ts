@@ -7,8 +7,8 @@ import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
+import { S3Module } from '../s3/s3.module';
 import { UserModule } from '../user/user.module';
-import { FavoriteDatabaseService } from './favorite-database.service';
 import { FavoriteController } from './favorite.controller';
 import { FavoriteService } from './favorite.service';
 
@@ -28,9 +28,10 @@ import { FavoriteService } from './favorite.service';
 		ConfigModule,
 		UserModule,
 		AuthModule,
+		S3Module,
 	],
 	controllers: [FavoriteController],
-	providers: [FavoriteService, FavoriteDatabaseService, JwtAuthGuard, TransactionInterceptor, RsErrorInterceptor],
+	providers: [FavoriteService, JwtAuthGuard, TransactionInterceptor, RsErrorInterceptor],
 	exports: [FavoriteService],
 })
 export class FavoriteModule {
