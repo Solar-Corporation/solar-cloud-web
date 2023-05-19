@@ -7,4 +7,5 @@ export interface IUser {
 		middleName: string;
 	};
 	nickname: string;
+	isActive?: boolean;
 }
