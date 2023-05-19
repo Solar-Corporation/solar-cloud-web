@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -55,7 +55,7 @@ export class BucketService {
 	async open(store: Store, uuid: string): Promise<Bucket> {
 		const storePath = path.join(store.path, uuid);
 		if (!await this.utilService.isExist(storePath))
-			throw new NotFoundException('Хранилища не существует!');
+			await this.create(store, uuid, 5368709120);
 
 		const bucket = await fs.readFile(path.join(storePath, 'bucket.json'));
 

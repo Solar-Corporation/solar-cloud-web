@@ -146,7 +146,7 @@ export class BucketDatabaseService {
 	async updatePath(sqlite: AsyncDatabase, oldPath: string, newPath: string) {
 		const items: any = await sqlite.all(`SELECT *
                                          FROM paths
-                                         WHERE path LIKE $path || '%'`, { $path: oldPath });
+                                         WHERE path LIKE $path || '/%'`, { $path: oldPath });
 		for (const item of items) {
 			const updatePath = item.path.replace(oldPath, newPath);
 			const newHash = createHash('md5').update(updatePath).digest('hex');
@@ -162,13 +162,11 @@ export class BucketDatabaseService {
 	async copyPath(sqlite: AsyncDatabase, oldPath: string, newPath: string) {
 		const items: any = await sqlite.all(`SELECT *
                                          FROM paths
-                                         WHERE path LIKE $path || '%'`, { $path: oldPath });
+                                         WHERE path LIKE $path || '/%'`, { $path: oldPath });
 		for (const item of items) {
 			const dir = path.parse(oldPath).dir;
 			const updatePath = item.path.replace(dir, newPath);
-			console.log(newPath);
 			const newHash = createHash('md5').update(updatePath).digest('hex');
-			console.log(newHash);
 			await sqlite.run('INSERT INTO paths (hash, path, name, mime_type, update_at, is_dir, size) VALUES ($hash, $path, $name, $mime_type, $update_at, $is_dir, $size)', {
 				$hash: newHash,
 				$path: updatePath.replace(/\/\//g, '/'),
