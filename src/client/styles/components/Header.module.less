@@ -77,3 +77,32 @@
     background-color: @transparent-1;
   }
 }
+
+.user {
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    line-height: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__email {
+    font-size: 10px;
+    line-height: 11px;
+    color: @transparent-6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
