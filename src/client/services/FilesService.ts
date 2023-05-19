@@ -49,8 +49,14 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 			result = await baseQuery(args, api, extraOptions);
 		} else {
 			await baseQuery('/sign-out', api, extraOptions);
-			await clearUserOnQueryFulfilled(api.dispatch);
-			if (typeof window !== 'undefined') await Router.push(RouteNames.LOGIN);
+			clearUserOnQueryFulfilled(api.dispatch);
+			if (typeof window !== 'undefined') {
+				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
+					await Router.push(RouteNames.LOGIN);
+				} else {
+					await Router.push(`${RouteNames.LOGIN}?return_to=${Router.pathname}`);
+				}
+			}
 		}
 	}
 
@@ -90,7 +96,7 @@ export const filesAPI = createApi({
 				try {
 					await queryFulfilled;
 				} catch (error) {
-					await handleApiError(error);
+					handleApiError(error);
 				}
 			},
 			transformResponse(response: IFile[], meta, { filesPath }) {
@@ -171,7 +177,7 @@ export const filesAPI = createApi({
 					const upload: IUpload = { path, files };
 					await dispatch(filesAPI.endpoints.uploadFile.initiate(upload));
 				} catch (error) {
-					await handleApiError(error);
+					handleApiError(error);
 				}
 			}
 		}),
@@ -200,7 +206,7 @@ export const filesAPI = createApi({
 						await refreshPage();
 					}
 				} catch (error) {
-					await handleApiError(error, key);
+					handleApiError(error, key);
 				}
 			}
 		}),
@@ -226,7 +232,7 @@ export const filesAPI = createApi({
 					});
 					await refreshPage();
 				} catch (error) {
-					await handleApiError(error, key);
+					handleApiError(error, key);
 				}
 			}
 		}),
@@ -245,7 +251,7 @@ export const filesAPI = createApi({
 						await refreshPage();
 					}
 				} catch (error) {
-					await handleApiError(error);
+					handleApiError(error);
 				}
 			}
 		}),
@@ -264,7 +270,7 @@ export const filesAPI = createApi({
 						await refreshPage();
 					}
 				} catch (error) {
-					await handleApiError(error);
+					handleApiError(error);
 				}
 			}
 		}),
@@ -294,7 +300,7 @@ export const filesAPI = createApi({
 					});
 					await refreshPage();
 				} catch (error) {
-					await handleApiError(error, key);
+					handleApiError(error, key);
 				}
 			}
 		}),
@@ -321,7 +327,7 @@ export const filesAPI = createApi({
 					});
 					await refreshPage();
 				} catch (error) {
-					await handleApiError(error, key);
+					handleApiError(error, key);
 				}
 			}
 		}),
@@ -341,7 +347,7 @@ export const filesAPI = createApi({
 					link.remove();
 				} catch (error) {
 					console.log(error);
-					await handleApiError(error);
+					handleApiError(error);
 				}
 			}
 		}),
@@ -365,7 +371,7 @@ export const filesAPI = createApi({
 					await refreshPage();
 				} catch (error) {
 					console.log(error);
-					await handleApiError(error, key);
+					handleApiError(error, key);
 				}
 			}
 		}),
@@ -396,7 +402,7 @@ export const filesAPI = createApi({
 					await refreshPage();
 				} catch (error) {
 					console.log(error);
-					await handleApiError(error);
+					handleApiError(error);
 				}
 			}
 		})

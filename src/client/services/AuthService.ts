@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
+import Router from 'next/router';
 import { destroyCookie, setCookie } from 'nookies';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { handleApiError } from '../components/Notifications';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
+import { RouteNames } from '../router';
 import { clearUser, setUser, UserState } from '../store/reducers/UserSlice';
 import { apiUrl } from './config';
 
@@ -17,7 +19,7 @@ export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<an
 	dispatch(setUser(user));
 };
 
-export const clearUserOnQueryFulfilled = async (dispatch: ThunkDispatch<any, any, AnyAction>) => {
+export const clearUserOnQueryFulfilled = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	destroyCookie(null, 'accessToken');
 	dispatch(clearUser());
 };
@@ -41,18 +43,6 @@ export const authAPI = createApi({
 				}
 			}
 		}),
-		userRefresh: build.query<IToken, null>({
-			query: () => ({ url: '/refresh' }),
-			async onQueryStarted(args, { dispatch, queryFulfilled }) {
-				try {
-					const { data } = await queryFulfilled;
-					setUserOnQueryFulfilled(data, dispatch);
-				} catch (error) {
-					console.log(error);
-					await handleApiError(error);
-				}
-			}
-		}),
 		userRegister: build.mutation<IToken, IRegister>({
 			query: (data) => ({
 				url: '/sign-up',
@@ -72,8 +62,13 @@ export const authAPI = createApi({
 		userLogout: build.mutation<null, void>({
 			query: () => ({ url: '/sign-out', method: 'DELETE' }),
 			async onQueryStarted(args, { dispatch, queryFulfilled }) {
-				await queryFulfilled;
-				await clearUserOnQueryFulfilled(dispatch);
+				try {
+					await queryFulfilled;
+				} catch (error) {
+					handleApiError(error);
+				}
+				await Router.push(RouteNames.LOGIN);
+				clearUserOnQueryFulfilled(dispatch);
 			}
 		})
 	})
