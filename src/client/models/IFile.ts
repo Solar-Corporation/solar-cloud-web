@@ -7,6 +7,7 @@ export interface IFile {
 	fileType: string;
 	isDir: boolean;
 	isFavorite: boolean;
+	isShared?: boolean;
 	mimeType?: string;
 	seeTime?: number;
 }
