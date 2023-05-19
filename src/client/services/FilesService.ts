@@ -3,7 +3,7 @@ import {
 	createApi,
 	FetchArgs,
 	fetchBaseQuery,
-	FetchBaseQueryError
+	FetchBaseQueryError,
 } from '@reduxjs/toolkit/dist/query/react';
 import { RcFile } from 'antd/es/upload';
 import Router from 'next/router';
@@ -11,7 +11,7 @@ import { handleApiError, handleApiLoading, handleApiSuccess } from '../component
 import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
-import { markFile, setCurrent, setMarked, unmarkFile, setShared } from '../store/reducers/CloudSlice';
+import { markFile, setCurrent, setMarked, setShared, unmarkFile } from '../store/reducers/CloudSlice';
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { apiUrl } from './config';

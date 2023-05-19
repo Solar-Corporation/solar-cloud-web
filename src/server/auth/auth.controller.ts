@@ -27,20 +27,14 @@ export class AuthController {
 		@Req() req: Request,
 		@Res({ passthrough: true }) res: Response,
 		@TransactionParam() transaction: Transaction,
-	): Promise<JwtToken> {
+	): Promise<void> {
 		const { headers, socket } = req;
 		const deviceData: DeviceDataDto = {
 			deviceIp: (headers['x-forwarded-for']) ? (headers['x-forwarded-for']).toString() : socket.remoteAddress || '',
 			deviceUa: UAParser(headers['user-agent']),
 		};
 
-		const tokens = await this.authService.registration(registrationUserDto, deviceData, transaction);
-
-		const refreshMaxAgeInSeconds = Number(this.configService.get<number>('auth.refreshExpiresIn'));
-		const milliseconds = 1000;
-		res.cookie('refreshToken', tokens.refresh, { maxAge: refreshMaxAgeInSeconds * milliseconds, httpOnly: true });
-
-		return tokens;
+		await this.authService.registration(registrationUserDto, deviceData, transaction);
 	}
 
 	@Post('sign-in')
