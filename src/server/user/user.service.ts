@@ -2,9 +2,10 @@ import { ConflictException, Injectable, NotFoundException, UnauthorizedException
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Transaction } from 'sequelize';
-import { FileService } from '../../../solar-s3';
 import { EmailLoginDto, UserRegistrationDto } from '../auth/dto';
 import { ErrorsConfig } from '../config/error.config';
+import { BucketService } from '../s3/bucket.service';
+import { StorageService } from '../s3/storage.service';
 import { UserDto } from './dto/user.dto';
 import { UserDatabaseService } from './user-database.service';
 
@@ -12,7 +13,9 @@ import { UserDatabaseService } from './user-database.service';
 export class UserService {
 	constructor(
 		private readonly userDatabaseService: UserDatabaseService,
+		private readonly bucketService: BucketService,
 		private readonly configService: ConfigService,
+		private readonly storageService: StorageService,
 	) {
 	}
 
@@ -26,7 +29,9 @@ export class UserService {
 		addUser.password = await bcrypt.hash(password, salt);
 
 		const userDto = await this.userDatabaseService.createUser(addUser, transaction);
-		await FileService.createUserDir({ uuid: userDto.uuid, storage: storage }, this.configService.get('app.path')!);
+		const store = await this.storageService.open(this.configService.get('app.path')!, this.configService.get('app.name')!);
+
+		await this.bucketService.create(store, userDto.uuid, storage);
 		return userDto;
 	}
 
