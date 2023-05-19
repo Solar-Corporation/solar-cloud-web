@@ -78,6 +78,7 @@
 .row {
   display: flex;
   justify-content: space-between;
+  position: relative;
   user-select: none;
   -webkit-user-select: none;
   padding: @space-xs + @space-3xs 0 @space-xs + @space-3xs 0;
@@ -135,6 +136,25 @@
 
 .icon {
   font-size: 32px;
+  overflow: visible;
+
+  &__shared {
+    position: absolute;
+    bottom: 5px;
+    left: 32px;
+    font-size: 10px;
+    border-radius: 14px;
+    width: 14px;
+    height: 14px;
+    background-color: @gray-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__dir {
+      bottom: 8px;
+    }
+  }
 }
 
 .iconMarked {
