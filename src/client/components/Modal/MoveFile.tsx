@@ -7,7 +7,7 @@ import { IFile, IMove } from '../../models/IFile';
 import { filesAPI } from '../../services/FilesService';
 import { setIsModalOpen } from '../../store/reducers/ModalSlice';
 import styles from '../../styles/components/Modal.module.less';
-import { getIsDir, getLinks } from '../../utils';
+import { getIsDir } from '../../utils';
 import { FileTable } from '../FileTable';
 import { AppModal } from './index';
 
@@ -16,7 +16,7 @@ export const ModalMoveFile: FC = () => {
 	const [isDir, setIsDir] = useState(false);
 	const [index, setIndex] = useState(0);
 	const [selected, setSelected] = useState<IFile[]>([]);
-	const [path, setPath] = useState(['/']);
+	const [folders, setFolders] = useState<{ name: string, hash: string }[]>([{ name: 'Все файлы', hash: '' }]);
 
 	const { context, selected: globalSelected, dispatch } = useCloudReducer();
 	const { moveFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
@@ -25,7 +25,7 @@ export const ModalMoveFile: FC = () => {
 
 	const handleUpdate = () => {
 		if (globalSelected.length) {
-			setPath(['/']);
+			setFolders([{ name: 'Все файлы', hash: '' }]);
 			setIndex(0);
 			setSelected([]);
 		}
@@ -38,24 +38,22 @@ export const ModalMoveFile: FC = () => {
 	const handleSubmit = async () => {
 		handleClose();
 
-		const paths: IMove[] = globalSelected.map((file) => ({
-			pathFrom: file.path,
-			pathTo: selected.length
-				? selected[0].path
-				: path[index]
+		const hashes: IMove[] = globalSelected.map((file) => ({
+			hashFrom: file.hash,
+			hashTo: selected.length ? selected[0].hash : folders[index].hash
 		}));
 
 		await moveFile({
-			paths,
+			hashes,
 			isDir,
-			destination: selected.length ? selected[0].name : getLinks(path[index])[index].title
+			destination: selected.length ? selected[0].name : folders[index].name
 		});
 	};
 
 
 	const handleBack = () => {
 		setIndex(index => index - 1);
-		path.pop();
+		folders.pop();
 	};
 
 	const handleClick = () => {
@@ -73,7 +71,7 @@ export const ModalMoveFile: FC = () => {
 				break;
 			}
 			case 2: {
-				path.push(file.path);
+				folders.push({ name: file.name, hash: file.hash });
 				setSelected([]);
 				setIndex(index => index + 1);
 				break;
@@ -91,8 +89,9 @@ export const ModalMoveFile: FC = () => {
 
 	useEffect(() => {
 		if (isOpen && !isLoading) {
+			console.log(folders[index].hash);
 			getFolders({
-				path: path[index],
+				hash: folders[index].hash,
 				filesPath: globalSelected.filter(file => file.isDir).map(file => file.path)
 			});
 		}
@@ -106,7 +105,7 @@ export const ModalMoveFile: FC = () => {
 			}
 			okText="Переместить"
 			open={isOpen}
-			confirmDisabled={context.path === (selected.length ? selected[0].path : path[index])}
+			confirmDisabled={context.hash === (selected.length ? selected[0].hash : folders[index].hash || null)}
 			onOk={handleSubmit}
 			onCancel={handleClose}
 			afterClose={handleUpdate}
@@ -114,8 +113,9 @@ export const ModalMoveFile: FC = () => {
 		>
 			<div>
 				<div className={styles.selectHeader}>
-					<div className={styles.title}>Место
-						перемещения: {selected.length ? selected[0].name : getLinks(path[index])[index].title}</div>
+					<div className={styles.title}>
+						Место перемещения: {selected.length ? selected[0].name : folders[index].name}
+					</div>
 					{index > 0 &&
               <Button
                   type="ghost"
@@ -135,6 +135,7 @@ export const ModalMoveFile: FC = () => {
                   className={styles.fileTable}
                   selected={selected}
                   onRowClick={handleRowClick}
+                  empty={<div className={styles.empty}>Нет папок</div>}
                   disableHeader
                   disableColumns
               />}
