@@ -13,9 +13,8 @@ interface ControlUploadProps extends ControlTypeProps {
 
 export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, folder }) => {
 	const inputRef = useRef(null);
-	const { path } = useAppSelector(state => state.cloudReducer.context);
+	const { hash } = useAppSelector(state => state.cloudReducer.context);
 	const [uploadFile] = filesAPI.useUploadFileMutation();
-	const [uploadDirectory] = filesAPI.useUploadDirectoryMutation();
 
 	const handleClick = () => {
 		// @ts-ignore
@@ -26,14 +25,10 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 		const files: RcFile[] = Array.prototype.slice.call(event.target.files);
 
 		if (files.length) {
-			if (folder) {
-				const name = event.target.files[0].webkitRelativePath.split('/')[0];
-				const directory: IDirectory = { path, name };
-				await uploadDirectory({ directory, files });
-			} else {
-				const upload: IUpload = { path, files };
-				await uploadFile(upload);
-			}
+			let dir = undefined;
+			if (folder) dir = event.target.files[0].webkitRelativePath.split('/')[0];
+			const upload: IUpload = { files, hash: hash || undefined, dir };
+			await uploadFile(upload);
 		}
 
 		event.target.value = '';

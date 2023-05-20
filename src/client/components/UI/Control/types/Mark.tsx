@@ -11,18 +11,18 @@ export const ControlMark: FC<ControlTypeProps> = ({ type, block, className }) =>
 	const [unmarkFile, { isLoading: isLoadingUnmark }] = filesAPI.useUnmarkFileMutation();
 
 	const handleClick = async () => {
-		const paths = { paths: selected.map(file => file.path) };
+		const hashes = selected.map(file => file.hash);
 
 		if (isMarked) {
-			await unmarkFile(paths);
+			await unmarkFile({ hashes });
 		} else {
-			await markFile(paths);
+			await markFile({ hashes });
 		}
 	};
 
 	useEffect(() => {
 		if (selected.length) {
-			setIsMarked(!!marked.find(path => path === selected[0].path));
+			setIsMarked(!!marked.find(hash => hash === selected[0].hash));
 		}
 	}, [selected, marked]);
 

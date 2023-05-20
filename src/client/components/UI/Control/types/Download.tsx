@@ -5,14 +5,19 @@ import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
 
 export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }) => {
-	const { selected } = useCloudReducer();
+	const { context, selected, directoryName } = useCloudReducer();
 	const [downloadFile, { isLoading }] = filesAPI.useDownloadFileMutation();
 
-	const handleClick = () => {
-		selected.forEach(async (file) => {
-			const download = { name: file.name, path: file.path };
+	const handleClick = async () => {
+		if (selected.length) {
+			for (const file of selected) {
+				const download = { name: file.name, hash: file.hash };
+				await downloadFile(download);
+			}
+		} else {
+			const download = { name: directoryName, hash: context.hash || '' };
 			await downloadFile(download);
-		});
+		}
 	};
 
 	return (
