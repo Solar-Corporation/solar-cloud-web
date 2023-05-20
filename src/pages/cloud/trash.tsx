@@ -11,7 +11,7 @@ import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 
-export default function Trash({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Trash({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
 
 	const floatControls = selected.length
@@ -69,6 +69,7 @@ export default function Trash({ files }: InferGetServerSidePropsType<typeof getS
 		<CloudLayout
 			title="Корзина"
 			headingOptions={headingOptions}
+			space={space}
 		>
 			<FileTable
 				files={files}
@@ -86,7 +87,8 @@ export default function Trash({ files }: InferGetServerSidePropsType<typeof getS
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
 	setInitialUserData(ctx, dispatch);
-	const { data: files, error } = await store.dispatch(filesAPI.endpoints.getTrashFiles.initiate());
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getTrashFiles.initiate());
+	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
 	// @ts-ignore
 	if (error && error.status === 401) return {
@@ -95,5 +97,5 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.TRASH}`
 		}
 	};
-	return { props: { files: files || null } };
+	return { props: { files: files || null, space: space || null } };
 });
