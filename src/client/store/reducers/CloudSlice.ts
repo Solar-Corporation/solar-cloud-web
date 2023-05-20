@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { IFile } from '../../models/IFile';
+import { IUser } from '../../models/IUser';
 
 export interface ICloudContext {
 	url: string;
-	path: string;
+	hash: string | null;
 }
 
 export interface CloudState {
@@ -12,7 +13,9 @@ export interface CloudState {
 	selected: IFile[];
 	marked: string[];
 	shared: string[];
-	userSelected: any[];
+	userSelected: IUser[];
+	directoryShared: boolean;
+	directoryName: string;
 	context: ICloudContext;
 	isContextMenuOpen: boolean;
 	isFilesContextMenuOpen: boolean;
@@ -27,8 +30,10 @@ const initialState: CloudState = {
 	userSelected: [],
 	context: {
 		url: '',
-		path: '/'
+		hash: null,
 	},
+	directoryShared: false,
+	directoryName: '',
 	isContextMenuOpen: false,
 	isFilesContextMenuOpen: false,
 	space: null
@@ -70,6 +75,10 @@ export const CloudSlice = createSlice({
 		},
 		setShared(state, action: PayloadAction<string[]>) {
 			state.shared = action.payload;
+		},
+		setDirectory(state, action: PayloadAction<[boolean, string]>) {
+			state.directoryShared = action.payload[0];
+			state.directoryName = action.payload[1];
 		},
 		selectUser(state, action: PayloadAction<any>) {
 			state.userSelected.push(action.payload);
@@ -113,6 +122,7 @@ export const {
 	shareFile,
 	unshareFile,
 	setShared,
+	setDirectory,
 	selectUser,
 	unselectUser,
 	clearUserSelected,
