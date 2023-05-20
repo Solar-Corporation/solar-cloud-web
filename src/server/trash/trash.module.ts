@@ -7,8 +7,8 @@ import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
+import { S3Module } from '../s3/s3.module';
 import { UserModule } from '../user/user.module';
-import { TrashDatabaseService } from './trash-database.service';
 import { TrashController } from './trash.controller';
 import { TrashService } from './trash.service';
 
@@ -28,9 +28,10 @@ import { TrashService } from './trash.service';
 		ConfigModule,
 		UserModule,
 		AuthModule,
+		S3Module,
 	],
 	controllers: [TrashController],
-	providers: [TrashService, JwtAuthGuard, TransactionInterceptor, RsErrorInterceptor, TrashDatabaseService],
+	providers: [TrashService, JwtAuthGuard, TransactionInterceptor, RsErrorInterceptor],
 	exports: [TrashService],
 })
 export class TrashModule {

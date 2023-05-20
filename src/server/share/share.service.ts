@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BucketService } from '../s3/bucket.service';
-import { ItemService, Properties } from '../s3/item.service';
+import { ItemService, StreamFile } from '../s3/item.service';
 import { StorageService } from '../s3/storage.service';
-
 import { UserDto } from '../user/dto/user.dto';
 
 @Injectable()
-export class TrashService {
+export class ShareService {
 	private readonly basePath;
 	private readonly baseName;
 
@@ -21,23 +20,28 @@ export class TrashService {
 		this.baseName = this.configService.get('app.name');
 	}
 
-	async getDeleteFiles({ uuid }: UserDto): Promise<Array<Properties>> {
+	async addShare({ uuid }: UserDto, hash: string): Promise<string> {
 		const store = await this.storageService.open(this.basePath, this.baseName);
 		const bucket = await this.bucketService.open(store, uuid);
-		return await this.itemService.getDeletes(bucket);
+		return await this.itemService.setShare(bucket, hash);
 	}
 
-	async restoreDeleteFiles({ uuid }: UserDto, hashes: Array<string>): Promise<void> {
+	async deleteShare({ uuid }: UserDto, hash: string) {
 		const store = await this.storageService.open(this.basePath, this.baseName);
 		const bucket = await this.bucketService.open(store, uuid);
-		for (const hash of hashes)
-			await this.itemService.unsetDelete(bucket, hash);
+		await this.itemService.unsetShare(bucket, hash);
 	}
 
-	async deletePaths({ uuid }: UserDto): Promise<void> {
+	async getShareToken({ uuid }: UserDto, hash: string): Promise<string> {
 		const store = await this.storageService.open(this.basePath, this.baseName);
 		const bucket = await this.bucketService.open(store, uuid);
-		await this.itemService.clearTrash(bucket);
+		return await this.itemService.getShareToken(bucket, hash);
+	}
+
+	async getFile(uuid: string, token: string): Promise<StreamFile> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		const hash = await this.itemService.getShareHash(bucket, token);
+		return await this.itemService.getFile(bucket, hash);
 	}
 }
-

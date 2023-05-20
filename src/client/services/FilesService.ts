@@ -3,7 +3,7 @@ import {
 	createApi,
 	FetchArgs,
 	fetchBaseQuery,
-	FetchBaseQueryError
+	FetchBaseQueryError,
 } from '@reduxjs/toolkit/dist/query/react';
 import { RcFile } from 'antd/es/upload';
 import Router from 'next/router';

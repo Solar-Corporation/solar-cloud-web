@@ -10,20 +10,17 @@ import {
 	Query,
 	Req,
 	Res,
+	StreamableFile,
 	UseGuards,
-	UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
-import { Transaction } from 'sequelize';
+import { Space } from '../s3/bucket.service';
 
-import { FsItem } from '../../../solar-s3';
-import { TransactionParam } from '../common/decorators/transaction.decorator';
-import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
-import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
+import { HashPath, Properties } from '../s3/item.service';
 import { UserDto } from '../user/dto/user.dto';
-import { DirCreateDto, FileUploadDto, MovePaths, PathDto, PathsDto, RenameQueryDto } from './dto/file.dto';
+import { DirCreateDto, FileUploadDto, HashesDto, MovePaths, PathDto, RenameQueryDto } from './dto/file.dto';
 import { FileService } from './file.service';
 
 @Controller({ version: '1' })
@@ -35,7 +32,6 @@ export class FileController {
 
 	@Post('files')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(RsErrorInterceptor)
 	@FormDataRequest()
 	async saveFile(
 		@Body() fileUploadDto: FileUploadDto,
@@ -44,76 +40,95 @@ export class FileController {
 		await this.fileService.saveFile(fileUploadDto, user as UserDto);
 	}
 
-	@Get('files/:path')
+
+	@Get('files/:hash')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(RsErrorInterceptor)
 	async getFile(
-		@Param() { path }: PathDto,
+		@Param() { hash }: PathDto,
 		@Req() { user }: Request,
-		@Res() res: Response,
-	): Promise<void> {
-		const { fileMime, stream, name } = await this.fileService.getFile(path, user as UserDto);
+		@Res({ passthrough: true }) res: Response,
+	): Promise<StreamableFile> {
+		const { fileMime, stream, name } = await this.fileService.getFile(user as UserDto, hash);
+		// @ts-ignore
 		res.set({
 			'Content-Type': `${fileMime}; charset=utf-8`,
 			'Content-Disposition': `attachment; filename="${encodeURI(name!)}"`,
 		});
-		stream!.pipe(res);
+		return new StreamableFile(stream);
 	}
 
-	@Put('files/:path')
+	@Get('files/:hash/path')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(TransactionInterceptor)
-	@UseInterceptors(RsErrorInterceptor)
+	async getFilePath(
+		@Param() { hash }: PathDto,
+		@Req() { user }: Request,
+	): Promise<Array<HashPath>> {
+		return await this.fileService.getPath(user as UserDto, hash);
+	}
+
+	@Put('files/:hash')
+	@UseGuards(AuthGuard())
 	async renameFile(
-		@Param() { path }: PathDto,
+		@Param() { hash }: PathDto,
 		@Query() { newName }: RenameQueryDto,
 		@Req() { user }: Request,
-		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
-		await this.fileService.rename({ path: path, newName: newName }, user as UserDto, transaction);
+		await this.fileService.rename(user as UserDto, hash, newName);
 	}
+
 
 	@Delete('files')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(TransactionInterceptor)
-	@UseInterceptors(RsErrorInterceptor)
 	async delete(
 		@Req() { user }: Request,
-		@Body() { paths }: PathsDto,
-		@TransactionParam() transaction: Transaction,
+		@Body() { hashes }: HashesDto,
 	): Promise<void> {
-		await this.fileService.delete(user as UserDto, paths, transaction);
+		await this.fileService.delete(user as UserDto, hashes);
 	}
 
 	@Post('directories')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(RsErrorInterceptor)
 	async createDirectory(
-		@Body() dirCreateDto: DirCreateDto,
+		@Body() { hash, name }: DirCreateDto,
 		@Req() { user }: Request,
-	) {
-		await this.fileService.createDir(user as UserDto, dirCreateDto);
+	): Promise<{ hash: string }> {
+		return { hash: await this.fileService.createDir(user as UserDto, hash, name) };
 	}
 
 	@Get('files')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(RsErrorInterceptor)
 	async getFileTree(
-		@Query() { path }: PathDto,
+		@Query() { hash }: PathDto,
 		@Req() { user }: Request,
-	): Promise<Array<FsItem>> {
-		return this.fileService.getFileTree(user as UserDto, path);
+	): Promise<Array<Properties>> {
+		hash = (hash) ? hash : '';
+		return this.fileService.getFileTree(user as UserDto, hash);
 	}
+
 
 	@Patch('files')
 	@UseGuards(AuthGuard())
-	@UseInterceptors(TransactionInterceptor)
-	@UseInterceptors(RsErrorInterceptor)
 	async moveFiles(
-		@Body() { paths }: MovePaths,
+		@Body() { hashes }: MovePaths,
 		@Req() { user }: Request,
-		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
-		await this.fileService.moveFiles(user as UserDto, paths, transaction);
+		await this.fileService.moveFiles(user as UserDto, hashes);
+	}
+
+	@Patch('files/copy')
+	@UseGuards(AuthGuard())
+	async copyFiles(
+		@Body() { hashes }: MovePaths,
+		@Req() { user }: Request,
+	): Promise<void> {
+		await this.fileService.copyFiles(user as UserDto, hashes);
+	}
+
+	@Get('space')
+	@UseGuards(AuthGuard())
+	async getSpace(
+		@Req() { user }: Request,
+	): Promise<Space> {
+		return await this.fileService.getSpace(user as UserDto);
 	}
 }

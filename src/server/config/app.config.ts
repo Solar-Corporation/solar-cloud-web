@@ -9,6 +9,7 @@ export default () => ({
 		refreshExpiresIn: Number(process.env.EXPIRESIN_REFRESH_SECRET),
 	},
 	app: {
+		name: process.env.STORE_NAME_SECRET,
 		port: process.env.APP_PORT_SECRET || 3000,
 		path: process.env.STORE_PATH_SECRET,
 		userStorage: process.env.USER_STORAGE_SECRET || 5368709120,

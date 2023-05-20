@@ -1,18 +1,28 @@
-import { Expose, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+	IsArray,
+	IsBoolean,
+	IsDate,
+	IsHash,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from 'class-validator';
 import { FileSystemStoredFile, IsFiles } from 'nestjs-form-data';
-import { Readable } from 'stream';
 import { AbsolutePath } from '../../common/decorators/path-validate.decorator';
 
 
 export class DirCreateDto {
+	@IsOptional()
+	@IsHash('md5')
 	@IsString()
-	@IsNotEmpty()
-	@AbsolutePath()
-	path!: string;
+	hash: string = '';
 
 	@IsString()
 	@IsNotEmpty()
+	@Transform(({ value }) => value.replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-'))
 	name!: string;
 }
 
@@ -21,10 +31,15 @@ export class FileUploadDto {
 	@IsNotEmpty()
 	files!: FileSystemStoredFile[];
 
+	// @IsHash('md5')
 	@IsString()
-	@IsNotEmpty()
-	@AbsolutePath()
-	path!: string;
+	@IsOptional()
+	hash: string = '';
+
+	@IsString()
+	@IsOptional()
+	@Transform(({ value }) => value.replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-'))
+	dir: string = '';
 }
 
 export class FileDto {
@@ -50,7 +65,7 @@ export class FileDto {
 	@IsString()
 	type?: string;
 
-	stream?: Readable = new Readable();
+	stream?: any;
 
 	@IsDate()
 	createAt?: Date;
@@ -66,18 +81,16 @@ export class FileDto {
 }
 
 export class PathDto {
-	@IsString()
-	@IsNotEmpty()
-	@Expose({ name: 'path' })
-	@AbsolutePath()
-	path!: string;
+	@IsOptional()
+		// @IsHash('md5')
+	hash: string = '';
 }
 
-export class PathsDto {
+export class HashesDto {
 	@IsArray()
+	@IsHash('md5', { each: true })
 	@IsNotEmpty()
-	@AbsolutePath()
-	paths!: Array<string>;
+	hashes!: Array<string>;
 }
 
 export class MovePaths {
@@ -85,25 +98,22 @@ export class MovePaths {
 	@IsNotEmpty()
 	@ValidateNested({ each: true })
 	@Type(() => MovePath)
-	paths!: Array<MovePath>;
+	hashes!: Array<MovePath>;
 }
 
 export class MovePath {
+	@IsHash('md5')
 	@IsString()
-	@IsNotEmpty()
-	@AbsolutePath()
-	pathFrom!: string;
+	hashFrom!: string;
 
 	@IsString()
-	@IsNotEmpty()
-	@AbsolutePath()
-	pathTo!: string;
+	hashTo: string = '';
 }
 
 export class RenameQueryDto {
 	@IsString()
 	@IsNotEmpty()
-	@Expose({ name: 'new_name' })
+	// @Expose({ name: 'new_name' })
 	@AbsolutePath()
 	newName!: string;
 }
