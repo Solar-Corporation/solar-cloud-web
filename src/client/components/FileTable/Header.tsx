@@ -11,7 +11,7 @@ export const FileTableHeader: FC<FileTableHeaderProps> = ({ columns }) => {
 		<div className={styles.header}>
 			<div className={styles.headerName}>Название</div>
 			{columns.hasOwnProperty('fileType') && <div className={styles.extension}>Тип</div>}
-			{columns.hasOwnProperty('seeTime') && <div className={styles.date}>Дата изменения</div>}
+			{columns.hasOwnProperty('updateAt') && <div className={styles.date}>Дата изменения</div>}
 			{columns.hasOwnProperty('size') && <div className={styles.size}>Размер</div>}
 		</div>
 	);
