@@ -1,7 +1,14 @@
+import jwt from 'jwt-decode';
+import { GetServerSidePropsContext } from 'next';
 import Router from 'next/router';
+import { parseCookies } from 'nookies';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { IFile } from '../models/IFile';
 import { IUser } from '../models/IUser';
 import { RouteNames } from '../router';
+import { setContext } from '../store/reducers/CloudSlice';
+import { setUser, UserState } from '../store/reducers/UserSlice';
 
 export const getDateStr = (date: Date) => {
 	const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;
@@ -22,21 +29,21 @@ export const refreshPage = async () => {
 	await Router.replace(Router.asPath);
 };
 
-export const getLinks = (str: string) => {
-	const links: { title: string, href: string }[] = [{ title: 'Все файлы', href: RouteNames.FILES }];
+export const getDirectoryLinks = (paths?: IFile[]) => ([
+	{ title: 'Все файлы', href: RouteNames.FILES },
+	...paths?.map(path => ({ title: path.name, href: `${RouteNames.FILES}/${path.hash}`})) || []
+]);
 
-	if (str !== '/') {
-		const arrFromString = str.split('/');
-		for (let i = 1; i < arrFromString.length; i++) {
-			if (i === 1) {
-				links.push({ title: arrFromString[i], href: `${RouteNames.FILES}/${encodeURIComponent(`/${arrFromString[i]}`)}` });
-			} else {
-				links.push({ title: arrFromString[i], href: `${links[i - 1].href}${encodeURIComponent(`/${arrFromString[i]}`)}` });
-			}
-		}
+export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDispatch<any, any, AnyAction>, hash: string | null) => {
+	const { accessToken: token } = parseCookies(ctx);
+	if (token) {
+		const user: UserState = {
+			data: jwt(token),
+			token
+		};
+		dispatch(setUser(user));
 	}
-
-	return links;
+	dispatch(setContext({ url: decodeURIComponent(ctx.resolvedUrl), hash }));
 };
 
 export const getFilesPlaceholder = () => [
@@ -156,12 +163,3 @@ export const getIsDir = (arr: IFile[]) => arr.length === arr.filter(file => file
 export const getHasDir = (arr: IFile[]) => !!arr.find(file => file.isDir);
 
 export const getIsActive = (arr: IUser[]) => arr.length === arr.filter(user => !user.isActive).length;
-
-// export async function hash(string) {
-//   const utf8 = new TextEncoder().encode(string);
-//   const hashBuffer = await crypto.subtle.digest("SHA-256", utf8);
-//   const hashArray = Array.from(new Uint8Array(hashBuffer));
-//   return hashArray
-//     .map((bytes) => bytes.toString(16).padStart(2, "0"))
-//     .join("");
-// }
