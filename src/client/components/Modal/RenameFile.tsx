@@ -26,7 +26,7 @@ export const ModalRenameFile: FC = () => {
 	const handleSubmit = async () => {
 		handleClose();
 		if (name !== selected[0].name) {
-			const rename = { path: selected[0].path, new_name: name, isDir: selected[0].isDir };
+			const rename = { hash: selected[0].hash, newName: name, isDir: selected[0].isDir };
 			await renameFile(rename);
 		}
 	};

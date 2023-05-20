@@ -1,17 +1,11 @@
 import { CloudServerOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
 import { FC } from 'react';
+import { IStorageSpace } from '../../models/IFile';
 import styles from '../../styles/components/CloudInfoSpace.module.less';
 import { variables } from '../../styles/theme';
 
-interface CloudInfoSpaceProps {
-	used: number;
-	total: number;
-}
-
-export const CloudInfoSpace: FC<CloudInfoSpaceProps> = ({ used, total }) => {
-	const percent = (used / total) * 100;
-
+export const CloudInfoSpace: FC<IStorageSpace> = ({ percent, usageSpace, totalSpace }) => {
 	return (
 		<div className={styles.container}>
 			<div className={styles.title}>
@@ -19,11 +13,7 @@ export const CloudInfoSpace: FC<CloudInfoSpaceProps> = ({ used, total }) => {
 				<span className={styles.titleText}>Хранилище</span>
 			</div>
 			<div className={styles.info}>
-				{
-					used
-						? <><span className={styles.space}>{used} ГБ </span>|<span className={styles.space}> </span>{total} ГБ</>
-						: <span className={styles.space}>Свободно</span>
-				}
+				<span className={styles.space}>{usageSpace} </span>|<span className={styles.space}> </span>{totalSpace}
 			</div>
 			<Progress
 				strokeColor={

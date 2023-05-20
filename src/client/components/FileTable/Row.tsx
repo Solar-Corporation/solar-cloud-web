@@ -109,20 +109,20 @@ export const FileTableRow: FC<FileTableRowProps> = ({
                                                     }) => {
 	const [isSelected, setIsSelected] = useState(false);
 	const [isMarked, setIsMarked] = useState(file.isFavorite);
-	const [isShared, setIsShared] = useState(file.isShared || false);
-	const date = new Date(file.seeTime || '');
+	const [isShared, setIsShared] = useState(file.isShare || false);
+	const date = new Date(file.updateAt || '');
 	const { icon, extension } = getFileType(file);
 
 	useEffect(() => {
-		setIsSelected(!!selected.find(selectedFile => selectedFile.path === file.path));
+		setIsSelected(!!selected.find(selectedFile => selectedFile.hash === file.hash));
 	}, [selected]);
 
 	useEffect(() => {
-		setIsMarked(!!marked.find(path => path === file.path));
+		setIsMarked(!!marked.find(hash => hash === file.hash));
 	}, [marked]);
 
 	useEffect(() => {
-		setIsShared(!!shared.find(path => path === file.path));
+		setIsShared(!!shared.find(hash => hash === file.hash));
 	}, [shared]);
 
 	return (
@@ -145,10 +145,10 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 			{!disableColumns && <div className={styles.columns}>
 				{file.hasOwnProperty('fileType') &&
 					<FileTableColumn title={extension} className={styles.extension}>{extension}</FileTableColumn>}
-				{file.hasOwnProperty('seeTime') &&
+				{file.hasOwnProperty('updateAt') &&
 					<FileTableColumn className={styles.date}>{getDateStr(date)}</FileTableColumn>}
 				{file.hasOwnProperty('size') &&
-					<FileTableColumn className={styles.size}>{file.size}</FileTableColumn>}
+					<FileTableColumn className={styles.size}>{file.size === '0 Байт' ? '—' : file.size}</FileTableColumn>}
 			</div>}
 			{isShared && (
 				<span className={file.isDir ? `${styles.icon__shared} ${styles.icon__shared__dir}` : styles.icon__shared}>

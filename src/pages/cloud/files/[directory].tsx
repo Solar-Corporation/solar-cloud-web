@@ -9,16 +9,15 @@ import { IFile } from '../../../client/models/IFile';
 import { RouteNames } from '../../../client/router';
 import { filesAPI } from '../../../client/services/FilesService';
 import { wrapper } from '../../../client/store';
-import { clearSelected, selectFile, setContext, unselectFile } from '../../../client/store/reducers/CloudSlice';
-import { setInitialUserData } from '../../../client/store/reducers/UserSlice';
-import { getLinks } from '../../../client/utils';
+import { clearSelected, selectFile, setDirectory, unselectFile } from '../../../client/store/reducers/CloudSlice';
+import { getDirectoryLinks, setInitialData } from '../../../client/utils';
 import { getFilesContextMenu, getFloatControls } from './index';
 
-export default function Directory({ files, links }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { selected, marked, dispatch } = useCloudReducer();
+export default function Directory({ files, links, space, name }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
-	const floatControls = getFloatControls(selected, [Control.SHARE]);
+	const floatControls = getFloatControls(selected, [Control.SHARE, Control.DOWNLOAD]);
 	const headingOptions = {
 		links,
 		actions: [Control.CREATE],
@@ -27,7 +26,7 @@ export default function Directory({ files, links }: InferGetServerSidePropsType<
 		sticky: true
 	};
 
-	const contextMenu = [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.NULL, Control.VIEW, Control.INFO];
+	const contextMenu = [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.DOWNLOAD, Control.NULL, Control.VIEW, Control.INFO];
 	const filesContextMenu = getFilesContextMenu(selected);
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
@@ -54,7 +53,7 @@ export default function Directory({ files, links }: InferGetServerSidePropsType<
 			}
 			case 2: {
 				if (file.isDir) {
-					await router.push(`${RouteNames.FILES}/${encodeURIComponent(file.path)}`);
+					await router.push(`${RouteNames.FILES}/${file.hash}`);
 				} else {
 					console.log('double click!');
 				}
@@ -74,16 +73,18 @@ export default function Directory({ files, links }: InferGetServerSidePropsType<
 
 	return (
 		<CloudLayout
-			title={links[links.length - 1].title}
+			title={name}
 			headingOptions={headingOptions}
 			contextMenu={contextMenu}
+			space={space}
 		>
 			<FileTable
 				files={files}
 				contextMenu={filesContextMenu}
 				selected={selected}
 				marked={marked}
-				empty={<ResultEmpty folderName={links[links.length - 1].title}/>}
+				shared={shared}
+				empty={<ResultEmpty folderName={name} />}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
 			/>
@@ -93,16 +94,24 @@ export default function Directory({ files, links }: InferGetServerSidePropsType<
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
-	const url = decodeURIComponent(ctx.resolvedUrl);
-	const path = ctx.query.directory?.toString() || '/';
-	const links = getLinks(path);
-
-	setInitialUserData(ctx, dispatch);
-	dispatch(setContext({ url, path }));
-
-	const { data: files, error } = await store.dispatch(filesAPI.endpoints.getFiles.initiate(path));
+	const hash = ctx.query.directory?.toString() || '';
+	setInitialData(ctx, dispatch, hash || null);
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate(hash));
+	const { data: paths } = await dispatch(filesAPI.endpoints.getFolderPath.initiate(hash));
+	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
+	dispatch(setDirectory([
+		paths ? paths[paths.length - 1].isShare || false : false,
+		paths ? paths[paths.length - 1].name || '' : ''
+	]));
 
 	// @ts-ignore
 	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
-	return { props: { files: files || null, links } };
+	return {
+		props: {
+			files: files || null,
+			links: getDirectoryLinks(paths),
+			space: space || null,
+			name: paths ? paths[paths.length - 1].name : ''
+		}
+	};
 });

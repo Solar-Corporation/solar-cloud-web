@@ -11,7 +11,7 @@ import { getIsDir } from '../../utils';
 import { FileTable } from '../FileTable';
 import { AppModal } from './index';
 
-export const ModalMoveFile: FC = () => {
+export const ModalCopyFile: FC = () => {
 	const [length, setLength] = useState(0);
 	const [isDir, setIsDir] = useState(false);
 	const [index, setIndex] = useState(0);
@@ -19,8 +19,8 @@ export const ModalMoveFile: FC = () => {
 	const [folders, setFolders] = useState<{ name: string, hash: string }[]>([{ name: 'Все файлы', hash: '' }]);
 
 	const { context, selected: globalSelected, dispatch } = useCloudReducer();
-	const { moveFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	const [moveFile] = filesAPI.useMoveFileMutation();
+	const { copyFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
+	const [copyFile] = filesAPI.useCopyFileMutation();
 	const [getFolders, { data: files, isLoading }] = filesAPI.useGetFoldersMutation();
 
 	const handleUpdate = () => {
@@ -32,7 +32,7 @@ export const ModalMoveFile: FC = () => {
 	};
 
 	const handleClose = () => {
-		dispatch(setIsModalOpen({ moveFile: false }));
+		dispatch(setIsModalOpen({ copyFile: false }));
 	};
 
 	const handleSubmit = async () => {
@@ -43,7 +43,7 @@ export const ModalMoveFile: FC = () => {
 			hashTo: selected.length ? selected[0].hash : folders[index].hash
 		}));
 
-		await moveFile({
+		await copyFile({
 			hashes,
 			isDir,
 			destination: selected.length ? selected[0].name : folders[index].name
@@ -100,10 +100,10 @@ export const ModalMoveFile: FC = () => {
 	return (
 		<AppModal
 			title={length > 1
-				? isDir ? 'Переместить папки' : 'Переместить файлы'
-				: isDir ? 'Переместить папку' : 'Переместить файл'
+				? isDir ? 'Скопировать папки' : 'Скопировать файлы'
+				: isDir ? 'Скопировать папку' : 'Скопировать файл'
 			}
-			okText="Переместить"
+			okText="Копировать"
 			open={isOpen}
 			confirmDisabled={context.hash === (selected.length ? selected[0].hash : folders[index].hash || null)}
 			onOk={handleSubmit}
@@ -114,7 +114,7 @@ export const ModalMoveFile: FC = () => {
 			<div>
 				<div className={styles.selectHeader}>
 					<div className={styles.title}>
-						Место перемещения: {selected.length ? selected[0].name : folders[index].name}
+						Место копирования: {selected.length ? selected[0].name : folders[index].name}
 					</div>
 					{index > 0 &&
               <Button

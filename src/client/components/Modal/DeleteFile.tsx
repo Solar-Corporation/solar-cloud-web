@@ -21,7 +21,7 @@ export const ModalDeleteFile: FC = () => {
 	const handleSubmit = async () => {
 		handleClose();
 		const paths = {
-			paths: selected.map(file => file.path),
+			hashes: selected.map(file => file.hash),
 			isDir
 		};
 		await deleteFile(paths);

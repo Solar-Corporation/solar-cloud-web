@@ -11,7 +11,7 @@ export const ModalCreateDirectory: FC = () => {
 	const inputRef = useRef(null);
 	const [name, setName] = useState('Новая папка');
 	const [relocate, setRelocate] = useState(false);
-	const { path } = useAppSelector(state => state.cloudReducer.context);
+	const { hash } = useAppSelector(state => state.cloudReducer.context);
 	const { createDirectory: isOpen } = useAppSelector(state => state.modalReducer.modal);
 	const [createDirectory] = filesAPI.useCreateDirectoryMutation();
 	const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ export const ModalCreateDirectory: FC = () => {
 
 	const handleSubmit = async () => {
 		handleClose();
-		const directory: IDirectory = { path, name };
+		const directory: IDirectory = { hash, name };
 		await createDirectory({ directory, relocate });
 	};
 

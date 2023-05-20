@@ -10,8 +10,8 @@ export const ControlRecover: FC<ControlTypeProps> = ({ type, block, className })
 	const [recoverFile, {isLoading}] = filesAPI.useRecoverFileMutation();
 
 	const handleClick = async () => {
-		const paths = selected.map(file => file.path);
-		await recoverFile({ paths, isDir: getIsDir(selected) });
+		const hashes = selected.map(file => file.hash);
+		await recoverFile({ hashes, isDir: getIsDir(selected) });
 	};
 
 	return (

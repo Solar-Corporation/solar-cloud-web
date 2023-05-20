@@ -13,7 +13,7 @@ import { clearSelected, selectFile, unselectFile } from '../../client/store/redu
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 import { getFilesContextMenu, getFloatControls } from './files';
 
-export default function Marked({ files }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Marked({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
 	const router = useRouter();
 
@@ -73,6 +73,7 @@ export default function Marked({ files }: InferGetServerSidePropsType<typeof get
 		<CloudLayout
 			title="Избранное"
 			headingOptions={headingOptions}
+			space={space}
 		>
 			<FileTable
 				files={files}
@@ -90,7 +91,8 @@ export default function Marked({ files }: InferGetServerSidePropsType<typeof get
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
 	setInitialUserData(ctx, dispatch);
-	const { data: files, error } = await store.dispatch(filesAPI.endpoints.getMarkedFiles.initiate());
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getMarkedFiles.initiate());
+	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
 	// @ts-ignore
 	if (error && error.status === 401) return {
@@ -99,5 +101,5 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.MARKED}`
 		}
 	};
-	return { props: { files: files || null } };
+	return { props: { files: files || null, space: space || null } };
 });

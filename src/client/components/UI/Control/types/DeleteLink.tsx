@@ -1,16 +1,15 @@
 import { StopOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { useCloudReducer } from '../../../../hooks/cloud';
-import { setIsFilesContextMenuOpen, unshareFile } from '../../../../store/reducers/CloudSlice';
+import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
 
 export const ControlDeleteLink: FC<ControlTypeProps> = (props) => {
-	const { selected, dispatch } = useCloudReducer();
+	const { context, selected } = useCloudReducer();
+	const [deleteLink] = filesAPI.useDeleteShareLinkMutation();
 
-	const handleClick = () => {
-		dispatch(setIsFilesContextMenuOpen(false));
-		// subject to change
-		dispatch(unshareFile(selected[0].path));
+	const handleClick = async () => {
+		await deleteLink(selected.length ? selected[0].hash : context.hash || '');
 	};
 
 	return (

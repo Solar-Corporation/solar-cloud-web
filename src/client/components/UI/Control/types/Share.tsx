@@ -2,7 +2,7 @@ import { LinkOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { FC, useEffect, useState, MouseEvent } from 'react';
 import { useCloudReducer } from '../../../../hooks/cloud';
-import { setIsFilesContextMenuOpen, shareFile } from '../../../../store/reducers/CloudSlice';
+import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
 import ControlType, { getControlType } from '../List';
 import styles from '../../../../styles/components/Control.module.less';
@@ -10,7 +10,8 @@ import styles from '../../../../styles/components/Control.module.less';
 export const ControlShare: FC<ControlTypeProps> = ({ type, block, className }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isShared, setIsShared] = useState(false);
-	const { selected, shared, isFilesContextMenuOpen,dispatch } = useCloudReducer();
+	const { context, selected, shared, directoryShared, isFilesContextMenuOpen } = useCloudReducer();
+	const [shareFile] = filesAPI.useCreateShareLinkMutation();
 
 	const menu = () => {
 		const handleClick = (event: MouseEvent<HTMLLIElement>) => {
@@ -33,11 +34,9 @@ export const ControlShare: FC<ControlTypeProps> = ({ type, block, className }) =
 		);
 	};
 
-	const handleClick = () => {
-		// subject to change
+	const handleClick = async () => {
 		if (!isShared) {
-			dispatch(setIsFilesContextMenuOpen(false));
-			dispatch(shareFile(selected[0].path));
+			await shareFile(selected.length ? selected[0].hash : context.hash || '');
 		} else {
 			setIsMenuOpen(true);
 		}
@@ -49,9 +48,11 @@ export const ControlShare: FC<ControlTypeProps> = ({ type, block, className }) =
 
 	useEffect(() => {
 		if (selected.length) {
-			setIsShared(!!shared.find(path => path === selected[0].path));
+			setIsShared(!!shared.find(hash => hash === selected[0].hash));
+		} else {
+			setIsShared(directoryShared);
 		}
-	}, [selected, shared]);
+	}, [selected, shared, directoryShared]);
 
 	useEffect(() => {
 		window.addEventListener('scroll', () => setIsMenuOpen(false));

@@ -57,6 +57,7 @@ export default function Settings() {
 				links: [{ title: 'Настройки', href: RouteNames.SETTINGS }],
 				constControls: getControls(userSelected)
 			}}
+			space={null}
 		>
 			<UserTable
 				users={users}
