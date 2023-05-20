@@ -8,17 +8,28 @@ import {
 import { RcFile } from 'antd/es/upload';
 import Router from 'next/router';
 import { handleApiError, handleApiLoading, handleApiSuccess } from '../components/Notifications';
-import { IDirectory, IFile, IMove, IUpload } from '../models/IFile';
+import { IDirectory, IFile, IMove, IStorageSpace, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
-import { markFile, setCurrent, setMarked, unmarkFile, setShared } from '../store/reducers/CloudSlice';
+import {
+	markFile,
+	setCurrent,
+	setDirectory, setIsContextMenuOpen,
+	setIsFilesContextMenuOpen,
+	setMarked,
+	setShared,
+	shareFile,
+	unmarkFile, unshareFile
+} from '../store/reducers/CloudSlice';
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { apiUrl } from './config';
+import copy from 'copy-to-clipboard';
 
-const getFormData = ({ path, files }: IUpload) => {
+const getFormData = ({ files, hash, dir }: IUpload) => {
 	const formData = new FormData();
-	formData.append('path', path);
+	if (hash) formData.append('hash', hash);
+	if (dir) formData.append('dir', dir);
 
 	files.forEach((file) => {
 		formData.append('files[]', new File(
@@ -67,16 +78,21 @@ export const filesAPI = createApi({
 	reducerPath: 'filesAPI',
 	baseQuery: baseQueryWithRefresh,
 	endpoints: (build) => ({
-		getFiles: build.query<IFile[], string>({
-			query: (path) => ({
+		getSpace: build.query<IStorageSpace, void>({
+			query: () => ({
+				url: '/space',
+			})
+		}),
+		getFiles: build.query<IFile[], string | void>({
+			query: (hash) => ({
 				url: '/files',
-				params: { path }
+				params: { hash }
 			}),
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
 					const { data } = await queryFulfilled;
-					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.path)));
-					dispatch(setShared(data.filter(file => file.isShared).map(file => file.path)));
+					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.hash)));
+					dispatch(setShared(data.filter(file => file.isShare).map(file => file.hash)));
 					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
@@ -86,11 +102,11 @@ export const filesAPI = createApi({
 				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
 			}
 		}),
-		getFolders: build.mutation<IFile[], { path: string, filesPath: string[] }>({
-			query: ({ path }) => ({
+		getFolders: build.mutation<IFile[], { hash: string | undefined, filesPath: string[] }>({
+			query: ({ hash }) => ({
 				url: '/files',
 				method: 'GET',
-				params: { path }
+				params: { hash }
 			}),
 			async onQueryStarted(args, { queryFulfilled }) {
 				try {
@@ -103,13 +119,23 @@ export const filesAPI = createApi({
 				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
 			}
 		}),
+		getFolderPath: build.query<IFile[], string>({
+			query: hash => ({ url: `/files/${hash}/path` }),
+			async onQueryStarted(args, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}),
 		getMarkedFiles: build.query<IFile[], void>({
 			query: () => ({ url: '/favorites' }),
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
 					const { data } = await queryFulfilled;
-					dispatch(setMarked(data.map(file => file.path)));
-					dispatch(setShared(data.filter(file => file.isShared).map(file => file.path)));
+					dispatch(setMarked(data.map(file => file.hash)));
+					dispatch(setShared(data.filter(file => file.isShare).map(file => file.hash)));
 					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
@@ -124,8 +150,7 @@ export const filesAPI = createApi({
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
 					const { data } = await queryFulfilled;
-					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.path)));
-					dispatch(setShared(data.filter(file => file.isShared).map(file => file.path)));
+					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.hash)));
 					dispatch(setCurrent(data));
 				} catch (error) {
 					console.log(error);
@@ -165,24 +190,7 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		uploadDirectory: build.mutation<any, { directory: IDirectory, files: RcFile[] }>({
-			query: ({ directory }) => ({
-				url: '/directories',
-				method: 'POST',
-				body: directory
-			}),
-			async onQueryStarted({ directory, files }, { queryFulfilled, dispatch }) {
-				try {
-					await queryFulfilled;
-					const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
-					const upload: IUpload = { path, files };
-					await dispatch(filesAPI.endpoints.uploadFile.initiate(upload));
-				} catch (error) {
-					handleApiError(error);
-				}
-			}
-		}),
-		createDirectory: build.mutation<any, { directory: IDirectory, relocate: boolean }>({
+		createDirectory: build.mutation<{ hash: string }, { directory: IDirectory, relocate: boolean }>({
 			query: ({ directory }) => ({
 				url: '/directories',
 				method: 'POST',
@@ -195,14 +203,13 @@ export const filesAPI = createApi({
 						key,
 						message: 'Создание папки...',
 					});
-					await queryFulfilled;
+					const { data } = await queryFulfilled;
 					handleApiSuccess({
 						key,
 						message: 'Папка создана!'
 					});
 					if (relocate) {
-						const path = directory.path === '/' ? `${directory.path}${directory.name}` : `${directory.path}/${directory.name}`;
-						await Router.push(`${RouteNames.FILES}/${encodeURIComponent(path)}`);
+						await Router.push(`${RouteNames.FILES}/${data.hash}`);
 					} else {
 						await refreshPage();
 					}
@@ -211,11 +218,11 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		renameFile: build.mutation<any, { path: string, new_name: string, isDir: boolean }>({
-			query: ({ path, new_name }) => ({
-				url: `/files/${encodeURIComponent(path)}`,
+		renameFile: build.mutation<any, { hash: string, newName: string, isDir: boolean }>({
+			query: ({ hash, newName }) => ({
+				url: `/files/${hash}`,
 				method: 'PUT',
-				params: { new_name }
+				params: { newName }
 			}),
 			async onQueryStarted({ isDir }, { queryFulfilled }) {
 				const key = `${Date.now()}`;
@@ -237,17 +244,17 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		markFile: build.mutation<any, { paths: string[] }>({
+		markFile: build.mutation<any, { hashes: string[] }>({
 			query: (data) => ({
 				url: '/favorites',
 				method: 'POST',
 				body: data
 			}),
-			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ hashes }, { queryFulfilled, dispatch }) {
 				try {
 					await queryFulfilled;
 					if (Router.pathname !== RouteNames.MARKED) {
-						paths.forEach((path) => dispatch(markFile(path)));
+						hashes.forEach(hash => dispatch(markFile(hash)));
 					} else {
 						await refreshPage();
 					}
@@ -256,17 +263,17 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		unmarkFile: build.mutation<any, { paths: string[] }>({
+		unmarkFile: build.mutation<any, { hashes: string[] }>({
 			query: (data) => ({
 				url: '/favorites',
 				method: 'DELETE',
 				body: data
 			}),
-			async onQueryStarted({ paths }, { queryFulfilled, dispatch }) {
+			async onQueryStarted({ hashes }, { queryFulfilled, dispatch }) {
 				try {
 					await queryFulfilled;
 					if (Router.asPath !== RouteNames.MARKED) {
-						paths.forEach((path) => dispatch(unmarkFile(path)));
+						hashes.forEach(hash => dispatch(unmarkFile(hash)));
 					} else {
 						await refreshPage();
 					}
@@ -275,28 +282,28 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		deleteFile: build.mutation<any, { paths: string [], isDir: boolean }>({
-			query: ({ paths }) => ({
+		deleteFile: build.mutation<any, { hashes: string [], isDir: boolean }>({
+			query: ({ hashes }) => ({
 				url: '/files',
 				method: 'DELETE',
-				body: { paths }
+				body: { hashes }
 			}),
-			async onQueryStarted({ paths, isDir }, { queryFulfilled }) {
+			async onQueryStarted({ hashes, isDir }, { queryFulfilled }) {
 				const key = `${Date.now()}`;
 				try {
 					handleApiLoading({
 						key,
 						message: 'Удаление...',
-						description: paths.length > 1
-							? `Перемещение ${isDir ? 'папок' : 'файлов'} (${paths.length}) в корзину...`
+						description: hashes.length > 1
+							? `Перемещение ${isDir ? 'папок' : 'файлов'} (${hashes.length}) в корзину...`
 							: `Перемещение ${isDir ? 'папки' : 'файла'} в корзину...`
 					});
 					await queryFulfilled;
 					handleApiSuccess({
 						key,
 						message: 'Удаление завершено!',
-						description: paths.length > 1
-							? isDir ? `Папки (${paths.length}) перемещены в корзину.` : `Файлы (${paths.length}) перемещены в корзину.`
+						description: hashes.length > 1
+							? isDir ? `Папки (${hashes.length}) перемещены в корзину.` : `Файлы (${hashes.length}) перемещены в корзину.`
 							: isDir ? 'Папка перемещена в корзину.' : 'Файл перемещен в корзину.'
 					});
 					await refreshPage();
@@ -305,13 +312,13 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		moveFile: build.mutation<any, { paths: IMove[], isDir: boolean, destination: string }>({
-			query: ({ paths }) => ({
+		moveFile: build.mutation<any, { hashes: IMove[], isDir: boolean, destination: string }>({
+			query: ({ hashes }) => ({
 				url: '/files',
 				method: 'PATCH',
-				body: { paths }
+				body: { hashes }
 			}),
-			async onQueryStarted({ paths, isDir, destination }, { queryFulfilled }) {
+			async onQueryStarted({ hashes, isDir, destination }, { queryFulfilled }) {
 				const key = `${Date.now()}`;
 				try {
 					handleApiLoading({
@@ -322,8 +329,8 @@ export const filesAPI = createApi({
 					handleApiSuccess({
 						key,
 						message: 'Перемещение завершено!',
-						description: paths.length > 1
-							? isDir ? `Папки (${paths.length}) перемещены в "${destination}".` : `Файлы (${paths.length}) перемещены в "${destination}".`
+						description: hashes.length > 1
+							? isDir ? `Папки (${hashes.length}) перемещены в "${destination}".` : `Файлы (${hashes.length}) перемещены в "${destination}".`
 							: isDir ? `Папка перемещена в "${destination}".` : `Файл перемещен в "${destination}".`
 					});
 					await refreshPage();
@@ -332,15 +339,43 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		downloadFile: build.mutation<Blob, { name: string, path: string }>({
-			query: ({ path }) => ({
-				url: `/files/${encodeURIComponent(path)}`,
+		copyFile: build.mutation<any, { hashes: IMove[], isDir: boolean, destination: string }>({
+			query: ({ hashes }) => ({
+				url: '/files/copy',
+				method: 'PATCH',
+				body: { hashes }
+			}),
+			async onQueryStarted({ hashes, isDir, destination }, { queryFulfilled }) {
+				const key = `${Date.now()}`;
+				try {
+					handleApiLoading({
+						key,
+						message: 'Копирование...',
+					});
+					await queryFulfilled;
+					handleApiSuccess({
+						key,
+						message: 'Копирование завершено!',
+						description: hashes.length > 1
+							? isDir ? `Папки (${hashes.length}) скопированы в "${destination}".` : `Файлы (${hashes.length}) скопированы в "${destination}".`
+							: isDir ? `Папка скопирована в "${destination}".` : `Файл скопирован в "${destination}".`
+					});
+					await refreshPage();
+				} catch (error) {
+					handleApiError(error, key);
+				}
+			}
+		}),
+		downloadFile: build.mutation<Blob, { name: string, hash: string }>({
+			query: ({ hash }) => ({
+				url: `/files/${hash}`,
 				method: 'GET',
 				responseHandler: ((response) => response.blob())
 			}),
-			async onQueryStarted({ name, path }, { queryFulfilled }) {
+			async onQueryStarted({ name }, { queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
+					console.log(data);
 					const link = document.createElement('a');
 					link.href = URL.createObjectURL(data);
 					link.download = name;
@@ -376,28 +411,28 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		recoverFile: build.mutation<any, { paths: string[], isDir: boolean }>({
-			query: ({ paths }) => ({
+		recoverFile: build.mutation<any, { hashes: string[], isDir: boolean }>({
+			query: ({ hashes }) => ({
 				url: '/trash',
 				method: 'PUT',
-				body: { paths }
+				body: { hashes }
 			}),
-			async onQueryStarted({ paths, isDir }, { queryFulfilled }) {
+			async onQueryStarted({ hashes, isDir }, { queryFulfilled }) {
 				const key = `${Date.now()}`;
 				try {
 					handleApiLoading({
 						key,
 						message: 'Восстановление...',
-						description: paths.length > 1
-							? `Восстановление ${isDir ? 'папок' : 'файлов'} (${paths.length}) в процессе...`
+						description: hashes.length > 1
+							? `Восстановление ${isDir ? 'папок' : 'файлов'} (${hashes.length}) в процессе...`
 							: `Восстановление ${isDir ? 'папки' : 'файла'} в процессе...`
 					});
 					await queryFulfilled;
 					handleApiSuccess({
 						key,
 						message: 'Восстановление завершено!',
-						description: paths.length > 1
-							? isDir ? `Папки (${paths.length}) восстановлены.` : `Файлы (${paths.length}) восстановлены.`
+						description: hashes.length > 1
+							? isDir ? `Папки (${hashes.length}) восстановлены.` : `Файлы (${hashes.length}) восстановлены.`
 							: isDir ? `Папка восстановлена.` : `Файл восстановлен.`
 					});
 					await refreshPage();
@@ -406,6 +441,88 @@ export const filesAPI = createApi({
 					handleApiError(error);
 				}
 			}
-		})
+		}),
+		createShareLink: build.mutation<{ url: string }, string>({
+			query: hash => ({ url: `/share/${hash}`, method: 'POST' }),
+			async onQueryStarted(hash, { queryFulfilled, dispatch, getState }) {
+				const key = `${Date.now()}`;
+				try {
+					handleApiLoading({
+						key,
+						message: 'Создание ссылки...'
+					});
+					const { data } = await queryFulfilled;
+					handleApiSuccess({
+						key,
+						message: 'Ссылка скопирована!'
+					});
+					copy(data.url);
+					dispatch(setIsContextMenuOpen(false));
+					dispatch(setIsFilesContextMenuOpen(false));
+					// @ts-ignore
+					const cloud = getState().cloudReducer;
+					if (cloud.selected.length) {
+						dispatch(shareFile(hash));
+					} else {
+						dispatch(setDirectory([true, cloud.directoryName]));
+					}
+				} catch (error) {
+					console.log(error);
+					handleApiError(error, key);
+				}
+			}
+		}),
+		getShareLink: build.mutation<{ url: string }, string>({
+			query: hash => ({ url: `/share/${hash}`, method: 'GET' }),
+			async onQueryStarted(_, { queryFulfilled, dispatch }) {
+				const key = `${Date.now()}`;
+				try {
+					handleApiLoading({
+						key,
+						message: 'Получение ссылки...'
+					});
+					const { data } = await queryFulfilled;
+					handleApiSuccess({
+						key,
+						message: 'Ссылка скопирована!'
+					});
+					copy(data.url);
+					dispatch(setIsContextMenuOpen(false));
+					dispatch(setIsFilesContextMenuOpen(false));
+				} catch (error) {
+					console.log(error);
+					handleApiError(error, key);
+				}
+			}
+		}),
+		deleteShareLink: build.mutation<void, string>({
+			query: hash => ({ url: `/share/${hash}`, method: 'DELETE' }),
+			async onQueryStarted(hash, { queryFulfilled, dispatch, getState }) {
+				const key = `${Date.now()}`;
+				try {
+					handleApiLoading({
+						key,
+						message: 'Удаление ссылки...'
+					});
+					await queryFulfilled;
+					handleApiSuccess({
+						key,
+						message: 'Ссылка удалена!'
+					});
+					dispatch(setIsContextMenuOpen(false));
+					dispatch(setIsFilesContextMenuOpen(false));
+					// @ts-ignore
+					const cloud = getState().cloudReducer;
+					if (cloud.selected.length) {
+						dispatch(unshareFile(hash));
+					} else {
+						dispatch(setDirectory([false, cloud.directoryName]));
+					}
+				} catch (error) {
+					console.log(error);
+					handleApiError(error, key);
+				}
+			}
+		}),
 	})
 });
