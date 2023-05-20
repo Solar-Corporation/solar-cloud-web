@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { FC, ReactNode } from 'react';
 import { useCloudReducer } from '../../hooks/cloud';
+import { IStorageSpace } from '../../models/IFile';
 import { RouteNames } from '../../router';
 import { clearSelected, clearUserSelected, setIsContextMenuOpen } from '../../store/reducers/CloudSlice';
 import styles from '../../styles/components/CloudLayout.module.less';
@@ -21,11 +22,12 @@ import { CloudInfoSpace } from './InfoSpace';
 interface CloudLayoutProps {
 	title: string;
 	headingOptions: PageHeadingProps;
+	space: IStorageSpace | null;
 	contextMenu?: Control[];
 	children: ReactNode;
 }
 
-export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, contextMenu, children }) => {
+export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, space, contextMenu, children }) => {
 	const { selected, userSelected, isContextMenuOpen, dispatch } = useCloudReducer();
 
 	const links: INavbarItem[] = [
@@ -55,7 +57,13 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, conte
 					<Navbar links={links} />
 				</div>
 			}
-			sidebarBottom={<CloudInfoSpace used={2.6} total={15} />}
+			sidebarBottom={
+				<CloudInfoSpace
+					percent={space?.percent || 0}
+					usageSpace={space?.usageSpace || ''}
+					totalSpace={space?.totalSpace || ''}
+				/>
+			}
 			headingOptions={headingOptions}
 			contextMenu={contextMenu}
 			contextMenuOpen={isContextMenuOpen}
