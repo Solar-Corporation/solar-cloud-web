@@ -9,6 +9,7 @@ import { RouteNames } from '../../client/router';
 import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 
 export default function Trash({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -20,8 +21,8 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 
 	const headingOptions = {
 		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
-		constControls: [Control.VIEW, Control.INFO],
-		floatControls: floatControls,
+		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		floatControls: files ? floatControls : undefined,
 		sticky: true
 	};
 
@@ -50,7 +51,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 				break;
 			}
 			case 2: {
-				console.log('double click!');
+				if (!file.isDir) dispatch(setIsModalOpen({ clearTrash: true }));
 				break;
 			}
 			default:

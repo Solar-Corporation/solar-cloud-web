@@ -10,6 +10,7 @@ import { RouteNames } from '../../../client/router';
 import { filesAPI } from '../../../client/services/FilesService';
 import { wrapper } from '../../../client/store';
 import { clearSelected, selectFile, setDirectory, unselectFile } from '../../../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../../../client/store/reducers/ModalSlice';
 import { getDirectoryLinks, setInitialData } from '../../../client/utils';
 import { getFilesContextMenu, getFloatControls } from './index';
 
@@ -20,13 +21,15 @@ export default function Directory({ files, links, space, name }: InferGetServerS
 	const floatControls = getFloatControls(selected, [Control.SHARE, Control.DOWNLOAD]);
 	const headingOptions = {
 		links,
-		actions: [Control.CREATE],
-		constControls: [Control.VIEW, Control.INFO],
-		floatControls: floatControls,
+		actions: files ? [Control.CREATE] : undefined,
+		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		floatControls: files ? floatControls : undefined,
 		sticky: true
 	};
 
-	const contextMenu = [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.DOWNLOAD, Control.NULL, Control.VIEW, Control.INFO];
+	const contextMenu = files
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.DOWNLOAD, Control.NULL, Control.VIEW, Control.INFO]
+		: undefined;
 	const filesContextMenu = getFilesContextMenu(selected);
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
@@ -55,7 +58,7 @@ export default function Directory({ files, links, space, name }: InferGetServerS
 				if (file.isDir) {
 					await router.push(`${RouteNames.FILES}/${file.hash}`);
 				} else {
-					console.log('double click!');
+					dispatch(setIsModalOpen({ previewFile: true }));
 				}
 				break;
 			}

@@ -10,6 +10,7 @@ import { RouteNames } from '../../client/router';
 import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
 import { setInitialUserData } from '../../client/store/reducers/UserSlice';
 import { getFilesContextMenu, getFloatControls } from './files';
 
@@ -20,8 +21,8 @@ export default function Marked({ files, space }: InferGetServerSidePropsType<typ
 	const floatControls = getFloatControls(selected);
 	const headingOptions = {
 		links: [{ title: 'Избранное', href: RouteNames.MARKED }],
-		constControls: [Control.VIEW, Control.INFO],
-		floatControls: floatControls,
+		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		floatControls,
 		sticky: true
 	};
 
@@ -53,7 +54,7 @@ export default function Marked({ files, space }: InferGetServerSidePropsType<typ
 				if (file.isDir) {
 					await router.push(`${RouteNames.FILES}/${encodeURIComponent(file.path)}`);
 				} else {
-					console.log('double click!');
+					dispatch(setIsModalOpen({ previewFile: true }));
 				}
 				break;
 			}

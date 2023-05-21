@@ -9,6 +9,7 @@ import { RouteNames } from '../../../client/router';
 import { filesAPI } from '../../../client/services/FilesService';
 import { wrapper } from '../../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../../../client/store/reducers/ModalSlice';
 import { getDirectoryLinks, setInitialData } from '../../../client/utils';
 
 export const getFloatControls = (selected: IFile[], initial?: Control[]) => selected.length
@@ -28,13 +29,15 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 	const floatControls = getFloatControls(selected);
 	const headingOptions = {
 		links,
-		actions: [Control.CREATE],
-		constControls: [Control.VIEW, Control.INFO],
-		floatControls: floatControls,
+		actions: files ? [Control.CREATE] : undefined,
+		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		floatControls,
 		sticky: true
 	};
 
-	const contextMenu = [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO];
+	const contextMenu = files
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO]
+		: undefined;
 	const filesContextMenu = getFilesContextMenu(selected);
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
@@ -63,7 +66,7 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 				if (file.isDir) {
 					await router.push(`${RouteNames.FILES}/${file.hash}`);
 				} else {
-					console.log('double click!');
+					dispatch(setIsModalOpen({ previewFile: true }));
 				}
 				break;
 			}
