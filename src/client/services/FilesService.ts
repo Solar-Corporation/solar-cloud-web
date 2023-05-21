@@ -5,42 +5,27 @@ import {
 	fetchBaseQuery,
 	FetchBaseQueryError,
 } from '@reduxjs/toolkit/dist/query/react';
-import { RcFile } from 'antd/es/upload';
+import copy from 'copy-to-clipboard';
 import Router from 'next/router';
 import { handleApiError, handleApiLoading, handleApiSuccess } from '../components/Notifications';
-import { IDirectory, IFile, IMove, IStorageSpace, IUpload } from '../models/IFile';
+import { IDirectory, IFile, IMove, IStorageSpace } from '../models/IFile';
 import { RouteNames } from '../router';
 import { AppState } from '../store';
 import {
 	markFile,
 	setCurrent,
-	setDirectory, setIsContextMenuOpen,
+	setDirectory,
+	setIsContextMenuOpen,
 	setIsFilesContextMenuOpen,
 	setMarked,
 	setShared,
 	shareFile,
-	unmarkFile, unshareFile
+	unmarkFile,
+	unshareFile
 } from '../store/reducers/CloudSlice';
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { apiUrl } from './config';
-import copy from 'copy-to-clipboard';
-
-const getFormData = ({ files, hash, dir }: IUpload) => {
-	const formData = new FormData();
-	if (hash) formData.append('hash', hash);
-	if (dir) formData.append('dir', dir);
-
-	files.forEach((file) => {
-		formData.append('files[]', new File(
-			[file],
-			encodeURIComponent(file.name),
-			{ type: file.type, lastModified: file.lastModified }) as RcFile
-		);
-	});
-
-	return formData;
-};
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: apiUrl,
@@ -97,9 +82,6 @@ export const filesAPI = createApi({
 				} catch (error) {
 					console.log(error);
 				}
-			},
-			transformResponse(response: IFile[]) {
-				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
 			}
 		}),
 		getFolders: build.mutation<IFile[], { hash: string | undefined, filesPath: string[] }>({
@@ -158,36 +140,6 @@ export const filesAPI = createApi({
 			},
 			transformResponse(response: IFile[]) {
 				return response.map(file => ({ ...file, name: decodeURIComponent(file.name) }));
-			}
-		}),
-		uploadFile: build.mutation<any, IUpload>({
-			query: (data) => ({
-				url: '/files',
-				method: 'POST',
-				body: getFormData(data)
-			}),
-			async onQueryStarted({ files }, { queryFulfilled }) {
-				const key = `${Date.now()}`;
-				try {
-					handleApiLoading({
-						key,
-						message: files.length > 1 ? 'Загрузка файлов...' : 'Загрузка файла...',
-						description: `Загрузка ${files.length > 1 ? `файлов (${files.length})` : 'файла'} в процессе...`
-					});
-					await queryFulfilled;
-					handleApiSuccess({
-						key,
-						message: 'Загрузка завершена!',
-						description: files.length > 1 ? `Файлы (${files.length}) успешно загружены.` : 'Файл успешно загружен.'
-					});
-				} catch (error) {
-					handleApiError(error, key);
-				}
-				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
-					await refreshPage();
-				} else {
-					await Router.push(RouteNames.FILES);
-				}
 			}
 		}),
 		createDirectory: build.mutation<{ hash: string }, { directory: IDirectory, relocate: boolean }>({
@@ -381,6 +333,21 @@ export const filesAPI = createApi({
 					link.download = name;
 					link.click();
 					link.remove();
+				} catch (error) {
+					console.log(error);
+					handleApiError(error);
+				}
+			}
+		}),
+		previewFile: build.mutation<Blob, string>({
+			query: (hash) => ({
+				url: `/files/${hash}`,
+				method: 'GET',
+				responseHandler: ((response) => response.blob())
+			}),
+			async onQueryStarted(_, { queryFulfilled }) {
+				try {
+					await queryFulfilled;
 				} catch (error) {
 					console.log(error);
 					handleApiError(error);
