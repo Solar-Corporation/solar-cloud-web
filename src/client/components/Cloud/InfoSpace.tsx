@@ -13,7 +13,10 @@ export const CloudInfoSpace: FC<IStorageSpace> = ({ percent, usageSpace, totalSp
 				<span className={styles.titleText}>Хранилище</span>
 			</div>
 			<div className={styles.info}>
-				<span className={styles.space}>{usageSpace} </span>|<span className={styles.space}> </span>{totalSpace}
+				{usageSpace && totalSpace
+					?	<><span className={styles.space}>{usageSpace} </span>|<span className={styles.space}> </span>{totalSpace}</>
+					: <span className={styles.space}>Нет данных</span>
+				}
 			</div>
 			<Progress
 				strokeColor={

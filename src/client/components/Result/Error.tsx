@@ -13,7 +13,7 @@ export const ResultError: FC = () => {
 				status="error"
 				title="500: Произошла непредвиденная ошибка"
 				subTitle="Попробуйте перезагрузить страницу"
-				extra={<Button type="primary" onClick={handleClick}>Перезагрузить</Button>}
+				extra={<Button type="ghost" onClick={handleClick}>Перезагрузить</Button>}
 			/>
 		</div>
 	);
