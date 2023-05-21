@@ -11,6 +11,7 @@ export interface IModal {
 	clearTrash?: boolean;
 	moveFile?: boolean;
 	copyFile?: boolean;
+	previewFile?: boolean;
 }
 
 export interface ModalState {
@@ -27,7 +28,8 @@ const initialState: ModalState = {
 		deleteUser: false,
 		clearTrash: false,
 		moveFile: false,
-		copyFile: false
+		copyFile: false,
+		previewFile: false
 	}
 };
 
