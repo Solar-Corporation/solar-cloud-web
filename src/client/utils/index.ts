@@ -50,6 +50,7 @@ export const getFilesPlaceholder = () => [
 	{
 		name: 'test',
 		path: '/test',
+		hash: '/test',
 		size: '—',
 		fileType: '',
 		mimeType: 'text/plain',
@@ -59,6 +60,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
 		path: '/Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
+		hash: '/Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
 		size: '—',
 		fileType: '',
 		mimeType: 'text/plain',
@@ -68,6 +70,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Архив 1.zip',
 		path: '/Архив 1.zip',
+		hash: '/Архив 1.zip',
 		size: '10 MiB',
 		fileType: 'zip',
 		mimeType: 'text/plain',
@@ -77,6 +80,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Архив 1.rar',
 		path: '/Архив 1.rar',
+		hash: '/Архив 1.rar',
 		size: '12 MiB',
 		fileType: 'rar',
 		mimeType: 'text/plain',
@@ -86,6 +90,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Руководство пользователя.pdf',
 		path: '/Руководство пользователя.pdf',
+		hash: '/Руководство пользователя.pdf',
 		size: '5.00 KiB',
 		fileType: 'pdf',
 		mimeType: 'text/plain',
@@ -95,6 +100,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'test123.txt',
 		path: '/test123.txt',
+		hash: '/test123.txt',
 		size: '7 B',
 		fileType: 'txt',
 		mimeType: 'text/plain',
@@ -104,6 +110,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Старый вариант документа.doc',
 		path: '/Старый вариант документа.doc',
+		hash: '/Старый вариант документа.doc',
 		size: '10 B',
 		fileType: 'doc',
 		mimeType: 'text/plain',
@@ -113,6 +120,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Новый вариант документа.docx',
 		path: '/Новый вариант документа.docx',
+		hash: '/Новый вариант документа.docx',
 		size: '10 B',
 		fileType: 'doc',
 		mimeType: 'text/plain',
@@ -122,6 +130,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Таблица 1.xlsx',
 		path: '/Таблица 1.xlsx',
+		hash: '/Таблица 1.xlsx',
 		size: '10 B',
 		fileType: 'xlsx',
 		mimeType: 'text/plain',
@@ -131,6 +140,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Презентация.pptx',
 		path: '/Таблица 1.pptx',
+		hash: '/Таблица 1.pptx',
 		size: '10 B',
 		fileType: 'pptx',
 		mimeType: 'text/plain',
@@ -140,6 +150,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'test123.bsp',
 		path: '/test123.bsp',
+		hash: '/test123.bsp',
 		size: '10 B',
 		fileType: 'bsp',
 		mimeType: 'text/plain',
@@ -149,6 +160,7 @@ export const getFilesPlaceholder = () => [
 	}, {
 		name: 'Очень длинное, ну прям очень очень длинное, название для изображения, которое не должно поместиться в одну строчку.png',
 		path: '/Очень длинное, ну прям очень очень длинное, название для изображения, которое не должно поместиться в одну строчку.png',
+		hash: '/Очень длинное, ну прям очень очень длинное, название для изображения, которое не должно поместиться в одну строчку.png',
 		size: '10 B',
 		fileType: 'png',
 		mimeType: 'text/plain',
