@@ -7,6 +7,7 @@ import { ModalDeclineUser } from './DeclineUser';
 import { ModalDeleteFile } from './DeleteFile';
 import { ModalDeleteUser } from './DeleteUser';
 import { ModalMoveFile } from './MoveFile';
+import { ModalPreviewFile } from './PreviewFile';
 import { ModalRenameFile } from './RenameFile';
 
 export const ModalList: FC = () => {
@@ -17,6 +18,7 @@ export const ModalList: FC = () => {
 			<ModalRenameFile />
 			<ModalMoveFile />
 			<ModalCopyFile />
+			<ModalPreviewFile />
 			<ModalDeclineUser />
 			<ModalDeleteFile />
 			<ModalDeleteUser />
