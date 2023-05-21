@@ -11,7 +11,7 @@ const getFormData = ({ files, hash, dir }: IUpload) => {
 	if (dir) formData.append('dir', dir);
 
 	files.forEach((file) => {
-		formData.append('files[]', file);
+		formData.append('files[]', file, file.name);
 	});
 
 	return formData;
@@ -23,7 +23,7 @@ export function useUploadFile() {
 		const { files } = data;
 		const xhr = new XMLHttpRequest();
 
-		xhr.upload.onloadstart = () => {
+		xhr.onloadstart = () => {
 			handleApiLoading({
 				key,
 				message: files.length > 1 ? 'Загрузка файлов...' : 'Загрузка файла...',
@@ -58,8 +58,6 @@ export function useUploadFile() {
 
 		xhr.open('POST', `${apiUrl}/files`, true);
 		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-		// xhr.setRequestHeader('Content-Type','multipart/form-data');
-		console.log(xhr.getResponseHeader('Content-Type'));
 		await xhr.send(getFormData(data));
 	}
 }
