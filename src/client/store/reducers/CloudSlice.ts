@@ -6,6 +6,7 @@ import { IUser } from '../../models/IUser';
 export interface ICloudContext {
 	url: string;
 	hash: string | null;
+	search: string;
 }
 
 export interface CloudState {
@@ -31,6 +32,7 @@ const initialState: CloudState = {
 	context: {
 		url: '',
 		hash: null,
+		search: ''
 	},
 	directoryShared: false,
 	directoryName: '',
