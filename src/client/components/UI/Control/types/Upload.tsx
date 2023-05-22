@@ -1,9 +1,9 @@
 import { FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload';
 import { FC, useRef } from 'react';
-import { useUploadFile } from '../../../../hooks/files';
 import { useAppSelector } from '../../../../hooks/redux';
 import { IUpload } from '../../../../models/IFile';
+import { filesAPI } from '../../../../services/FilesService';
 import styles from '../../../../styles/components/Control.module.less';
 import { Control, ControlTypeProps } from '../index';
 
@@ -13,9 +13,8 @@ interface ControlUploadProps extends ControlTypeProps {
 
 export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, folder }) => {
 	const inputRef = useRef(null);
-	const { token } = useAppSelector(state => state.userReducer);
 	const { hash } = useAppSelector(state => state.cloudReducer.context);
-	const uploadFile = useUploadFile();
+	const [uploadFile] = filesAPI.useUploadFileMutation();
 
 	const handleClick = () => {
 		// @ts-ignore
@@ -29,7 +28,7 @@ export const ControlUpload: FC<ControlUploadProps> = ({ type, block, className, 
 			let dir = undefined;
 			if (folder) dir = event.target.files[0].webkitRelativePath.split('/')[0];
 			const upload: IUpload = { files, hash: hash || undefined, dir };
-			await uploadFile(upload, token);
+			await uploadFile(upload);
 		}
 
 		event.target.value = null;

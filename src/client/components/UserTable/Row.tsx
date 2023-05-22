@@ -58,7 +58,7 @@ export const UserTableRow: FC<UserTableRow> = ({ user }) => {
 			</div>
 			<div className={styles.columns}>
 				<div className={styles.column} style={{ minWidth: 400, maxWidth: 400 }}>{user.email}</div>
-				<div className={styles.column} style={{ minWidth: 150, maxWidth: 150 }}>{user.isActive ? 'Активен' : 'Не активен'}</div>
+				<div className={styles.column} style={{ minWidth: 170, maxWidth: 170 }}>{user.isVerify ? 'Подтвержден' : 'Не подтвержден'}</div>
 			</div>
 		</div>
 	);

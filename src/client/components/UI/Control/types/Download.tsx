@@ -5,18 +5,15 @@ import { filesAPI } from '../../../../services/FilesService';
 import { Control, ControlTypeProps } from '../index';
 
 export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }) => {
-	const { context, selected, directoryName } = useCloudReducer();
-	const [downloadFile, { isLoading }] = filesAPI.useDownloadFileMutation();
-
+	const { context, selected } = useCloudReducer();
+	const [downloadFile] = filesAPI.useDownloadFileMutation();
 	const handleClick = async () => {
 		if (selected.length) {
 			for (const file of selected) {
-				const download = { name: file.name, hash: file.hash };
-				await downloadFile(download);
+				await downloadFile(file.hash);
 			}
 		} else {
-			const download = { name: directoryName, hash: context.hash || '' };
-			await downloadFile(download);
+			await downloadFile(context.hash || '');
 		}
 	};
 
@@ -26,7 +23,6 @@ export const ControlDownload: FC<ControlTypeProps> = ({ type, block, className }
 			title="Скачать"
 			onClick={handleClick}
 			className={className}
-			loading={isLoading}
 			type={type}
 			block={block}
 		/>
