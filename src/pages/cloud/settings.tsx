@@ -1,10 +1,14 @@
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import Control from '../../client/components/UI/Control/List';
 import { UserTable } from '../../client/components/UserTable';
 import { useCloudReducer } from '../../client/hooks/cloud';
 import { IUser } from '../../client/models/IUser';
 import { RouteNames } from '../../client/router';
-import { getIsActive } from '../../client/utils';
+import { filesAPI } from '../../client/services/FilesService';
+import { userAPI } from '../../client/services/UserService';
+import { wrapper } from '../../client/store';
+import { getIsActive, setInitialData } from '../../client/utils';
 
 const getControls = (selected: IUser[]) => (
 	selected.length
@@ -12,43 +16,8 @@ const getControls = (selected: IUser[]) => (
 		: []
 );
 
-export default function Settings() {
+export default function Settings({ users, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { userSelected } = useCloudReducer();
-	const users: IUser[] = [
-		{
-			id: 1,
-			fullName: {
-				lastName: 'Косенко',
-				firstName: 'Даниил',
-				middleName: 'Вячеславович'
-			},
-			email: 'example@example.com',
-			nickname: '',
-			isActive: true
-		},
-		{
-			id: 2,
-			fullName: {
-				lastName: 'Валетов',
-				firstName: 'Стефан',
-				middleName: 'Анатольевич'
-			},
-			email: 'stormerxl24@gmail.com',
-			nickname: '',
-			isActive: false
-		},
-		{
-			id: 3,
-			fullName: {
-				lastName: 'Валетов',
-				firstName: 'Стефан',
-				middleName: 'Анатольевич'
-			},
-			email: 'stormerxl24@gmail.com',
-			nickname: '',
-			isActive: false
-		}
-	];
 
 	return (
 		<CloudLayout
@@ -57,7 +26,7 @@ export default function Settings() {
 				links: [{ title: 'Настройки', href: RouteNames.SETTINGS }],
 				constControls: getControls(userSelected)
 			}}
-			space={null}
+			space={space}
 		>
 			<UserTable
 				users={users}
@@ -66,3 +35,14 @@ export default function Settings() {
 		</CloudLayout>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
+	const { dispatch } = store;
+	setInitialData(ctx, dispatch, null);
+	const { data: users, error } = await dispatch(userAPI.endpoints.getUsers.initiate());
+	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
+
+	// @ts-ignore
+	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
+	return { props: { users: users || null, space: space || null } };
+});

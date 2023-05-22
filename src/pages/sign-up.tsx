@@ -2,8 +2,6 @@ import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import Logo from '../client/img/logo.svg';
 import { IRegister } from '../client/models/IAuth';
 import { RouteNames } from '../client/router';
@@ -14,8 +12,7 @@ import { variables } from '../client/styles/theme';
 const { Text } = Typography;
 
 export default function Signup() {
-	const router = useRouter();
-	const [registerUser, { data, isLoading }] = authAPI.useUserRegisterMutation();
+	const [registerUser, { isLoading }] = authAPI.useUserRegisterMutation();
 
 	const handleSend = async (values: any) => {
 		const data: IRegister = {
@@ -30,12 +27,6 @@ export default function Signup() {
 
 		await registerUser(data);
 	};
-
-	useEffect(() => {
-		if (data) {
-			router.push(RouteNames.FILES);
-		}
-	}, [data]);
 
 	return (
 		<>
