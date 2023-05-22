@@ -34,7 +34,7 @@ export const getDirectoryLinks = (paths?: IFile[]) => ([
 	...paths?.map(path => ({ title: path.name, href: `${RouteNames.FILES}/${path.hash}`})) || []
 ]);
 
-export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDispatch<any, any, AnyAction>, hash: string | null) => {
+export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDispatch<any, any, AnyAction>, hash: string | null, search?: string) => {
 	const { accessToken: token } = parseCookies(ctx);
 	if (token) {
 		const user: UserState = {
@@ -43,7 +43,7 @@ export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDi
 		};
 		dispatch(setUser(user));
 	}
-	dispatch(setContext({ url: decodeURIComponent(ctx.resolvedUrl), hash }));
+	dispatch(setContext({ url: decodeURIComponent(ctx.resolvedUrl), hash, search: search || '' }));
 };
 
 export const getFilesPlaceholder = () => [
