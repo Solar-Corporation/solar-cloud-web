@@ -10,7 +10,7 @@ import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
-import { setInitialUserData } from '../../client/store/reducers/UserSlice';
+import { setInitialData } from '../../client/utils';
 
 export default function Trash({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
@@ -22,7 +22,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 	const headingOptions = {
 		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
 		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
-		floatControls: files ? floatControls : undefined,
+		floatControls,
 		sticky: true
 	};
 
@@ -87,7 +87,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
-	setInitialUserData(ctx, dispatch);
+	setInitialData(ctx, dispatch, null);
 	const { data: files, error } = await dispatch(filesAPI.endpoints.getTrashFiles.initiate());
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 

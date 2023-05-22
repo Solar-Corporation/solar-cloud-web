@@ -11,11 +11,20 @@ import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
-import { setInitialUserData } from '../../client/store/reducers/UserSlice';
-import { getFilesContextMenu, getFloatControls } from './files';
+import { setInitialData } from '../../client/utils';
+
+export const getFloatControls = (selected: IFile[]) => selected.length
+	? selected.length > 1
+		? [Control.DOWNLOAD, Control.DELETE]
+		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MARK]
+	: undefined;
+
+export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
+	? [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.INFO]
+	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MARK, Control.NULL, Control.INFO]
 
 export default function Marked({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { selected, marked, dispatch } = useCloudReducer();
+	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
 	const floatControls = getFloatControls(selected);
@@ -81,9 +90,11 @@ export default function Marked({ files, space }: InferGetServerSidePropsType<typ
 				contextMenu={filesContextMenu}
 				selected={selected}
 				marked={marked}
+				shared={shared}
 				empty={<ResultEmptyMarked/>}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
+				showPath
 			/>
 		</CloudLayout>
 	);
@@ -91,7 +102,7 @@ export default function Marked({ files, space }: InferGetServerSidePropsType<typ
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
-	setInitialUserData(ctx, dispatch);
+	setInitialData(ctx, dispatch, null);
 	const { data: files, error } = await dispatch(filesAPI.endpoints.getMarkedFiles.initiate());
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
