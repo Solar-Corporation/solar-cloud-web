@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import { authAPI } from '../services/AuthService';
 import { filesAPI } from '../services/FilesService';
+import { userAPI } from '../services/UserService';
 import cloudReducer from './reducers/CloudSlice';
 import modalReducer from './reducers/ModalSlice';
 import userReducer from './reducers/UserSlice';
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
 	cloudReducer,
 	modalReducer,
 	[authAPI.reducerPath]: authAPI.reducer,
-	[filesAPI.reducerPath]: filesAPI.reducer
+	[filesAPI.reducerPath]: filesAPI.reducer,
+	[userAPI.reducerPath]: userAPI.reducer
 });
 
 export const makeStore = () => {
@@ -20,7 +22,8 @@ export const makeStore = () => {
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware().concat(
 				authAPI.middleware,
-				filesAPI.middleware
+				filesAPI.middleware,
+				userAPI.middleware
 			)
 	});
 };
