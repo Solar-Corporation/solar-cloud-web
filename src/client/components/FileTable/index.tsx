@@ -14,6 +14,7 @@ interface FileTableProps {
 	files: IFile[] | null;
 	disableHeader?: boolean;
 	disableColumns?: boolean;
+	showPath?: boolean;
 	selected?: IFile[];
 	marked?: string[];
 	shared?: string[];
@@ -28,6 +29,7 @@ export const FileTable: FC<FileTableProps> = ({
 	                                              files,
 	                                              disableHeader,
 	                                              disableColumns,
+																								showPath,
 	                                              selected,
 	                                              marked,
 																								shared,
@@ -73,6 +75,7 @@ export const FileTable: FC<FileTableProps> = ({
 										onClick={onRowClick}
 										onContextMenu={onRowContextMenu}
 										disableColumns={disableColumns}
+										showPath={showPath}
 									/>
 								))}
 							</div>
