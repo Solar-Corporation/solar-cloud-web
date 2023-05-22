@@ -1,19 +1,25 @@
 import { FC } from 'react';
 import { useCloudReducer } from '../../hooks/cloud';
 import { useAppSelector } from '../../hooks/redux';
+import { userAPI } from '../../services/UserService';
 import { setIsModalOpen } from '../../store/reducers/ModalSlice';
 import { AppModal } from './index';
 
 export const ModalDeclineUser: FC = () => {
 	const { userSelected, dispatch } = useCloudReducer();
 	const { declineUser: isOpen } = useAppSelector(state => state.modalReducer.modal);
+	const [deleteUser] = userAPI.useDeleteUserMutation();
 
 	const handleClose = () => {
 		dispatch(setIsModalOpen({ declineUser: false }));
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
+		handleClose();
 
+		for (const user of userSelected) {
+			await deleteUser(user.id);
+		}
 	};
 
 	return (
