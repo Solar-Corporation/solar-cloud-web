@@ -9,7 +9,7 @@ import { HeaderSearch } from './Search';
 
 export const Header: FC = () => {
 	const links: IHeaderLink[] = [
-		{ icon: <QuestionOutlined />, title: 'Справка' },
+		// { icon: <QuestionOutlined />, title: 'Справка' },
 		{ icon: <SettingOutlined />, title: 'Настройки', href: RouteNames.SETTINGS }
 	];
 
