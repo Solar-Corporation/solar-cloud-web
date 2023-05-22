@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { createApi } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
 import Router from 'next/router';
 import { destroyCookie, setCookie } from 'nookies';
@@ -8,7 +8,7 @@ import { handleApiError } from '../components/Notifications';
 import { IAuth, IRegister, IToken } from '../models/IAuth';
 import { RouteNames } from '../router';
 import { clearUser, setUser, UserState } from '../store/reducers/UserSlice';
-import { apiUrl } from './config';
+import { baseQuery } from './config';
 
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const user: UserState = {
@@ -26,7 +26,7 @@ export const clearUserOnQueryFulfilled = (dispatch: ThunkDispatch<any, any, AnyA
 
 export const authAPI = createApi({
 	reducerPath: 'authAPI',
-	baseQuery: fetchBaseQuery({ baseUrl: apiUrl }),
+	baseQuery,
 	endpoints: (build) => ({
 		userLogin: build.mutation<IToken, IAuth>({
 			query: (data) => ({
@@ -49,10 +49,10 @@ export const authAPI = createApi({
 				method: 'POST',
 				body: data
 			}),
-			async onQueryStarted(args, { dispatch, queryFulfilled }) {
+			async onQueryStarted(args, { queryFulfilled }) {
 				try {
-					const { data } = await queryFulfilled;
-					setUserOnQueryFulfilled(data, dispatch);
+					await queryFulfilled;
+					await Router.push(RouteNames.LOGIN);
 				} catch (error) {
 					console.log(error);
 					await handleApiError(error);
