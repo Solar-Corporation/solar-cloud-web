@@ -174,4 +174,4 @@ export const getIsDir = (arr: IFile[]) => arr.length === arr.filter(file => file
 
 export const getHasDir = (arr: IFile[]) => !!arr.find(file => file.isDir);
 
-export const getIsActive = (arr: IUser[]) => arr.length === arr.filter(user => !user.isActive).length;
+export const getIsActive = (arr: IUser[]) => arr.length === arr.filter(user => !user.isVerify).length;
