@@ -134,6 +134,22 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
+		getSearchFiles: build.query<IFile[], string>({
+			query: (name) => ({
+				url: '/search',
+				params: { name }
+			}),
+			async onQueryStarted(args, { queryFulfilled, dispatch }) {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(setMarked(data.filter(file => file.isFavorite).map(file => file.hash)));
+					dispatch(setShared(data.filter(file => file.isShare).map(file => file.hash)));
+					dispatch(setCurrent(data));
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}),
 		uploadFile: build.mutation<any, IUpload>({
 			query: (data) => ({
 				url: '/files',
