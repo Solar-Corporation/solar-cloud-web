@@ -1,63 +1,37 @@
-import Router from 'next/router';
-import { handleApiError, handleApiLoading, handleApiSuccess } from '../components/Notifications';
-import { IUpload } from '../models/IFile';
-import { RouteNames } from '../router';
+import { useState } from 'react';
 import { apiUrl } from '../services/config';
-import { refreshPage } from '../utils';
+import { useAppSelector } from './redux';
 
-const getFormData = ({ files, hash, dir }: IUpload) => {
-	const formData = new FormData();
-	if (hash) formData.append('hash', hash);
-	if (dir) formData.append('dir', dir);
+export function usePreviewFile() {
+	const [uri, setUri] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(0);
+	const { token } = useAppSelector(state => state.userReducer);
 
-	files.forEach((file) => {
-		formData.append('files[]', file, file.name);
-	});
-
-	return formData;
-};
-
-export function useUploadFile() {
-	return async (data: IUpload, token: string) => {
-		const key = `${Date.now()}`;
-		const { files } = data;
+	const previewFile = (hash: string) => {
 		const xhr = new XMLHttpRequest();
+		xhr.responseType = 'blob';
 
 		xhr.onloadstart = () => {
-			handleApiLoading({
-				key,
-				message: files.length > 1 ? 'Загрузка файлов...' : 'Загрузка файла...',
-				description: `Загрузка ${files.length > 1 ? `файлов (${files.length})` : 'файла'} в процессе...`
-			});
+			setUri('');
+			setError(0);
+			setIsLoading(true);
 		};
 		xhr.onreadystatechange = async () => {
 			if (xhr.readyState === 4) {
-				if (xhr.status === 201) {
-					handleApiSuccess({
-						key,
-						message: 'Загрузка завершена!',
-						description: files.length > 1 ? `Файлы (${files.length}) успешно загружены.` : 'Файл успешно загружен.'
-					});
+				setIsLoading(false);
+				if (xhr.status === 200) {
+					setUri(window.URL.createObjectURL(xhr.response));
 				} else {
-					const error = {
-						error: {
-							status: xhr.status,
-							error: JSON.parse(xhr.response).message || 'Произошла непредвиденная ошибка'
-						}
-					};
-					handleApiError(error, key);
-				}
-
-				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
-					await refreshPage();
-				} else {
-					await Router.push(RouteNames.FILES);
+					setError(xhr.status);
 				}
 			}
 		};
 
-		xhr.open('POST', `${apiUrl}/files`, true);
-		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-		await xhr.send(getFormData(data));
-	}
+		xhr.open('GET', `${apiUrl}/files/${hash}/stream`, true);
+		if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+		xhr.send();
+	};
+
+	return { previewFile, uri, isLoading, error };
 }
