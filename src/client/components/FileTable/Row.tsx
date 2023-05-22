@@ -36,6 +36,7 @@ interface FileTableRowProps {
 	onClick?: (event: any, file: IFile, isSelected: boolean) => void;
 	onContextMenu?: (event: any, file: IFile, isSelected: boolean) => void;
 	disableColumns?: boolean;
+	showPath?: boolean;
 }
 
 const getFileType = (file: IFile) => {
@@ -105,7 +106,8 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 																											shared,
 	                                                    onClick,
 	                                                    onContextMenu,
-	                                                    disableColumns
+	                                                    disableColumns,
+																											showPath
                                                     }) => {
 	const [isSelected, setIsSelected] = useState(false);
 	const [isMarked, setIsMarked] = useState(file.isFavorite);
@@ -137,9 +139,9 @@ export const FileTableRow: FC<FileTableRowProps> = ({
 						{icon}
 					</span>
 					<span className={styles.nameText}>
-						{file.name}
+						<span>{file.name}{isMarked && <StarFilled className={styles.iconMarked} />}</span>
+						{showPath && <span className={styles.path}>/{decodeURIComponent(file.path)}</span>}
 					</span>
-					{isMarked && <StarFilled className={styles.iconMarked} />}
 				</div>
 			</FileTableColumn>
 			{!disableColumns && <div className={styles.columns}>

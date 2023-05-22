@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { FileTable } from '../../client/components/FileTable';
-import { ResultEmptyTrash } from '../../client/components/Result/EmptyTrash';
+import { ResultEmptySearch } from '../../client/components/Result/EmptySearch';
 import Control from '../../client/components/UI/Control/List';
 import { useCloudReducer } from '../../client/hooks/cloud';
 import { IFile } from '../../client/models/IFile';
@@ -11,22 +11,20 @@ import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
 import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
 import { setInitialData } from '../../client/utils';
+import { getFloatControls, getFilesContextMenu } from './marked';
 
-export default function Trash({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { selected, marked, dispatch } = useCloudReducer();
+export default function Search({ files, space, search }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const { selected, marked, shared, dispatch } = useCloudReducer();
 
-	const floatControls = selected.length
-		? [Control.RECOVER, Control.CLEAR_FILE]
-		: [Control.CLEAR];
-
+	const floatControls = getFloatControls(selected);
 	const headingOptions = {
-		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
+		links: [{ title: 'Поиск', href: RouteNames.SEARCH }],
 		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
 		floatControls,
 		sticky: true
 	};
 
-	const filesContextMenu = [Control.RECOVER, Control.CLEAR_FILE, Control.NULL, Control.INFO];
+	const filesContextMenu = getFilesContextMenu(selected);
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
@@ -51,7 +49,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 				break;
 			}
 			case 2: {
-				if (!file.isDir) dispatch(setIsModalOpen({ clearTrash: true }));
+				if (!file.isDir) dispatch(setIsModalOpen({ previewFile: true }));
 				break;
 			}
 			default:
@@ -68,7 +66,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 
 	return (
 		<CloudLayout
-			title="Корзина"
+			title="Поиск"
 			headingOptions={headingOptions}
 			space={space}
 		>
@@ -77,9 +75,11 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 				contextMenu={filesContextMenu}
 				selected={selected}
 				marked={marked}
-				empty={<ResultEmptyTrash />}
+				shared={shared}
+				empty={<ResultEmptySearch search={search}/>}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
+				showPath
 			/>
 		</CloudLayout>
 	);
@@ -87,16 +87,12 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
-	setInitialData(ctx, dispatch, null);
-	const { data: files, error } = await dispatch(filesAPI.endpoints.getTrashFiles.initiate());
+	const name = ctx.query.name?.toString() || '';
+	setInitialData(ctx, dispatch, null, name);
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getSearchFiles.initiate(name));
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
 	// @ts-ignore
-	if (error && error.status === 401) return {
-		redirect: {
-			permanent: true,
-			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.TRASH}`
-		}
-	};
-	return { props: { files: files || null, space: space || null } };
+	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
+	return { props: { files: files || null, space: space || null, search: name } };
 });

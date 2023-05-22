@@ -43,6 +43,11 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
 	// @ts-ignore
-	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
+	if (error && error.status === 401) return {
+		redirect: {
+			permanent: true,
+			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.SETTINGS}`
+		}
+	};
 	return { props: { users: users || null, space: space || null } };
 });

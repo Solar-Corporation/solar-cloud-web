@@ -10,5 +10,6 @@ export enum RouteNames {
 	SHARED = '/cloud/shared',
 	TAGS = '/cloud/tags',
 	TRASH = '/cloud/trash',
+	SEARCH = '/cloud/search',
 	SETTINGS = '/cloud/settings'
 }
