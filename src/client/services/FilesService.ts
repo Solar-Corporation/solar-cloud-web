@@ -20,6 +20,7 @@ import {
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { baseQuery } from './config';
+import nookies from 'nookies';
 
 const getFormData = ({ files, hash, dir }: IUpload) => {
 	const formData = new FormData();
@@ -37,8 +38,8 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		console.log(parseCookies().refreshToken, 'cookie refresh');
-		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET', headers: { Cookie: parseCookies().refreshToken } }, api, extraOptions);
+		console.log(nookies.get(), 'cookie refresh');
+		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET', headers: { Cookie: nookies.get().refreshToken } }, api, extraOptions);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
 		} else {
