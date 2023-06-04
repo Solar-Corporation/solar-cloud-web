@@ -8,6 +8,7 @@ import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor';
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
+import { FileModule } from '../file/file.module';
 import { S3Module } from '../s3/s3.module';
 import { UserModule } from '../user/user.module';
 import { ShareController } from './share.controller';
@@ -26,6 +27,7 @@ import { ShareService } from './share.service';
 				expiresIn: process.env.EXPIRESIN_ACCESS_SECRET,
 			},
 		}),
+		FileModule,
 		ConfigModule,
 		UserModule,
 		AuthModule,

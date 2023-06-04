@@ -1,17 +1,7 @@
-import {
-	Controller,
-	Delete,
-	Get,
-	Headers,
-	Param,
-	Post,
-	Query,
-	Req,
-	Res,
-	StreamableFile,
-	UseGuards,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Headers, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
+import { FileService } from '../file/file.service';
 import { AddShareDto, TokenShareDto, UuidShareDto } from './dto/share.dto';
 import { ShareService } from './share.service';
 
@@ -20,6 +10,7 @@ export class ShareController {
 
 	constructor(
 		private readonly shareService: ShareService,
+		private readonly fileService: FileService,
 	) {
 
 	}
@@ -49,7 +40,7 @@ export class ShareController {
 
 	@Get('/:hash')
 	@UseGuards(AuthGuard())
-	async userShare(
+	async copyShare(
 		@Headers() headers: any,
 		@Param() { hash }: AddShareDto,
 		@Req() { user }: any,
@@ -63,17 +54,15 @@ export class ShareController {
 
 	@Get('/:uuid/download?')
 	async getFile(
+		@Headers() headers: any,
 		@Param() { uuid }: UuidShareDto,
 		@Query() { token }: TokenShareDto,
-		@Res({ passthrough: true }) res: Response,
-	): Promise<StreamableFile> {
-		const { fileMime, stream, name } = await this.shareService.getFile(uuid, token);
-		// @ts-ignore
-		res.set({
-			'Content-Type': `${fileMime}; charset=utf-8`,
-			'Content-Disposition': `attachment; filename="${encodeURI(name!)}"`,
-		});
-		return new StreamableFile(stream);
+		@Res() res: Response,
+	) {
+		const file = await this.shareService.getFile(uuid, token);
+		const { name, token: downloadToken } = await this.fileService.downloadSaveLargeFiles(file);
+		const url = `http://${headers.host}/download?token=${downloadToken}&name=${name}`;
+		res.redirect(url);
 	}
 
 }
