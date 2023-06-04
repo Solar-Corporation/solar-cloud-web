@@ -64,8 +64,8 @@ export class ItemService {
 				if (await this.utilService.isExist(filePath))
 					throw new ConflictException(`Файл c именем ${originalName} уже существует!`);
 
-				if (size > 1073741824)
-					throw new ConflictException(`Размер файла ${originalName} превышает 1 гигабайт!`);
+				if (size > bucket.totalSpace - bucket.usageSpace)
+					throw new ConflictException(`Размер файла ${originalName} превышает свободное пространство!`);
 
 				await this.bucketDbService.add(sqlite, {
 					hash: createHash('md5').update(path.join(filePath, '/')).digest('hex'),
