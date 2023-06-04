@@ -63,3 +63,10 @@ export class UserAuthDto extends UserDto {
 	@IsHash('sha256')
 	password!: string;
 }
+
+export class UserIdDto {
+	@IsNotEmpty()
+	@Type(() => Number)
+	@IsNumber()
+	userId!: number;
+}

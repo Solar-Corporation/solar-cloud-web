@@ -36,4 +36,30 @@ export class UserDatabaseService {
 		});
 		return isEmail.is_email_verify;
 	}
+
+	async getUsersList(): Promise<Array<UserDto>> {
+		const [users]: any = await SequelizeConnect.query(`SELECT user_data.get_users()`, {
+			type: QueryTypes.SELECT,
+		});
+		return users.get_users;
+	}
+
+	async updateUserEmailStatus(userId: number, transaction: Transaction) {
+		await SequelizeConnect.query(`CALL user_data.update_email_status($userId)`, {
+			bind: {
+				userId: userId,
+			},
+			transaction: transaction,
+		});
+	}
+
+	async deleteUser(userId: number, transaction: Transaction): Promise<string> {
+		const [userUuid]: any = await SequelizeConnect.query(`SELECT user_data.delete_user_by_id($userId)`, {
+			bind: {
+				userId: userId,
+			},
+			transaction: transaction,
+		});
+		return userUuid[0].delete_user_by_id;
+	}
 }
