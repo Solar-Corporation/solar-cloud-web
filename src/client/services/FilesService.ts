@@ -38,7 +38,7 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 	if (result.error && result.error.status === 401) {
 		const refreshResult = await baseQuery('/refresh', api, extraOptions);
 		if (refreshResult.data) {
-			result = await baseQuery(args, api, extraOptions);
+			result = await baseQuery(args, api, { ...extraOptions, method: 'DELETE' });
 		} else {
 			await baseQuery('/sign-out', api, extraOptions);
 			clearUserOnQueryFulfilled(api.dispatch);
