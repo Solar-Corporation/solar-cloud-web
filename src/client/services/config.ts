@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { AppState } from '../store';
 
-export const baseUrl = 'http://10.99.97.9:8080';
+export const baseUrl = 'http://cloud.solarecosystem.ru/';
 export const apiUrl = `${baseUrl}/v1`;
 
 export const baseQuery = fetchBaseQuery({
