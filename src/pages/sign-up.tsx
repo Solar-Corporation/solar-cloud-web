@@ -135,7 +135,7 @@ export default function Signup() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { accessToken: token } = parseCookies(ctx);
+	const { refreshToken: token } = parseCookies(ctx);
 
 	if (token) {
 		return {
