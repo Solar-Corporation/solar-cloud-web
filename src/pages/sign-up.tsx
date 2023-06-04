@@ -1,7 +1,9 @@
 import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { parseCookies } from 'nookies';
 import Logo from '../client/img/logo.svg';
 import { IRegister } from '../client/models/IAuth';
 import { RouteNames } from '../client/router';
@@ -32,12 +34,12 @@ export default function Signup() {
 		<>
 			<Head>
 				<title>Регистрация | SolarCloud</title>
-				<meta name="description" content="description" />
-				<meta charSet="utf-8" />
+				<meta name="description" content="description"/>
+				<meta charSet="utf-8"/>
 			</Head>
 			<main className={styles.main}>
 				<div className={styles.container}>
-					<Image src={Logo} alt="" className={styles.logo} priority />
+					<Image src={Logo} alt="" className={styles.logo} priority/>
 					<h1 className={styles.title}>
 						Регистрация
 					</h1>
@@ -50,13 +52,13 @@ export default function Signup() {
 						onFinish={handleSend}
 					>
 						<Form.Item name="lastName" rules={[{ required: true }]}>
-							<Input placeholder="Фамилия" />
+							<Input placeholder="Фамилия"/>
 						</Form.Item>
 						<Form.Item name="firstName" rules={[{ required: true }]}>
-							<Input placeholder="Имя" />
+							<Input placeholder="Имя"/>
 						</Form.Item>
 						<Form.Item name="middleName">
-							<Input placeholder="Отчество" />
+							<Input placeholder="Отчество"/>
 						</Form.Item>
 						<Form.Item
 							name="email"
@@ -66,14 +68,14 @@ export default function Signup() {
 							]}
 							hasFeedback
 						>
-							<Input placeholder="Ваша почта" />
+							<Input placeholder="Ваша почта"/>
 						</Form.Item>
 						<Form.Item
 							name="password"
 							rules={[{ required: true }]}
 							hasFeedback
 						>
-							<Input.Password placeholder="Пароль" />
+							<Input.Password placeholder="Пароль"/>
 						</Form.Item>
 						<Form.Item
 							name="confirmPassword"
@@ -91,7 +93,7 @@ export default function Signup() {
 							]}
 							hasFeedback
 						>
-							<Input.Password placeholder="Подтверждение пароля" />
+							<Input.Password placeholder="Подтверждение пароля"/>
 						</Form.Item>
 						<Form.Item className={styles.control}>
 							<ConfigProvider
@@ -131,3 +133,18 @@ export default function Signup() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { accessToken: token } = parseCookies(ctx);
+
+	if (token) {
+		return {
+			redirect: {
+				permanent: true,
+				destination: RouteNames.FILES
+			}
+		};
+	}
+
+	return { props: {} };
+};

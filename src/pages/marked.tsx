@@ -1,17 +1,17 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { CloudLayout } from '../../client/components/Cloud/Layout';
-import { FileTable } from '../../client/components/FileTable';
-import { ResultEmptyMarked } from '../../client/components/Result/EmptyMarked';
-import Control from '../../client/components/UI/Control/List';
-import { useCloudReducer } from '../../client/hooks/cloud';
-import { IFile } from '../../client/models/IFile';
-import { RouteNames } from '../../client/router';
-import { filesAPI } from '../../client/services/FilesService';
-import { wrapper } from '../../client/store';
-import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
-import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
-import { setInitialData } from '../../client/utils';
+import { CloudLayout } from '../client/components/Cloud/Layout';
+import { FileTable } from '../client/components/FileTable';
+import { ResultEmptyMarked } from '../client/components/Result/EmptyMarked';
+import Control from '../client/components/UI/Control/List';
+import { useCloudReducer } from '../client/hooks/cloud';
+import { IFile } from '../client/models/IFile';
+import { RouteNames } from '../client/router';
+import { filesAPI } from '../client/services/FilesService';
+import { wrapper } from '../client/store';
+import { clearSelected, selectFile, unselectFile } from '../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../client/store/reducers/ModalSlice';
+import { setInitialData } from '../client/utils';
 
 export const getFloatControls = (selected: IFile[]) => selected.length
 	? selected.length > 1

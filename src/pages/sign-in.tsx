@@ -1,10 +1,12 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider, Form, Input, Typography } from 'antd';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import Logo from '../client/img/logo.svg';
 import { IAuth } from '../client/models/IAuth';
 import { RouteNames } from '../client/router';
@@ -22,7 +24,7 @@ export default function SignIn() {
 	const handleSend = async (values: IAuth) => {
 		try {
 			await loginUser(values).unwrap();
-			await router.push(redirect || RouteNames.APP);
+			await router.push(redirect || RouteNames.FILES);
 		} catch (e) {
 		}
 	};
@@ -31,12 +33,12 @@ export default function SignIn() {
 		<>
 			<Head>
 				<title>Вход в аккаунт | SolarCloud</title>
-				<meta name="description" content="description" />
-				<meta charSet="utf-8" />
+				<meta name="description" content="description"/>
+				<meta charSet="utf-8"/>
 			</Head>
 			<main className={styles.main}>
 				<div className={styles.container}>
-					<Image src={Logo} alt="" className={styles.logo} priority />
+					<Image src={Logo} alt="" className={styles.logo} priority/>
 					<h1 className={styles.title}>
 						Вход в аккаунт
 					</h1>
@@ -49,7 +51,7 @@ export default function SignIn() {
 					>
 						<Form.Item name="email" rules={[{ required: true }]}>
 							<Input
-								prefix={<UserOutlined />}
+								prefix={<UserOutlined/>}
 								placeholder="Ваша почта"
 								size="large"
 							/>
@@ -57,7 +59,7 @@ export default function SignIn() {
 						<Form.Item className={styles.password} required>
 							<Form.Item className={styles.passwordInput} name="password" rules={[{ required: true }]}>
 								<Input.Password
-									prefix={<LockOutlined />}
+									prefix={<LockOutlined/>}
 									placeholder="Пароль"
 									size="large"
 								/>
@@ -104,3 +106,18 @@ export default function SignIn() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { accessToken: token } = parseCookies(ctx);
+
+	if (token) {
+		return {
+			redirect: {
+				permanent: true,
+				destination: RouteNames.FILES
+			}
+		};
+	}
+
+	return { props: {} };
+};

@@ -42,8 +42,8 @@ export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDi
 			token
 		};
 		dispatch(setUser(user));
+		dispatch(setContext({ url: decodeURIComponent(ctx.resolvedUrl), hash, search: search || '' }));
 	}
-	dispatch(setContext({ url: decodeURIComponent(ctx.resolvedUrl), hash, search: search || '' }));
 };
 
 export const getFilesPlaceholder = () => [

@@ -1,14 +1,14 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { CloudLayout } from '../../client/components/Cloud/Layout';
-import Control from '../../client/components/UI/Control/List';
-import { UserTable } from '../../client/components/UserTable';
-import { useCloudReducer } from '../../client/hooks/cloud';
-import { IUser } from '../../client/models/IUser';
-import { RouteNames } from '../../client/router';
-import { filesAPI } from '../../client/services/FilesService';
-import { userAPI } from '../../client/services/UserService';
-import { wrapper } from '../../client/store';
-import { getIsActive, setInitialData } from '../../client/utils';
+import { CloudLayout } from '../client/components/Cloud/Layout';
+import Control from '../client/components/UI/Control/List';
+import { UserTable } from '../client/components/UserTable';
+import { useCloudReducer } from '../client/hooks/cloud';
+import { IUser } from '../client/models/IUser';
+import { RouteNames } from '../client/router';
+import { filesAPI } from '../client/services/FilesService';
+import { userAPI } from '../client/services/UserService';
+import { wrapper } from '../client/store';
+import { getIsActive, setInitialData } from '../client/utils';
 
 const getControls = (selected: IUser[]) => (
 	selected.length

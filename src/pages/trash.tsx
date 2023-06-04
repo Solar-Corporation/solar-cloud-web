@@ -1,16 +1,16 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { CloudLayout } from '../../client/components/Cloud/Layout';
-import { FileTable } from '../../client/components/FileTable';
-import { ResultEmptyTrash } from '../../client/components/Result/EmptyTrash';
-import Control from '../../client/components/UI/Control/List';
-import { useCloudReducer } from '../../client/hooks/cloud';
-import { IFile } from '../../client/models/IFile';
-import { RouteNames } from '../../client/router';
-import { filesAPI } from '../../client/services/FilesService';
-import { wrapper } from '../../client/store';
-import { clearSelected, selectFile, unselectFile } from '../../client/store/reducers/CloudSlice';
-import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
-import { setInitialData } from '../../client/utils';
+import { CloudLayout } from '../client/components/Cloud/Layout';
+import { FileTable } from '../client/components/FileTable';
+import { ResultEmptyTrash } from '../client/components/Result/EmptyTrash';
+import Control from '../client/components/UI/Control/List';
+import { useCloudReducer } from '../client/hooks/cloud';
+import { IFile } from '../client/models/IFile';
+import { RouteNames } from '../client/router';
+import { filesAPI } from '../client/services/FilesService';
+import { wrapper } from '../client/store';
+import { clearSelected, selectFile, unselectFile } from '../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../client/store/reducers/ModalSlice';
+import { setInitialData } from '../client/utils';
 
 export default function Trash({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();

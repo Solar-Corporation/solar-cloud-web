@@ -1,42 +1,34 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { CloudLayout } from '../../../client/components/Cloud/Layout';
-import { FileTable } from '../../../client/components/FileTable';
-import Control from '../../../client/components/UI/Control/List';
-import { useCloudReducer } from '../../../client/hooks/cloud';
-import { IFile } from '../../../client/models/IFile';
-import { RouteNames } from '../../../client/router';
-import { filesAPI } from '../../../client/services/FilesService';
-import { wrapper } from '../../../client/store';
-import { clearSelected, selectFile, unselectFile } from '../../../client/store/reducers/CloudSlice';
-import { setIsModalOpen } from '../../../client/store/reducers/ModalSlice';
-import { getDirectoryLinks, setInitialData } from '../../../client/utils';
+import { CloudLayout } from '../../client/components/Cloud/Layout';
+import { FileTable } from '../../client/components/FileTable';
+import { ResultEmpty } from '../../client/components/Result/Empty';
+import Control from '../../client/components/UI/Control/List';
+import { useCloudReducer } from '../../client/hooks/cloud';
+import { IFile } from '../../client/models/IFile';
+import { RouteNames } from '../../client/router';
+import { filesAPI } from '../../client/services/FilesService';
+import { wrapper } from '../../client/store';
+import { clearSelected, selectFile, setDirectory, unselectFile } from '../../client/store/reducers/CloudSlice';
+import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
+import { getDirectoryLinks, setInitialData } from '../../client/utils';
+import { getFilesContextMenu, getFloatControls } from './index';
 
-export const getFloatControls = (selected: IFile[], initial?: Control[]) => selected.length
-	? selected.length > 1
-		? [Control.DOWNLOAD, Control.DELETE, Control.MOVE, Control.COPY]
-		: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK]
-	: initial;
-
-export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
-	? [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
-	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
-
-export default function Files({ files, links, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Directory({ files, links, space, name }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
-	const floatControls = getFloatControls(selected);
+	const floatControls = getFloatControls(selected, [Control.SHARE, Control.DOWNLOAD]);
 	const headingOptions = {
 		links,
 		actions: files ? [Control.CREATE] : undefined,
 		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
-		floatControls,
+		floatControls: files ? floatControls : undefined,
 		sticky: true
 	};
 
 	const contextMenu = files
-		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO]
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.DOWNLOAD, Control.NULL, Control.VIEW, Control.INFO]
 		: undefined;
 	const filesContextMenu = getFilesContextMenu(selected);
 
@@ -84,10 +76,10 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 
 	return (
 		<CloudLayout
-			title="Все файлы"
+			title={name}
 			headingOptions={headingOptions}
-			space={space}
 			contextMenu={contextMenu}
+			space={space}
 		>
 			<FileTable
 				files={files}
@@ -95,6 +87,7 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 				selected={selected}
 				marked={marked}
 				shared={shared}
+				empty={<ResultEmpty folderName={name} />}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
 			/>
@@ -104,11 +97,24 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
-	setInitialData(ctx, dispatch, null);
-	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate());
+	const hash = ctx.query.directory?.toString() || '';
+	setInitialData(ctx, dispatch, hash || null);
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate(hash));
+	const { data: paths } = await dispatch(filesAPI.endpoints.getFolderPath.initiate(hash));
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
+	dispatch(setDirectory([
+		paths ? paths[paths.length - 1].isShare || false : false,
+		paths ? paths[paths.length - 1].name || '' : ''
+	]));
 
 	// @ts-ignore
 	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
-	return { props: { files: files || null, links: getDirectoryLinks(), space: space || null } };
+	return {
+		props: {
+			files: files || null,
+			links: getDirectoryLinks(paths),
+			space: space || null,
+			name: paths ? paths[paths.length - 1].name : ''
+		}
+	};
 });
