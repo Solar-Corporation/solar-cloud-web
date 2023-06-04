@@ -69,6 +69,7 @@ export class AuthController {
 	): Promise<void> {
 		const { cookies: { refreshToken } } = req;
 		res.clearCookie('refreshToken');
+		res.clearCookie('accessToken');
 		await this.authService.logout(refreshToken, transaction);
 	}
 
