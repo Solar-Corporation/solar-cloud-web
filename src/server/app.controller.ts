@@ -23,15 +23,45 @@ export class AppController {
 		return {};
 	}
 
-	@Get('cloud')
-	@Render('cloud')
-	async cloud() {
-		return {};
-	}
-
 	@Get('/')
 	@Render('index')
 	async home() {
+		return {};
+	}
+
+	@Get('files')
+	@Render('files')
+	async files() {
+		return {};
+	}
+
+	@Get('files/:directory')
+	@Render('files/[directory]')
+	async directory() {
+		return {};
+	}
+
+	@Get('marked')
+	@Render('marked')
+	async marked() {
+		return {};
+	}
+
+	@Get('trash')
+	@Render('trash')
+	async trash() {
+		return {};
+	}
+
+	@Get('search')
+	@Render('search')
+	async search() {
+		return {};
+	}
+
+	@Get('settings')
+	@Render('settings')
+	async settings() {
 		return {};
 	}
 }
