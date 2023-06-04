@@ -36,11 +36,11 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		const refreshResult = await baseQuery('/refresh', api, extraOptions);
+		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET' }, api, extraOptions);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
 		} else {
-			await baseQuery('/sign-out', api, { ...extraOptions, method: 'DELETE' });
+			await baseQuery({ url: '/sign-out', method: 'DELETE' }, api, extraOptions);
 			clearUserOnQueryFulfilled(api.dispatch);
 			if (typeof window !== 'undefined') {
 				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
