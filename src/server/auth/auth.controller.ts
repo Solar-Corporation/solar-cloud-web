@@ -68,8 +68,8 @@ export class AuthController {
 		@TransactionParam() transaction: Transaction,
 	): Promise<void> {
 		const { cookies: { refreshToken } } = req;
-		await this.authService.logout(refreshToken, transaction);
 		res.clearCookie('refreshToken');
+		await this.authService.logout(refreshToken, transaction);
 	}
 
 	@Get('refresh')
