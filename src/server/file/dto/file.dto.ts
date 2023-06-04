@@ -80,9 +80,8 @@ export class FileDto {
 	deleteAt?: Date;
 }
 
-export class PathDto {
+export class HashDto {
 	@IsOptional()
-		// @IsHash('md5')
 	hash: string = '';
 }
 
@@ -93,12 +92,18 @@ export class HashesDto {
 	hashes!: Array<string>;
 }
 
-export class MovePaths {
+export class MoveHashes {
 	@IsArray()
 	@IsNotEmpty()
 	@ValidateNested({ each: true })
 	@Type(() => MovePath)
 	hashes!: Array<MovePath>;
+}
+
+export class SearchDto {
+	@IsNotEmpty()
+	@IsString()
+	name!: string;
 }
 
 export class MovePath {

@@ -1,9 +1,12 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { v4 } from 'uuid';
 import { BucketService, Space } from '../s3/bucket.service';
-import { HashPath, ItemService, Properties, StreamFile } from '../s3/item.service';
+import { ItemService, Properties, StreamFile } from '../s3/item.service';
 import { StorageService } from '../s3/storage.service';
-
+import { UtilService } from '../s3/util.service';
 import { UserDto } from '../user/dto/user.dto';
 import { FileUploadDto, MovePath } from './dto/file.dto';
 
@@ -18,6 +21,7 @@ export class FileService {
 		private readonly bucketService: BucketService,
 		private readonly configService: ConfigService,
 		private readonly storageService: StorageService,
+		private readonly utilService: UtilService,
 	) {
 		this.basePath = this.configService.get('app.path');
 		this.baseName = this.configService.get('app.name');
@@ -90,7 +94,7 @@ export class FileService {
 		}
 	}
 
-	async getPath({ uuid }: UserDto, hash: string): Promise<Array<HashPath>> {
+	async getPath({ uuid }: UserDto, hash: string): Promise<Array<Properties>> {
 		const store = await this.storageService.open(this.basePath, this.baseName);
 		const bucket = await this.bucketService.open(store, uuid);
 		return await this.itemService.getPath(bucket, hash);
@@ -100,5 +104,29 @@ export class FileService {
 		const store = await this.storageService.open(this.basePath, this.baseName);
 		const bucket = await this.bucketService.open(store, uuid);
 		return await this.itemService.getSpace(bucket);
+	}
+
+	async search({ uuid }: UserDto, name: string): Promise<Array<Properties>> {
+		const store = await this.storageService.open(this.basePath, this.baseName);
+		const bucket = await this.bucketService.open(store, uuid);
+		return await this.itemService.itemsSearch(bucket, name);
+	}
+
+	async downloadSaveLargeFiles(file: StreamFile) {
+		const tempPath = path.join(this.basePath, 'temp');
+		if (!await this.utilService.isExist(tempPath))
+			await fs.mkdir(tempPath);
+
+		const token = v4();
+		const tempDir = path.join(tempPath, token);
+		await fs.mkdir(tempDir);
+
+		const tempFilePath = path.join(tempDir, file.name);
+		await fs.writeFile(tempFilePath, file.stream);
+		return {
+			token: token,
+			name: file.name,
+		};
+
 	}
 }

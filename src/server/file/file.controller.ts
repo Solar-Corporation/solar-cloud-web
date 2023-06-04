@@ -3,8 +3,10 @@ import {
 	Controller,
 	Delete,
 	Get,
+	Headers,
 	Param,
 	Patch,
+	PayloadTooLargeException,
 	Post,
 	Put,
 	Query,
@@ -14,13 +16,13 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Space } from '../s3/bucket.service';
 
-import { HashPath, Properties } from '../s3/item.service';
+import { Properties } from '../s3/item.service';
 import { UserDto } from '../user/dto/user.dto';
-import { DirCreateDto, FileUploadDto, HashesDto, MovePaths, PathDto, RenameQueryDto } from './dto/file.dto';
+import { DirCreateDto, FileUploadDto, HashDto, HashesDto, MoveHashes, RenameQueryDto, SearchDto } from './dto/file.dto';
 import { FileService } from './file.service';
 
 @Controller({ version: '1' })
@@ -40,36 +42,52 @@ export class FileController {
 		await this.fileService.saveFile(fileUploadDto, user as UserDto);
 	}
 
-
-	@Get('files/:hash')
+	@Get('files/:hash/stream')
 	@UseGuards(AuthGuard())
-	async getFile(
-		@Param() { hash }: PathDto,
+	async getStreamFile(
+		@Headers() headers: any,
+		@Param() { hash }: HashDto,
 		@Req() { user }: Request,
 		@Res({ passthrough: true }) res: Response,
-	): Promise<StreamableFile> {
-		const { fileMime, stream, name } = await this.fileService.getFile(user as UserDto, hash);
-		// @ts-ignore
+	) {
+		const file = await this.fileService.getFile(user as UserDto, hash);
+		if (file.size > 314572800)
+			throw new PayloadTooLargeException('Файл слишком большого размера, его нельзя просмотреть!');
 		res.set({
-			'Content-Type': `${fileMime}; charset=utf-8`,
-			'Content-Disposition': `attachment; filename="${encodeURI(name!)}"`,
+			'Content-Type': `${file.fileMime}; charset=utf-8`,
+			'Content-Disposition': `attachment; filename="${encodeURIComponent(file.name!)}"`,
 		});
-		return new StreamableFile(stream);
+		return new StreamableFile(file.stream);
+
 	}
+
+	@Get('files/:hash/download')
+	@UseGuards(AuthGuard())
+	async getDownloadFile(
+		@Headers() headers: any,
+		@Param() { hash }: HashDto,
+		@Req() { user }: Request,
+	) {
+		const file = await this.fileService.getFile(user as UserDto, hash);
+		const { name, token } = await this.fileService.downloadSaveLargeFiles(file);
+		const url = `http://${headers.host}/download?token=${token}&name=${name}`;
+		return { url };
+	}
+
 
 	@Get('files/:hash/path')
 	@UseGuards(AuthGuard())
 	async getFilePath(
-		@Param() { hash }: PathDto,
+		@Param() { hash }: HashDto,
 		@Req() { user }: Request,
-	): Promise<Array<HashPath>> {
+	): Promise<Array<Properties>> {
 		return await this.fileService.getPath(user as UserDto, hash);
 	}
 
 	@Put('files/:hash')
 	@UseGuards(AuthGuard())
 	async renameFile(
-		@Param() { hash }: PathDto,
+		@Param() { hash }: HashDto,
 		@Query() { newName }: RenameQueryDto,
 		@Req() { user }: Request,
 	): Promise<void> {
@@ -98,18 +116,17 @@ export class FileController {
 	@Get('files')
 	@UseGuards(AuthGuard())
 	async getFileTree(
-		@Query() { hash }: PathDto,
+		@Query() { hash }: HashDto,
 		@Req() { user }: Request,
 	): Promise<Array<Properties>> {
 		hash = (hash) ? hash : '';
 		return this.fileService.getFileTree(user as UserDto, hash);
 	}
 
-
 	@Patch('files')
 	@UseGuards(AuthGuard())
 	async moveFiles(
-		@Body() { hashes }: MovePaths,
+		@Body() { hashes }: MoveHashes,
 		@Req() { user }: Request,
 	): Promise<void> {
 		await this.fileService.moveFiles(user as UserDto, hashes);
@@ -118,7 +135,7 @@ export class FileController {
 	@Patch('files/copy')
 	@UseGuards(AuthGuard())
 	async copyFiles(
-		@Body() { hashes }: MovePaths,
+		@Body() { hashes }: MoveHashes,
 		@Req() { user }: Request,
 	): Promise<void> {
 		await this.fileService.copyFiles(user as UserDto, hashes);
@@ -130,5 +147,14 @@ export class FileController {
 		@Req() { user }: Request,
 	): Promise<Space> {
 		return await this.fileService.getSpace(user as UserDto);
+	}
+
+	@Get('search?')
+	@UseGuards(AuthGuard())
+	async searchFiles(
+		@Req() { user }: Request,
+		@Query() { name }: SearchDto,
+	): Promise<Array<Properties>> {
+		return await this.fileService.search(user as UserDto, name);
 	}
 }

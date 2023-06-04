@@ -10,7 +10,6 @@ import { RsErrorInterceptor } from '../common/interceptors/rs-error.interceptor'
 import { TransactionInterceptor } from '../common/interceptors/transaction.interceptor';
 import { S3Module } from '../s3/s3.module';
 import { UserModule } from '../user/user.module';
-// import { FileDatabaseService } from './file-database.service';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 
