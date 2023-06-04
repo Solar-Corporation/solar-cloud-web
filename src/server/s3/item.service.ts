@@ -31,6 +31,8 @@ export type StreamFile = {
 	fileMime: string;
 	name: string;
 	stream: Readable;
+	size: number;
+	isDir: boolean;
 }
 
 export type HashPath = {
@@ -57,7 +59,6 @@ export class ItemService {
 				await sqlite.exec('BEGIN');
 
 				const { size, originalName, mimeType, buffer }: any = file;
-				await this.bucketService.increaseUsageSpace(bucket, size);
 				const filePath = path.join(savePath, originalName);
 
 				if (await this.utilService.isExist(filePath))
@@ -70,12 +71,13 @@ export class ItemService {
 					hash: createHash('md5').update(path.join(filePath, '/')).digest('hex'),
 					isDir: 0,
 					mimeType: mimeType,
-					name: originalName,
+					name: decodeURIComponent(originalName),
 					path: path.join(filePath, '/'),
 					updateAt: (new Date()).getTime(),
 					size: size,
 				});
 				await fs.writeFile(filePath, buffer);
+				await this.bucketService.increaseUsageSpace(bucket, size);
 				await sqlite.exec('COMMIT');
 			}
 			await sqlite.close();
@@ -92,14 +94,15 @@ export class ItemService {
 			await sqlite.exec('BEGIN');
 			const folderPath = await this.bucketDbService.get(sqlite, key);
 			const savePath = (folderPath) ? path.join(bucket.path, 'files', folderPath.path, name) : path.join(bucket.path, 'files', name);
+			const hash = createHash('md5').update(path.join(savePath, '/')).digest('hex');
+			const isDelete = await this.bucketDbService.get(sqlite, hash);
 
-			if (folderPath?.isDelete)
+			if (isDelete?.isDelete)
 				throw new ConflictException(`Папка c именем ${name} находится в корзине!`);
 
 			if (await this.utilService.isExist(savePath))
 				throw new ConflictException(`Папка c именем ${name} уже существует!`);
 
-			const hash = createHash('md5').update(path.join(savePath, '/')).digest('hex');
 
 			await this.bucketDbService.add(sqlite, {
 				hash,
@@ -169,7 +172,7 @@ export class ItemService {
 				throw new ConflictException(`Папка c именем ${itemTo.name} находится в корзине!`);
 
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
-			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', itemFrom.name, (itemFrom.isDir) ? '/' : '');
+			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', itemFrom.name, '/');
 
 			await this.bucketDbService.updatePath(sqlite, fromPath, toPath);
 
@@ -205,7 +208,7 @@ export class ItemService {
 				throw new ConflictException(`Папка c именем ${itemTo.name} находится в корзине!`);
 
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
-			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', (itemTo?.isDir) ? '/' : '');
+			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', '/');
 
 			await this.bucketDbService.copyPath(sqlite, fromPath, toPath);
 
@@ -248,6 +251,7 @@ export class ItemService {
 		const getPath = path.join(bucket.path, 'files', folderPath.path);
 		if (folderPath.isDir) {
 			folderPath.name = path.basename(folderPath.path) + '.zip';
+			folderPath.mimeType = 'application/zip';
 			const zipPath = path.join(path.dirname(getPath), folderPath.name);
 			await zip(getPath, zipPath, { compression: COMPRESSION_LEVEL.uncompressed });
 			file = await fs.readFile(zipPath);
@@ -258,6 +262,8 @@ export class ItemService {
 
 		return {
 			fileMime: folderPath.mimeType,
+			size: file.length,
+			isDir: folderPath.isDir,
 			stream: Readable.from(file),
 			name: folderPath.name,
 		};
@@ -284,7 +290,6 @@ export class ItemService {
 			throw err;
 		}
 	}
-
 
 	async unsetDelete(bucket: Bucket, key: string) {
 		const sqlite = await this.bucketDbService.open(bucket.path);
@@ -320,14 +325,10 @@ export class ItemService {
 				if (!folderPath)
 					throw new NotFoundException(`Папки или файла не существует!`);
 
-				const deletePath = await this.bucketDbService.remove(sqlite, hash);
-				if (await this.utilService.isExist(deletePath)) {
-					await fs.rm(deletePath, { recursive: true, force: true });
-					const size = await this.bucketDbService.sumSize(sqlite);
-					await this.bucketService.decreaseUsageSpace(bucket, size);
-				}
-
-
+				await this.bucketDbService.remove(sqlite, hash);
+				await fs.rm(path.join(bucket.path, 'files', folderPath.path), { recursive: true, force: true });
+				const size = await this.bucketDbService.sumSize(sqlite);
+				await this.bucketService.decreaseUsageSpace(bucket, size);
 				await sqlite.exec('COMMIT');
 			}
 			await sqlite.close();
@@ -444,7 +445,7 @@ export class ItemService {
 		return await this.bucketDbService.getShareHash(sqlite, token);
 	}
 
-	async getPath(bucket: Bucket, hash: string): Promise<Array<HashPath>> {
+	async getPath(bucket: Bucket, hash: string): Promise<Array<Properties>> {
 		const sqlite = await this.bucketDbService.open(bucket.path);
 		const pathFolder = await this.bucketDbService.get(sqlite, hash);
 		if (!pathFolder || !pathFolder.isDir)
@@ -458,10 +459,9 @@ export class ItemService {
 		const fullPath = [];
 		for (const pathDir of paths) {
 			concatPath = path.join(concatPath, pathDir, '/');
-			fullPath.push({
-				name: pathDir,
-				hash: createHash('md5').update(path.join(bucket.path, 'files', concatPath)).digest('hex'),
-			});
+			const dirHash = createHash('md5').update(path.join(bucket.path, 'files', concatPath)).digest('hex');
+			const dir = await this.bucketDbService.get(sqlite, dirHash);
+			fullPath.push(dir!);
 		}
 		return fullPath;
 	}
@@ -473,5 +473,10 @@ export class ItemService {
 			totalSpace: await this.utilService.convert(totalSpace),
 			usageSpace: await this.utilService.convert(usageSpace),
 		};
+	}
+
+	async itemsSearch(bucket: Bucket, name: string): Promise<Array<Properties>> {
+		const sqlite = await this.bucketDbService.open(bucket.path);
+		return await this.bucketDbService.search(sqlite, name);
 	}
 }

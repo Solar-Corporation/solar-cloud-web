@@ -13,8 +13,16 @@ import { UtilService } from './util.service';
 		ConfigModule,
 	],
 	controllers: [],
-	providers: [BucketService, BucketDatabaseService, StorageService, ItemService, UtilService, TransactionInterceptor, RsErrorInterceptor],
-	exports: [BucketService, StorageService, UtilService, ItemService],
+	providers: [
+		BucketService, BucketDatabaseService,
+		StorageService, ItemService, UtilService,
+		TransactionInterceptor, RsErrorInterceptor,
+	],
+	exports: [
+		BucketService,
+		StorageService,
+		UtilService,
+		ItemService],
 })
 export class S3Module {
 }

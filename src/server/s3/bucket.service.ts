@@ -55,11 +55,20 @@ export class BucketService {
 	async open(store: Store, uuid: string): Promise<Bucket> {
 		const storePath = path.join(store.path, uuid);
 		if (!await this.utilService.isExist(storePath))
-			await this.create(store, uuid, 5368709120);
+			await this.create(store, uuid, 10737418240);
 
 		const bucket = await fs.readFile(path.join(storePath, 'bucket.json'));
 
 		return JSON.parse(bucket.toString('utf-8'));
+	}
+
+	async delete(store: Store, uuid: string) {
+		const storePath = path.join(store.path, uuid);
+		if (!await this.utilService.isExist(storePath))
+			return;
+
+		const bucketPath = path.join(store.path, uuid);
+		await fs.rm(bucketPath, { recursive: true, force: true });
 	}
 
 	async updateTotalSpace(bucket: Bucket, totalSpace: number): Promise<Bucket> {

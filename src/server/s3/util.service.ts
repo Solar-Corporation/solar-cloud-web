@@ -39,6 +39,9 @@ export class UtilService {
 	}
 
 	async convert(bytes: number) {
+		if (!bytes)
+			return '0 Байт';
+
 		const sizes = ['Байт', 'КБ', 'МБ', 'ГБ', 'ТБ'];
 
 		if (bytes == 0) {
@@ -53,6 +56,4 @@ export class UtilService {
 
 		return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
 	}
-
-
 }

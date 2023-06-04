@@ -8,10 +8,7 @@ CREATE TABLE paths
 	name      TEXT              NOT NULL,
 	size      INT     DEFAULT 0 NOT NULL,
 	mime_type TEXT,
-	update_at INTEGER,
-	root      TEXT
-		REFERENCES paths
-			ON UPDATE CASCADE ON DELETE CASCADE
+	update_at INTEGER
 );
 
 CREATE TABLE delete_paths

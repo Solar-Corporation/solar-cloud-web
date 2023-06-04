@@ -123,7 +123,9 @@ export class BucketDatabaseService {
 
 		for (const item of items) {
 			const base = path.parse(item.path).dir;
-			if (path.join(base, '/') === getPath)
+			if (path.join(base, '/') === getPath) {
+				if (item.is_dir)
+					item.size = await this.sumFolderSize(sqlite, item.path);
 				result.push({
 					path: await this.utilService.clearPath(item.path),
 					deleteAt: (item.delete_time) ? new Date(item.delete_time) : null,
@@ -139,6 +141,7 @@ export class BucketDatabaseService {
 					updateAt: new Date(item.update_at),
 					isShare: Boolean(item.is_share),
 				});
+			}
 		}
 		return result;
 	}
@@ -148,11 +151,11 @@ export class BucketDatabaseService {
                                          FROM paths
                                          WHERE path LIKE $path || '/%'`, { $path: oldPath });
 		for (const item of items) {
-			const updatePath = item.path.replace(oldPath, newPath);
+			const updatePath = item.path.replace(oldPath, newPath).replace(/\/\//g, '/');
 			const newHash = createHash('md5').update(updatePath).digest('hex');
 			await sqlite.run('UPDATE paths SET hash = $newHash, path = $newPath, name = $newName WHERE hash = $hash', {
 				$newHash: newHash,
-				$newPath: updatePath.replace(/\/\//g, '/'),
+				$newPath: updatePath,
 				$newName: path.basename(updatePath),
 				$hash: item.hash,
 			});
@@ -164,12 +167,15 @@ export class BucketDatabaseService {
                                          FROM paths
                                          WHERE path LIKE $path || '/%'`, { $path: oldPath });
 		for (const item of items) {
-			const dir = path.parse(oldPath).dir;
-			const updatePath = item.path.replace(dir, newPath);
+			let dir = path.parse(oldPath).dir;
+			if (oldPath === path.join(path.parse(oldPath).dir, 'files', '/'))
+				dir = oldPath;
+			// const dir = path.parse(oldPath).dir;
+			const updatePath = item.path.replace(dir, newPath).replace(/\/\//g, '/');
 			const newHash = createHash('md5').update(updatePath).digest('hex');
 			await sqlite.run('INSERT INTO paths (hash, path, name, mime_type, update_at, is_dir, size) VALUES ($hash, $path, $name, $mime_type, $update_at, $is_dir, $size)', {
 				$hash: newHash,
-				$path: updatePath.replace(/\/\//g, '/'),
+				$path: updatePath,
 				$name: item.name,
 				$mime_type: item.mime_type,
 				$update_at: item.update_at,
@@ -215,6 +221,8 @@ export class BucketDatabaseService {
                                          WHERE is_delete IS NOT NULL;`);
 
 		for (const item of items) {
+			if (item.is_dir)
+				item.size = await this.sumFolderSize(sqlite, item.path);
 			result.push({
 				path: await this.utilService.clearPath(item.path),
 				deleteAt: (item.delete_time) ? new Date(item.delete_time) : null,
@@ -279,6 +287,15 @@ export class BucketDatabaseService {
 		return item.path;
 	}
 
+	async sumFolderSize(sqlite: AsyncDatabase, folderPath: string) {
+		const result: any = await sqlite.get(`SELECT SUM(size) AS sum_folder
+                                          FROM paths
+                                          WHERE path LIKE $getPath || '%'`, {
+			$getPath: folderPath,
+		});
+		return result.sum_folder;
+	}
+
 	async getFavorites(sqlite: AsyncDatabase) {
 		const result: Array<Properties> = [];
 		const items: any = await sqlite.all(`SELECT hash,
@@ -308,6 +325,8 @@ export class BucketDatabaseService {
                                            AND is_favorite IS NOT NULL;`);
 
 		for (const item of items) {
+			if (item.is_dir)
+				item.size = await this.sumFolderSize(sqlite, item.path);
 			result.push({
 				path: await this.utilService.clearPath(item.path),
 				deleteAt: (item.delete_time) ? new Date(item.delete_time) : null,
@@ -382,8 +401,61 @@ export class BucketDatabaseService {
 	}
 
 	async sumSize(sqlite: AsyncDatabase): Promise<number> {
-		const sum: any = await sqlite.get(`SELECT sum(size) as sum_size
-                                       from paths`);
+		const sum: any = await sqlite.get(`SELECT SUM(size) AS sum_size
+                                       FROM paths`);
 		return sum.sum_size;
+	}
+
+	async search(sqlite: AsyncDatabase, name: string) {
+		const result: Array<Properties> = [];
+		const items: any = await sqlite.all(`SELECT hash,
+                                                path,
+                                                is_dir,
+                                                name,
+                                                size,
+                                                mime_type,
+                                                update_at,
+                                                delete_time,
+                                                count_delete   AS is_delete,
+                                                count_favorite AS is_favorite,
+                                                count_share    AS is_share
+                                         FROM paths p
+                                                  LEFT JOIN (SELECT hash AS delete_hash, COUNT(hash) AS count_delete, delete_time
+                                                             FROM delete_paths
+                                                             GROUP BY hash) AS dp
+                                                            ON dp.delete_hash = p.hash
+                                                  LEFT JOIN (SELECT hash AS favorite_hash, COUNT(hash) AS count_favorite
+                                                             FROM favorite_paths
+                                                             GROUP BY hash) AS fp
+                                                            ON fp.favorite_hash = p.hash
+                                                  LEFT JOIN (SELECT hash AS share_hash, COUNT(hash) AS count_share
+                                                             FROM share_paths
+                                                             GROUP BY hash) AS sh ON sh.share_hash = p.hash
+                                         WHERE name LIKE '%' || $name || '%'
+                                           AND is_delete IS NULL;`, {
+			$name: name,
+		});
+
+		for (const item of items) {
+			if (item.is_dir)
+				item.size = await this.sumFolderSize(sqlite, item.path);
+			result.push({
+				path: await this.utilService.clearPath(item.path),
+				deleteAt: (item.delete_time) ? new Date(item.delete_time) : null,
+				fileType: path.extname(item.name).replace('.', ''),
+				hash: item.hash,
+				sizeBytes: item.size,
+				isDelete: Boolean(item.is_delete),
+				isDir: Boolean(item.is_dir),
+				isFavorite: Boolean(item.is_favorite),
+				mimeType: item.mime_type,
+				name: item.name,
+				size: await this.utilService.convert(item.size),
+				updateAt: new Date(item.update_at),
+				isShare: Boolean(item.is_share),
+			});
+		}
+
+		return result;
 	}
 }
