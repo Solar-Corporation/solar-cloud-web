@@ -34,7 +34,7 @@ export default function Signup() {
 		<>
 			<Head>
 				<title>Регистрация | SolarCloud</title>
-				<meta name="description" content="description"/>
+				<meta name="description" content="Корпоративное хранилище файлов"/>
 				<meta charSet="utf-8"/>
 			</Head>
 			<main className={styles.main}>

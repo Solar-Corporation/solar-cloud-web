@@ -33,7 +33,7 @@ export const Layout: FC<AppLayoutProps> = ({
 		<>
 			<Head>
 				<title>{`${title} | SolarCloud`}</title>
-				<meta name="description" content="description" />
+				<meta name="description" content="Корпоративное хранилище файлов" />
 				<meta charSet="utf-8" />
 			</Head>
 			<div onClick={onContainerClick} onContextMenu={onContainerClick}>
