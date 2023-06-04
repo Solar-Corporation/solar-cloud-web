@@ -37,7 +37,7 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		console.log(parseCookies().refreshToken);
+		console.log(parseCookies().refreshToken, 'cookie refresh');
 		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET', headers: { Cookie: parseCookies().refreshToken } }, api, extraOptions);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
