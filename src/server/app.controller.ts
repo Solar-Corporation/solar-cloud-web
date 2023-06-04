@@ -17,12 +17,6 @@ export class AppController {
 		return {};
 	}
 
-	@Get('sign-out')
-	@Render('sign-out')
-	async logout() {
-		return {};
-	}
-
 	@Get('/')
 	@Render('index')
 	async home() {
