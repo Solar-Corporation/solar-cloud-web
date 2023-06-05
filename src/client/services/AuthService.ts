@@ -13,7 +13,8 @@ import { baseQuery } from './config';
 export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	const user: UserState = {
 		data: jwt(data.access),
-		token: data.access
+		accessToken: data.access,
+		refreshToken: data.refresh
 	};
 	setCookie(null, 'accessToken', data.access, { maxAge: 30 * 24 * 60 * 60, path: '/' });
 	dispatch(setUser(user));
@@ -21,6 +22,7 @@ export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<an
 
 export const clearUserOnQueryFulfilled = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
 	destroyCookie(null, 'accessToken');
+	destroyCookie(null, 'refreshToken');
 	dispatch(clearUser());
 };
 

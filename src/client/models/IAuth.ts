@@ -5,6 +5,7 @@ export interface IAuth {
 
 export interface IToken {
 	access: string;
+	refresh: string;
 }
 
 export interface IRegister {

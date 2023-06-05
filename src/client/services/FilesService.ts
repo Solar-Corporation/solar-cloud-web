@@ -33,16 +33,11 @@ const getFormData = ({ files, hash, dir }: IUpload) => {
 	return formData;
 };
 
-const getCookie = (token: string) => {
-	console.log(token, '###refresh');
-	return { Cookie: `refreshToken=${token}` };
-}
-
 const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET' }, api, extraOptions);
+		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET', headers: { Cookie: `refreshToken=` } }, api, extraOptions);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
 		} else {
@@ -75,11 +70,10 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		getFiles: build.query<IFile[], { hash?: string, token: string }>({
-			query: ({ hash, token }) => ({
+		getFiles: build.query<IFile[], string | void>({
+			query: (hash) => ({
 				url: '/files',
-				params: { hash },
-				headers: getCookie(token)
+				params: { hash }
 			}),
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {

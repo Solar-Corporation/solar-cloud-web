@@ -1,20 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import jwt from 'jwt-decode';
-import { GetServerSidePropsContext } from 'next';
 import { HYDRATE } from 'next-redux-wrapper';
-import { parseCookies } from 'nookies';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { IUser } from '../../models/IUser';
 
 export interface UserState {
 	data: IUser | null;
-	token: string;
+	accessToken: string;
+	refreshToken: string;
 }
 
 const initialState: UserState = {
 	data: null,
-	token: ''
+	accessToken: '',
+	refreshToken: ''
 };
 
 export const UserSlice = createSlice({
@@ -23,11 +20,13 @@ export const UserSlice = createSlice({
 	reducers: {
 		setUser(state, action: PayloadAction<UserState>) {
 			state.data = action.payload.data;
-			state.token = action.payload.token;
+			state.accessToken = action.payload.accessToken;
+			state.refreshToken = initialState.refreshToken;
 		},
 		clearUser(state) {
 			state.data = initialState.data;
-			state.token = initialState.token;
+			state.accessToken = initialState.accessToken;
+			state.refreshToken = initialState.refreshToken;
 		}
 	},
 	extraReducers: {
@@ -42,13 +41,3 @@ export const UserSlice = createSlice({
 
 export default UserSlice.reducer;
 export const { setUser, clearUser } = UserSlice.actions;
-export const setInitialUserData = (ctx: GetServerSidePropsContext, dispatch: ThunkDispatch<any, any, AnyAction>) => {
-	const { accessToken: token } = parseCookies(ctx);
-	if (token) {
-		const user: UserState = {
-			data: jwt(token),
-			token
-		};
-		dispatch(setUser(user));
-	}
-};
