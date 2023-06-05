@@ -21,7 +21,7 @@ export const UserSlice = createSlice({
 		setUser(state, action: PayloadAction<UserState>) {
 			state.data = action.payload.data;
 			state.accessToken = action.payload.accessToken;
-			state.refreshToken = initialState.refreshToken;
+			state.refreshToken = action.payload.refreshToken;
 		},
 		clearUser(state) {
 			state.data = initialState.data;

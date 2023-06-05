@@ -6,7 +6,7 @@ export function usePreviewFile() {
 	const [uri, setUri] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(0);
-	const { token } = useAppSelector(state => state.userReducer);
+	const { accessToken, refreshToken } = useAppSelector(state => state.userReducer);
 
 	const previewFile = (hash: string) => {
 		const xhr = new XMLHttpRequest();
@@ -29,7 +29,9 @@ export function usePreviewFile() {
 		};
 
 		xhr.open('GET', `${apiUrl}/files/${hash}/stream`, true);
-		if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+		if (accessToken) xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+		if (refreshToken) xhr.setRequestHeader('Cookie', `refreshToken=${refreshToken}`);
+
 		xhr.send();
 	};
 
