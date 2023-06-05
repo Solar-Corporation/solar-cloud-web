@@ -1,7 +1,6 @@
 import { BaseQueryFn, createApi, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react';
 import copy from 'copy-to-clipboard';
 import Router from 'next/router';
-import { parseCookies } from 'nookies';
 import { handleApiError, handleApiLoading, handleApiSuccess } from '../components/Notifications';
 import { IDirectory, IFile, IMove, IStorageSpace, IUpload } from '../models/IFile';
 import { RouteNames } from '../router';
@@ -37,11 +36,11 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET', headers: { Cookie: `refreshToken=` } }, api, extraOptions);
+		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET' }, api, extraOptions);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
 		} else {
-			await baseQuery({ url: '/sign-out', method: 'DELETE', headers: { Cookie: parseCookies().refreshToken } }, api, extraOptions);
+			await baseQuery({ url: '/sign-out', method: 'DELETE' }, api, extraOptions);
 			clearUserOnQueryFulfilled(api.dispatch);
 			if (typeof window !== 'undefined') {
 				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {

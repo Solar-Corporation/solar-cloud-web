@@ -8,7 +8,7 @@ export const baseQuery = fetchBaseQuery({
 	baseUrl: apiUrl,
 	prepareHeaders: (headers, { getState }) => {
 		const accessToken = (getState() as AppState).userReducer.accessToken;
-		const refreshToken = (getState() as AppState).userReducer.accessToken;
+		const refreshToken = (getState() as AppState).userReducer.refreshToken;
 		if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
 		if (refreshToken) headers.set('Cookie', `refreshToken=${refreshToken}`);
 		return headers;
