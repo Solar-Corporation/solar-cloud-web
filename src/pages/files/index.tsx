@@ -1,5 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { FileTable } from '../../client/components/FileTable';
 import Control from '../../client/components/UI/Control/List';
@@ -105,7 +106,7 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async ctx => {
 	const { dispatch } = store;
 	setInitialData(ctx, dispatch, null);
-	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate());
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate({ token: parseCookies(ctx).refreshToken || '' }));
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
 	// @ts-ignore

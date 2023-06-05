@@ -1,5 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import { CloudLayout } from '../../client/components/Cloud/Layout';
 import { FileTable } from '../../client/components/FileTable';
 import { ResultEmpty } from '../../client/components/Result/Empty';
@@ -99,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { dispatch } = store;
 	const hash = ctx.query.directory?.toString() || '';
 	setInitialData(ctx, dispatch, hash || null);
-	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate(hash));
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate({ hash, token: parseCookies(ctx).refreshToken || '' }));
 	const { data: paths } = await dispatch(filesAPI.endpoints.getFolderPath.initiate(hash));
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 	dispatch(setDirectory([

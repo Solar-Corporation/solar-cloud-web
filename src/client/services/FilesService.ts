@@ -20,7 +20,6 @@ import {
 import { refreshPage } from '../utils';
 import { clearUserOnQueryFulfilled } from './AuthService';
 import { baseQuery } from './config';
-import nookies from 'nookies';
 
 const getFormData = ({ files, hash, dir }: IUpload) => {
 	const formData = new FormData();
@@ -34,12 +33,16 @@ const getFormData = ({ files, hash, dir }: IUpload) => {
 	return formData;
 };
 
+const getCookie = (token: string) => {
+	console.log(token, '###refresh');
+	return { Cookie: `refreshToken=${token}` };
+}
+
 const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		console.log(nookies.get(), 'cookie refresh');
-		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET', headers: { Cookie: nookies.get().refreshToken } }, api, extraOptions);
+		const refreshResult = await baseQuery({ url: '/refresh', method: 'GET' }, api, extraOptions);
 		if (refreshResult.data) {
 			result = await baseQuery(args, api, extraOptions);
 		} else {
@@ -72,10 +75,11 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
-		getFiles: build.query<IFile[], string | void>({
-			query: (hash) => ({
+		getFiles: build.query<IFile[], { hash?: string, token: string }>({
+			query: ({ hash, token }) => ({
 				url: '/files',
-				params: { hash }
+				params: { hash },
+				headers: getCookie(token)
 			}),
 			async onQueryStarted(args, { queryFulfilled, dispatch }) {
 				try {
