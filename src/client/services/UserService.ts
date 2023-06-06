@@ -4,31 +4,24 @@ import {
 	FetchArgs,
 	FetchBaseQueryError
 } from '@reduxjs/toolkit/dist/query/react';
-import Router from 'next/router';
 import { handleApiError, handleApiLoading, handleApiSuccess } from '../components/Notifications';
 import { IUser } from '../models/IUser';
-import { RouteNames } from '../router';
+import { clearUser } from '../store/reducers/UserSlice';
 import { refreshPage } from '../utils';
-import { clearUserOnQueryFulfilled } from './AuthService';
+import { setUserOnQueryFulfilled } from './AuthService';
 import { baseQuery } from './config';
 
 const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
 	let result = await baseQuery(args, api, extraOptions);
 
 	if (result.error && result.error.status === 401) {
-		const refreshResult = await baseQuery('/refresh', api, extraOptions);
+		const refreshResult: any = await baseQuery({ url: '/refresh', method: 'GET' }, api, extraOptions);
 		if (refreshResult.data) {
+			setUserOnQueryFulfilled(refreshResult.data, api.dispatch);
 			result = await baseQuery(args, api, extraOptions);
 		} else {
-			await baseQuery('/sign-out', api, extraOptions);
-			clearUserOnQueryFulfilled(api.dispatch);
-			if (typeof window !== 'undefined') {
-				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
-					await Router.push(RouteNames.LOGIN);
-				} else {
-					await Router.push(`${RouteNames.LOGIN}?return_to=${Router.pathname}`);
-				}
-			}
+			await baseQuery({ url: '/sign-out', method: 'DELETE' }, api, extraOptions);
+			api.dispatch(clearUser());
 		}
 	}
 
