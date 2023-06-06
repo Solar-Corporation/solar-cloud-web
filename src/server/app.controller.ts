@@ -30,7 +30,7 @@ export class AppController {
 	}
 
 	@Get('files/:directory')
-	@Render('files/[directory]')
+	@Render('files/:directory')
 	async directory() {
 		return {};
 	}
