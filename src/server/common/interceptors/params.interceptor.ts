@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 export class ParamsInterceptor implements NestInterceptor {
 	intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
 		const request = context.switchToHttp().getRequest() as Request;
+		console.log(request.headers['user-agent']);
 		return next.handle().pipe(
 			map((data) => {
 				return {
