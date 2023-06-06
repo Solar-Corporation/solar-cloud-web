@@ -36,11 +36,11 @@ export const getDirectoryLinks = (paths?: IFile[]) => ([
 
 export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDispatch<any, any, AnyAction>, hash: string | null, search?: string) => {
 	const { accessToken, refreshToken } = parseCookies(ctx);
-	if (refreshToken && accessToken) {
+	if (accessToken) {
 		const user: UserState = {
 			data: jwt(accessToken),
 			accessToken,
-			refreshToken
+			refreshToken: refreshToken || ''
 		};
 		dispatch(setUser(user));
 		dispatch(setContext({ url: decodeURIComponent(ctx.resolvedUrl), hash, search: search || '' }));
