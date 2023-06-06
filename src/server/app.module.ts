@@ -42,7 +42,7 @@ export class AppModule {
 					load: [config],
 				}),
 				ServeStaticModule.forRoot({
-					rootPath: join(__dirname, '../', 'public', 'img'),
+					rootPath: join(__dirname, '../..', 'public', 'img'),
 				}),
 				AuthModule,
 				FileModule,
