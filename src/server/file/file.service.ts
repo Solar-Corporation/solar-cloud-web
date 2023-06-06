@@ -28,13 +28,13 @@ export class FileService {
 	}
 
 	async saveFile(fileUploadDto: FileUploadDto, { uuid }: UserDto): Promise<void> {
-		const { files, hash, dir } = fileUploadDto;
+		const { /* files, */ hash, dir } = fileUploadDto;
 
 		const store = await this.storageService.open(this.basePath, this.baseName);
 		const bucket = await this.bucketService.open(store, uuid);
 		const key = (dir) ? await this.itemService.addDir(bucket, hash, dir) : hash;
 
-		await this.itemService.addFiles(bucket, key, files);
+		await this.itemService.addFiles(bucket, key, fileUploadDto.files);
 	}
 
 	async getFile({ uuid }: UserDto, hash: string): Promise<StreamFile> {

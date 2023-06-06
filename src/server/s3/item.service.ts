@@ -55,29 +55,30 @@ export class ItemService {
 			const folderPath = await this.bucketDbService.get(sqlite, key);
 			const savePath = (folderPath) ? path.join(bucket.path, 'files', folderPath.path) : path.join(bucket.path, 'files');
 
-			for (const file of files) {
+			for (let i = 0; i < files.length; i++) {
 				await sqlite.exec('BEGIN');
 
-				const { size, originalName, mimeType, buffer }: any = file;
-				const filePath = path.join(savePath, originalName);
+				// const { size, originalName, mimeType, buffer }: any = file;
+				const filePath = path.join(savePath, files[i].originalName);
 
 				if (await this.utilService.isExist(filePath))
-					throw new ConflictException(`Файл c именем ${originalName} уже существует!`);
+					throw new ConflictException(`Файл c именем ${files[i].originalName} уже существует!`);
 
-				if (size > bucket.totalSpace - bucket.usageSpace)
-					throw new ConflictException(`Размер файла ${originalName} превышает свободное пространство!`);
+				if (files[i].size > bucket.totalSpace - bucket.usageSpace)
+					throw new ConflictException(`Размер файла ${files[i].originalName} превышает свободное пространство!`);
 
 				await this.bucketDbService.add(sqlite, {
 					hash: createHash('md5').update(path.join(filePath, '/')).digest('hex'),
 					isDir: 0,
-					mimeType: mimeType,
-					name: decodeURIComponent(originalName),
+					mimeType: files[i].mimeType,
+					name: decodeURIComponent(files[i].originalName),
 					path: path.join(filePath, '/'),
 					updateAt: (new Date()).getTime(),
-					size: size,
+					size: files[i].size,
 				});
-				await fs.writeFile(filePath, buffer);
-				await this.bucketService.increaseUsageSpace(bucket, size);
+				// @ts-ignore
+				await fs.writeFile(filePath, files[i].buffer);
+				await this.bucketService.increaseUsageSpace(bucket, files[i].size);
 				await sqlite.exec('COMMIT');
 			}
 			await sqlite.close();
