@@ -29,19 +29,13 @@ export class AppController {
 		return {};
 	}
 
-	@Get('files/:directory')
-	@Render('files/[directory]')
-	async directory() {
-		return {};
-	}
-
 	@Get('files/:directory/test')
 	@Render('files/[directory]')
-	async directoryTest(
-		@Param() test: any,
+	async directory(
+		@Param() { directory }: any,
 		@Res() res: any,
 	) {
-		return res.render(`files/${test.directory}`);
+		return res.render(`files/${directory}`);
 	}
 
 	@Get('marked')
