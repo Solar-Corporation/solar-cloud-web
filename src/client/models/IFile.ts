@@ -7,12 +7,12 @@ export interface IFile {
 	size: string;
 	fileType: string;
 	isDir: boolean;
-	isDelete: boolean;
+	isDelete?: boolean;
 	isFavorite: boolean;
 	isShare?: boolean;
 	mimeType: string;
-	updateAt: string | null;
-	deleteAt: string | null;
+	updateAt: string | null | number;
+	deleteAt?: string | null;
 }
 
 export interface IDirectory {
