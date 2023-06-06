@@ -2,7 +2,6 @@ import { Controller, Get, Render, UseInterceptors } from '@nestjs/common';
 import { ParamsInterceptor } from './common/interceptors/params.interceptor';
 
 @Controller()
-@UseInterceptors(ParamsInterceptor)
 export class AppController {
 
 	@Get('sign-up')
@@ -30,7 +29,8 @@ export class AppController {
 	}
 
 	@Get('files/:directory')
-	@Render('files/:directory')
+	@Render('files/[directory]')
+	@UseInterceptors(ParamsInterceptor)
 	async directory() {
 		return {};
 	}
