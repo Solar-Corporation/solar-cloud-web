@@ -37,6 +37,7 @@ export class AppController {
 		@Res() res: any,
 	) {
 		const filePath = path.join(__dirname, '..', 'public', 'img', req.url);
+		console.log(filePath);
 		return res.sendFile(filePath);
 	}
 
