@@ -18,6 +18,7 @@ export class AppController {
 
 	@Get('/')
 	@Render('index')
+	@UseInterceptors(ParamsInterceptor)
 	async home() {
 		return {};
 	}
