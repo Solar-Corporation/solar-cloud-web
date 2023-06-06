@@ -64,9 +64,6 @@ export default function SignIn() {
 									size="large"
 								/>
 							</Form.Item>
-							<Link href="/">
-								Забыли пароль?
-							</Link>
 						</Form.Item>
 						<Form.Item className={styles.control}>
 							<ConfigProvider
