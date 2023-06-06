@@ -176,7 +176,7 @@ export class ItemService {
 
 			await this.bucketDbService.updatePath(sqlite, fromPath, toPath);
 
-			await fse.move(fromPath, toPath.replace(/.$/, '.'));
+			await fse.move(fromPath, toPath.replace(/.\//, ''));
 
 			await sqlite.exec('COMMIT');
 			await sqlite.close();
