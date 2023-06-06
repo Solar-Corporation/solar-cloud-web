@@ -220,6 +220,7 @@ export class ItemService {
 			await this.bucketDbService.copyPath(sqlite, fromPath, toPath);
 
 			await fse.copy(fromPath, path.join(toPath, itemFrom.name));
+			await this.bucketService.increaseUsageSpace(bucket, itemTo?.sizeBytes || 0);
 
 			await sqlite.exec('COMMIT');
 			await sqlite.close();
