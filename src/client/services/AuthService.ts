@@ -30,16 +30,17 @@ export const authAPI = createApi({
 	reducerPath: 'authAPI',
 	baseQuery,
 	endpoints: (build) => ({
-		userLogin: build.mutation<IToken, IAuth>({
-			query: (data) => ({
+		userLogin: build.mutation<IToken, { data: IAuth, redirect: string | null }>({
+			query: ({ data }) => ({
 				url: '/sign-in',
 				method: 'POST',
 				body: data
 			}),
-			async onQueryStarted(args, { dispatch, queryFulfilled }) {
+			async onQueryStarted({ redirect }, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled;
 					setUserOnQueryFulfilled(data, dispatch);
+					await Router.push(redirect || RouteNames.FILES);
 				} catch (error) {
 					await handleApiError(error);
 				}
@@ -69,7 +70,6 @@ export const authAPI = createApi({
 				} catch (error) {
 					handleApiError(error);
 				}
-				await Router.push(RouteNames.LOGIN);
 				clearUserOnQueryFulfilled(dispatch);
 			}
 		})

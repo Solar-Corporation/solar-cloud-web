@@ -43,13 +43,6 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 		} else {
 			await baseQuery({ url: '/sign-out', method: 'DELETE' }, api, extraOptions);
 			clearUserOnQueryFulfilled(api.dispatch);
-			if (typeof window !== 'undefined') {
-				if (Router.pathname === RouteNames.FILES || Router.pathname === RouteNames.DIRECTORY) {
-					await Router.push(RouteNames.LOGIN);
-				} else {
-					await Router.push(`${RouteNames.LOGIN}?return_to=${Router.pathname}`);
-				}
-			}
 		}
 	}
 
