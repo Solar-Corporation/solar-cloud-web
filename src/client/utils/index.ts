@@ -47,7 +47,7 @@ export const setInitialData = (ctx: GetServerSidePropsContext, dispatch: ThunkDi
 	}
 };
 
-export const getFilesPlaceholder = () => [
+export const getFilesPlaceholder = (): IFile[] => [
 	{
 		name: 'test',
 		path: '/test',
@@ -57,7 +57,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: true,
 		isFavorite: false,
-		seeTime: 1673379696000
+		updateAt: 1673379696000
 	}, {
 		name: 'Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
 		path: '/Очень длинное, ну прям очень очень длинное, название для папки, которое не должно поместиться в одну строчку',
@@ -67,7 +67,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: true,
 		isFavorite: false,
-		seeTime: 1673379696000
+		updateAt: 1673379696000
 	}, {
 		name: 'Архив 1.zip',
 		path: '/Архив 1.zip',
@@ -77,7 +77,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Архив 1.rar',
 		path: '/Архив 1.rar',
@@ -87,7 +87,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Руководство пользователя.pdf',
 		path: '/Руководство пользователя.pdf',
@@ -97,7 +97,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'test123.txt',
 		path: '/test123.txt',
@@ -107,7 +107,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Старый вариант документа.doc',
 		path: '/Старый вариант документа.doc',
@@ -117,7 +117,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Новый вариант документа.docx',
 		path: '/Новый вариант документа.docx',
@@ -127,7 +127,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Таблица 1.xlsx',
 		path: '/Таблица 1.xlsx',
@@ -137,7 +137,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Презентация.pptx',
 		path: '/Таблица 1.pptx',
@@ -147,7 +147,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'test123.bsp',
 		path: '/test123.bsp',
@@ -157,7 +157,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}, {
 		name: 'Очень длинное, ну прям очень очень длинное, название для изображения, которое не должно поместиться в одну строчку.png',
 		path: '/Очень длинное, ну прям очень очень длинное, название для изображения, которое не должно поместиться в одну строчку.png',
@@ -167,7 +167,7 @@ export const getFilesPlaceholder = () => [
 		mimeType: 'text/plain',
 		isDir: false,
 		isFavorite: false,
-		seeTime: 1673380864000
+		updateAt: 1673380864000
 	}
 ];
 
