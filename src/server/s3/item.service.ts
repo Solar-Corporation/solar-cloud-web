@@ -173,11 +173,11 @@ export class ItemService {
 				throw new ConflictException(`Папка c именем ${itemTo.name} находится в корзине!`);
 
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
-			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', itemFrom.name, '/');
+			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', itemFrom.name);
 
-			await this.bucketDbService.updatePath(sqlite, fromPath, toPath);
+			await this.bucketDbService.updatePath(sqlite, fromPath, path.join(toPath, '/'));
 
-			await fse.move(fromPath, toPath.replace(/.\/$/, ''));
+			await fse.move(fromPath, toPath);
 
 			await sqlite.exec('COMMIT');
 			await sqlite.close();

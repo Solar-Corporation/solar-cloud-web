@@ -1,4 +1,4 @@
-import { Controller, Get, Render, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Render, Res, UseInterceptors } from '@nestjs/common';
 import { ParamsInterceptor } from './common/interceptors/params.interceptor';
 
 @Controller()
@@ -30,9 +30,18 @@ export class AppController {
 	}
 
 	@Get('files/:directory')
-	@Render('/files/[directory]')
+	@Render('files/[directory]')
 	async directory() {
 		return {};
+	}
+
+	@Get('files/:directory/test')
+	@Render('files/[directory]')
+	async directoryTest(
+		@Param() test: any,
+		@Res() res: any,
+	) {
+		return res.render(`files/${test.directory}`);
 	}
 
 	@Get('marked')
