@@ -13,7 +13,7 @@
     "dev:next": "next dev",
     "build:next": "next build",
     "start:next": "next start",
-    "start": "nest start",
+    "start": "nest build && pm2 stop solar-cloud || : && pm2 start dist/main.js --name solar-cloud",
     "start:dev": "nest start --watch",
     "start:rust": "napi build --release && nest start --watch",
     "start:debug": "nest start --debug --watch",
