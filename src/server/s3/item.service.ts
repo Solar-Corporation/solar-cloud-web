@@ -175,6 +175,9 @@ export class ItemService {
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
 			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', itemFrom.name);
 
+			if (await this.utilService.isExist(toPath))
+				throw new ConflictException('Файл или папка с таким именем уже существует в этой папке!');
+
 			await this.bucketDbService.updatePath(sqlite, fromPath, path.join(toPath, '/'));
 
 			await fse.move(fromPath, toPath);
@@ -210,6 +213,9 @@ export class ItemService {
 
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
 			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', '/');
+
+			if (await this.utilService.isExist(path.join(toPath, itemFrom.name)))
+				throw new ConflictException('Файл или папка с таким именем уже существует в этой папке!');
 
 			await this.bucketDbService.copyPath(sqlite, fromPath, toPath);
 
