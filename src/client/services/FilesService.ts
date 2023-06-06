@@ -16,8 +16,9 @@ import {
 	unmarkFile,
 	unshareFile
 } from '../store/reducers/CloudSlice';
+import { clearUser } from '../store/reducers/UserSlice';
 import { refreshPage } from '../utils';
-import { clearUserOnQueryFulfilled, setUserOnQueryFulfilled } from './AuthService';
+import { setUserOnQueryFulfilled } from './AuthService';
 import { baseQuery } from './config';
 
 const getFormData = ({ files, hash, dir }: IUpload) => {
@@ -42,7 +43,7 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 			result = await baseQuery(args, api, extraOptions);
 		} else {
 			await baseQuery({ url: '/sign-out', method: 'DELETE' }, api, extraOptions);
-			clearUserOnQueryFulfilled(api.dispatch);
+			api.dispatch(clearUser());
 		}
 	}
 

@@ -120,6 +120,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 			space: space || null,
 			name: paths ? paths[paths.length - 1].name : ''
 		},
+		ctx,
 		error
 	);
 });

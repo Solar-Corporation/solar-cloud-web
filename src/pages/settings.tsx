@@ -43,5 +43,5 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: users, error } = await dispatch(userAPI.endpoints.getUsers.initiate());
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
-	return privateRoute({ users: users || null, space: space || null }, error, RouteNames.SETTINGS);
+	return privateRoute({ users: users || null, space: space || null }, ctx, error, RouteNames.SETTINGS);
 });

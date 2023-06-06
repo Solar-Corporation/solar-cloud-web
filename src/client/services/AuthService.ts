@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/dist/query/react';
 import jwt from 'jwt-decode';
 import Router from 'next/router';
-import { destroyCookie, setCookie } from 'nookies';
+import { setCookie } from 'nookies';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { handleApiError } from '../components/Notifications';
@@ -18,12 +18,6 @@ export const setUserOnQueryFulfilled = (data: IToken, dispatch: ThunkDispatch<an
 	};
 	setCookie(null, 'accessToken', data.access, { maxAge: 30 * 24 * 60 * 60, path: '/' });
 	dispatch(setUser(user));
-};
-
-export const clearUserOnQueryFulfilled = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
-	destroyCookie(null, 'accessToken');
-	destroyCookie(null, 'refreshToken');
-	dispatch(clearUser());
 };
 
 export const authAPI = createApi({
@@ -70,7 +64,7 @@ export const authAPI = createApi({
 				} catch (error) {
 					handleApiError(error);
 				}
-				clearUserOnQueryFulfilled(dispatch);
+				dispatch(clearUser());
 			}
 		})
 	})

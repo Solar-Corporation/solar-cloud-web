@@ -109,5 +109,5 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate());
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
-	return privateRoute({ files: files || null, links: getDirectoryLinks(), space: space || null }, error);
+	return privateRoute({ files: files || null, links: getDirectoryLinks(), space: space || null }, ctx, error);
 });

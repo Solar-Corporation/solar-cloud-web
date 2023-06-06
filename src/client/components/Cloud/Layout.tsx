@@ -7,6 +7,7 @@ import {
 	TeamOutlined
 } from '@ant-design/icons';
 import { useRouter } from 'next/router';
+import { destroyCookie } from 'nookies';
 import { FC, ReactNode, useEffect } from 'react';
 import { useCloudReducer } from '../../hooks/cloud';
 import { useAppSelector } from '../../hooks/redux';
@@ -50,6 +51,8 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, space
 			} else {
 				router.push(`${RouteNames.LOGIN}?return_to=${router.pathname}`);
 			}
+			destroyCookie(null, 'accessToken');
+			destroyCookie(null, 'refreshToken');
 		}
 	}, [token]);
 
