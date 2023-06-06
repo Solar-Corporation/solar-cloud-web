@@ -17,7 +17,7 @@ function App({ Component, ...rest }: AppProps) {
 	return (
 		<Provider store={store}>
 			<Head>
-				<link rel="icon" href="/favicon.ico" />
+				<link rel="icon" href="/img/favicon.ico" />
 			</Head>
 			<ConfigProvider theme={themeCloud}>
 				<div className={fontRoboto.className}>
