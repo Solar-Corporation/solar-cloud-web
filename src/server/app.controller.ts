@@ -31,6 +31,7 @@ export class AppController {
 
 	@Get('files/:directory')
 	@UseInterceptors(ParamsInterceptor)
+
 	@Render('/files/[directory]')
 	async directory() {
 		return {};
