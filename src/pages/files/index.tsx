@@ -30,7 +30,7 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 	const headingOptions = {
 		links,
 		actions: files ? [Control.CREATE] : undefined,
-		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		constControls: files ? [Control.INFO] : undefined,
 		floatControls,
 		sticky: true
 	};

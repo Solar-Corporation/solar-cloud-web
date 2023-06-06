@@ -22,7 +22,7 @@ export default function Directory({ files, links, space, name }: InferGetServerS
 	const headingOptions = {
 		links,
 		actions: files ? [Control.CREATE] : undefined,
-		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		constControls: files ? [Control.INFO] : undefined,
 		floatControls: files ? floatControls : undefined,
 		sticky: true
 	};
