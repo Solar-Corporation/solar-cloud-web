@@ -99,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { dispatch } = store;
 	const hash = ctx.query.directory?.toString() || '';
 	setInitialData(ctx, dispatch, hash || null);
-	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate());
+	const { data: files, error } = await dispatch(filesAPI.endpoints.getFiles.initiate(hash));
 	const { data: paths } = await dispatch(filesAPI.endpoints.getFolderPath.initiate(hash));
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 	dispatch(setDirectory([
