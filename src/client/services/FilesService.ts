@@ -92,6 +92,9 @@ export const filesAPI = createApi({
 				method: 'GET',
 				params: { hash }
 			}),
+			transformResponse(response: IFile[], meta, { filesPath }) {
+				return response.filter((file) => file.isDir && !filesPath.find(path => path === file.path));
+			},
 			async onQueryStarted(args, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
