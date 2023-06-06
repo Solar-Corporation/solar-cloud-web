@@ -6,8 +6,10 @@ import {
 	TagsOutlined,
 	TeamOutlined
 } from '@ant-design/icons';
-import { FC, ReactNode } from 'react';
+import { useRouter } from 'next/router';
+import { FC, ReactNode, useEffect } from 'react';
 import { useCloudReducer } from '../../hooks/cloud';
+import { useAppSelector } from '../../hooks/redux';
 import { IStorageSpace } from '../../models/IFile';
 import { RouteNames } from '../../router';
 import { clearSelected, clearUserSelected, setIsContextMenuOpen } from '../../store/reducers/CloudSlice';
@@ -28,7 +30,9 @@ interface CloudLayoutProps {
 }
 
 export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, space, contextMenu, children }) => {
+	const { accessToken: token } = useAppSelector(state => state.userReducer);
 	const { selected, userSelected, isContextMenuOpen, dispatch } = useCloudReducer();
+	const router = useRouter();
 
 	const links: INavbarItem[] = [
 		// { icon: <HistoryOutlined />, title: 'Недавние', href: RouteNames.RECENT },
@@ -38,6 +42,16 @@ export const CloudLayout: FC<CloudLayoutProps> = ({ title, headingOptions, space
 		// { icon: <TeamOutlined />, title: 'Общий доступ', href: RouteNames.SHARED },
 		{ icon: <DeleteOutlined />, title: 'Корзина', href: RouteNames.TRASH }
 	];
+
+	useEffect(() => {
+		if (!token) {
+			if (router.pathname === RouteNames.FILES || router.pathname === RouteNames.DIRECTORY) {
+				router.push(RouteNames.LOGIN);
+			} else {
+				router.push(`${RouteNames.LOGIN}?return_to=${router.pathname}`);
+			}
+		}
+	}, [token]);
 
 	const handleClearSelected = () => {
 		if (selected.length) dispatch(clearSelected());
