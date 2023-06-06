@@ -1,13 +1,14 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Dropdown, MenuProps } from 'antd';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import styles from '../../styles/components/Header.module.less';
 import stylesContextMenu from '../../styles/components/ContextMenu.module.less';
 import { ControlLogout } from '../UI/Control/types/Logout';
 
 export const HeaderAvatar: FC = () => {
-	const { data: user } = useAppSelector(state => state.userReducer);
+	const { data } = useAppSelector(state => state.userReducer);
+	const [user] = useState(data);
 
 	const items: MenuProps['items'] = [
 		{
