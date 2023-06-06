@@ -29,7 +29,7 @@ export class AppController {
 		return {};
 	}
 
-	@Get('files/:directory/test')
+	@Get('files/:directory')
 	@Render('files/[directory]')
 	async directory(
 		@Param() { directory }: any,
