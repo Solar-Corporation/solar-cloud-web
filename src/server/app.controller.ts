@@ -29,7 +29,7 @@ export class AppController {
 	}
 
 	@Get('files/:directory')
-	@Render('files/[directory]')
+	@Render('/files/[directory]')
 	@UseInterceptors(ParamsInterceptor)
 	async directory() {
 		return {};
