@@ -7,6 +7,7 @@ import Control from '../client/components/UI/Control/List';
 import { useCloudReducer } from '../client/hooks/cloud';
 import { IFile } from '../client/models/IFile';
 import { RouteNames } from '../client/router';
+import { privateRoute } from '../client/router/private';
 import { filesAPI } from '../client/services/FilesService';
 import { wrapper } from '../client/store';
 import { clearSelected, selectFile, unselectFile } from '../client/store/reducers/CloudSlice';
@@ -21,7 +22,7 @@ export const getFloatControls = (selected: IFile[]) => selected.length
 
 export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
 	? [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.INFO]
-	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MARK, Control.NULL, Control.INFO]
+	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MARK, Control.NULL, Control.INFO];
 
 export default function Marked({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, shared, dispatch } = useCloudReducer();
@@ -106,12 +107,5 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: files, error } = await dispatch(filesAPI.endpoints.getMarkedFiles.initiate());
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
-	// @ts-ignore
-	if (error && error.status === 401) return {
-		redirect: {
-			permanent: true,
-			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.MARKED}`
-		}
-	};
-	return { props: { files: files || null, space: space || null } };
+	return privateRoute({ files: files || null, space: space || null }, error, RouteNames.MARKED);
 });

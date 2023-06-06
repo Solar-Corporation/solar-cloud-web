@@ -5,6 +5,7 @@ import { UserTable } from '../client/components/UserTable';
 import { useCloudReducer } from '../client/hooks/cloud';
 import { IUser } from '../client/models/IUser';
 import { RouteNames } from '../client/router';
+import { privateRoute } from '../client/router/private';
 import { filesAPI } from '../client/services/FilesService';
 import { userAPI } from '../client/services/UserService';
 import { wrapper } from '../client/store';
@@ -42,12 +43,5 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 	const { data: users, error } = await dispatch(userAPI.endpoints.getUsers.initiate());
 	const { data: space } = await dispatch(filesAPI.endpoints.getSpace.initiate());
 
-	// @ts-ignore
-	if (error && error.status === 401) return {
-		redirect: {
-			permanent: true,
-			destination: `${RouteNames.LOGIN}?return_to=${RouteNames.SETTINGS}`
-		}
-	};
-	return { props: { users: users || null, space: space || null } };
+	return privateRoute({ users: users || null, space: space || null }, error, RouteNames.SETTINGS);
 });

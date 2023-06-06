@@ -7,6 +7,7 @@ import Control from '../../client/components/UI/Control/List';
 import { useCloudReducer } from '../../client/hooks/cloud';
 import { IFile } from '../../client/models/IFile';
 import { RouteNames } from '../../client/router';
+import { privateRoute } from '../../client/router/private';
 import { filesAPI } from '../../client/services/FilesService';
 import { wrapper } from '../../client/store';
 import { clearSelected, selectFile, setDirectory, unselectFile } from '../../client/store/reducers/CloudSlice';
@@ -14,7 +15,12 @@ import { setIsModalOpen } from '../../client/store/reducers/ModalSlice';
 import { getDirectoryLinks, setInitialData } from '../../client/utils';
 import { getFilesContextMenu, getFloatControls } from './index';
 
-export default function Directory({ files, links, space, name }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Directory({
+	                                  files,
+	                                  links,
+	                                  space,
+	                                  name
+                                  }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
@@ -87,7 +93,7 @@ export default function Directory({ files, links, space, name }: InferGetServerS
 				selected={selected}
 				marked={marked}
 				shared={shared}
-				empty={<ResultEmpty folderName={name} />}
+				empty={<ResultEmpty folderName={name}/>}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
 			/>
@@ -107,14 +113,13 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 		paths ? paths[paths.length - 1].name || '' : ''
 	]));
 
-	// @ts-ignore
-	if (error && error.status === 401) return { redirect: { permanent: true, destination: RouteNames.LOGIN } };
-	return {
-		props: {
+	return privateRoute(
+		{
 			files: files || null,
 			links: getDirectoryLinks(paths),
 			space: space || null,
 			name: paths ? paths[paths.length - 1].name : ''
-		}
-	};
+		},
+		error
+	);
 });

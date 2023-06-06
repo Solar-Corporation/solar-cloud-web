@@ -3,10 +3,10 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { parseCookies } from 'nookies';
 import Logo from '../client/img/logo.svg';
 import { IRegister } from '../client/models/IAuth';
 import { RouteNames } from '../client/router';
+import { authRoute } from '../client/router/private';
 import { authAPI } from '../client/services/AuthService';
 import styles from '../client/styles/pages/Signup.module.less';
 import { variables } from '../client/styles/theme';
@@ -134,17 +134,4 @@ export default function Signup() {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { refreshToken: token } = parseCookies(ctx);
-
-	if (token) {
-		return {
-			redirect: {
-				permanent: true,
-				destination: RouteNames.FILES
-			}
-		};
-	}
-
-	return { props: {} };
-};
+export const getServerSideProps: GetServerSideProps = async (ctx) => authRoute(ctx);

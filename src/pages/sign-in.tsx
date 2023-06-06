@@ -5,11 +5,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
-import { parseCookies } from 'nookies';
 import Logo from '../client/img/logo.svg';
 import { IAuth } from '../client/models/IAuth';
 import { RouteNames } from '../client/router';
+import { authRoute } from '../client/router/private';
 import { authAPI } from '../client/services/AuthService';
 import styles from '../client/styles/pages/Login.module.less';
 import { variables } from '../client/styles/theme';
@@ -19,14 +18,9 @@ const { Text } = Typography;
 export default function SignIn() {
 	const [loginUser, { isLoading }] = authAPI.useUserLoginMutation();
 	const redirect = useSearchParams().get('return_to');
-	const router = useRouter();
 
-	const handleSend = async (values: IAuth) => {
-		try {
-			await loginUser(values).unwrap();
-			await router.push(redirect || RouteNames.FILES);
-		} catch (e) {
-		}
+	const handleSend = async (data: IAuth) => {
+		await loginUser({ data, redirect });
 	};
 
 	return (
@@ -104,17 +98,4 @@ export default function SignIn() {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { refreshToken: token } = parseCookies(ctx);
-
-	if (token) {
-		return {
-			redirect: {
-				permanent: true,
-				destination: RouteNames.FILES
-			}
-		};
-	}
-
-	return { props: {} };
-};
+export const getServerSideProps: GetServerSideProps = async (ctx) => authRoute(ctx);
