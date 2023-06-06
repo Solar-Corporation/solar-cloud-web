@@ -1,9 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { RenderModule } from 'nest-next';
 import Next from 'next';
-import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
@@ -40,9 +38,6 @@ export class AppModule {
 				ConfigModule.forRoot(),
 				ConfigModule.forRoot({
 					load: [config],
-				}),
-				ServeStaticModule.forRoot({
-					rootPath: join(__dirname, '../..', 'public', 'img'),
 				}),
 				AuthModule,
 				FileModule,

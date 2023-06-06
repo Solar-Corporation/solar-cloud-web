@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Render, Res, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Render, Req, Res, UseInterceptors } from '@nestjs/common';
+import path from 'path';
 import { ParamsInterceptor } from './common/interceptors/params.interceptor';
 
 @Controller()
@@ -28,6 +29,17 @@ export class AppController {
 	async files() {
 		return {};
 	}
+
+
+	@Get('img/*')
+	serveStaticImg(
+		@Req() req: any,
+		@Res() res: any,
+	) {
+		const filePath = path.join(__dirname, '..', 'public', 'img', req.url);
+		return res.sendFile(filePath);
+	}
+
 
 	@Get('files/:directory')
 	@Render('files/[directory]')
