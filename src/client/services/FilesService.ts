@@ -354,6 +354,12 @@ export const filesAPI = createApi({
 				}
 			}
 		}),
+		previewFile: build.mutation<{ url: string }, string>({
+			query: (hash) => ({
+				url: `/files/${hash}/download`,
+				method: 'GET'
+			})
+		}),
 		downloadFile: build.mutation<{ url: string }, string>({
 			query: (hash) => ({
 				url: `/files/${hash}/download`,
