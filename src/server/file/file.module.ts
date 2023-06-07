@@ -21,7 +21,7 @@ import { FileService } from './file.service';
 			session: false,
 		}),
 		JwtModule.register({
-			secret: process.env.JWT_KEY_SECRET,
+			secret: process.env.JWT_ACCESS_KEY_SECRET,
 			signOptions: {
 				expiresIn: process.env.EXPIRESIN_ACCESS_SECRET,
 			},

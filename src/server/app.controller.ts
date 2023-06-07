@@ -30,7 +30,6 @@ export class AppController {
 		return {};
 	}
 
-
 	@Get('img/*')
 	serveStaticImg(
 		@Req() req: any,
@@ -39,7 +38,6 @@ export class AppController {
 		const filePath = path.join(__dirname, '../..', 'public', req.url);
 		return res.sendFile(filePath);
 	}
-
 
 	@Get('files/:directory')
 	@Render('files/[directory]')
