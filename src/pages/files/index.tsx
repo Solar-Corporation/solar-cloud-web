@@ -37,7 +37,7 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 	};
 
 	const contextMenu = files
-		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.VIEW, Control.INFO]
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.INFO]
 		: undefined;
 	const filesContextMenu = getFilesContextMenu(selected);
 

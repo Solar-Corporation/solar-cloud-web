@@ -20,7 +20,7 @@ export default function Search({ files, space, search }: InferGetServerSideProps
 	const floatControls = getFloatControls(selected);
 	const headingOptions = {
 		links: [{ title: 'Поиск', href: RouteNames.SEARCH }],
-		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		constControls: files ? [Control.INFO] : undefined,
 		floatControls,
 		sticky: true
 	};

@@ -22,7 +22,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 
 	const headingOptions = {
 		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
-		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		constControls: files ? [Control.INFO] : undefined,
 		floatControls,
 		sticky: true
 	};

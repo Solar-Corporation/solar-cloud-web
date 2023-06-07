@@ -31,7 +31,7 @@ export default function Marked({ files, space }: InferGetServerSidePropsType<typ
 	const floatControls = getFloatControls(selected);
 	const headingOptions = {
 		links: [{ title: 'Избранное', href: RouteNames.MARKED }],
-		constControls: files ? [Control.VIEW, Control.INFO] : undefined,
+		constControls: files ? [Control.INFO] : undefined,
 		floatControls,
 		sticky: true
 	};
