@@ -21,18 +21,16 @@ export const getFloatControls = (selected: IFile[]) => selected.length
 	: undefined;
 
 export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
-	? [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.INFO]
-	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MARK, Control.NULL, Control.INFO];
+	? [Control.DOWNLOAD, Control.DELETE]
+	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MARK];
 
 export default function Marked({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
-	const floatControls = getFloatControls(selected);
 	const headingOptions = {
 		links: [{ title: 'Избранное', href: RouteNames.MARKED }],
-		constControls: files ? [Control.INFO] : undefined,
-		floatControls,
+		constControls: files ? getFloatControls(selected) : undefined,
 		sticky: true
 	};
 
@@ -41,7 +39,7 @@ export default function Marked({ files, space }: InferGetServerSidePropsType<typ
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
 			case 1: {
-				if (event.ctrlKey) {
+				if (event.shiftKey) {
 					if (!isSelected) {
 						dispatch(selectFile(file));
 					} else {

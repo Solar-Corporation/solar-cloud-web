@@ -16,23 +16,22 @@ import { setInitialData } from '../client/utils';
 export default function Trash({ files, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, dispatch } = useCloudReducer();
 
-	const floatControls = selected.length
+	const constControls = selected.length
 		? [Control.RECOVER, Control.CLEAR_FILE]
 		: [Control.CLEAR];
 
 	const headingOptions = {
 		links: [{ title: 'Корзина', href: RouteNames.TRASH }],
-		constControls: files ? [Control.INFO] : undefined,
-		floatControls,
+		constControls: files ? constControls : undefined,
 		sticky: true
 	};
 
-	const filesContextMenu = [Control.RECOVER, Control.CLEAR_FILE, Control.NULL, Control.INFO];
+	const filesContextMenu = [Control.RECOVER, Control.CLEAR_FILE];
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
 			case 1: {
-				if (event.ctrlKey) {
+				if (event.shiftKey) {
 					if (!isSelected) {
 						dispatch(selectFile(file));
 					} else {

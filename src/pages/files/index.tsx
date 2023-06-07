@@ -20,19 +20,17 @@ export const getFloatControls = (selected: IFile[], initial?: Control[]) => sele
 	: initial;
 
 export const getFilesContextMenu = (selected: IFile[]) => selected.length > 1
-	? [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY, Control.NULL, Control.INFO]
-	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK, Control.NULL, Control.INFO];
+	? [Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.MOVE, Control.COPY]
+	: [Control.SHARE, Control.DOWNLOAD, Control.DELETE, Control.NULL, Control.RENAME, Control.MOVE, Control.COPY, Control.MARK];
 
 export default function Files({ files, links, space }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
-	const floatControls = getFloatControls(selected);
 	const headingOptions = {
 		links,
 		actions: files ? [Control.CREATE] : undefined,
-		constControls: files ? [Control.INFO] : undefined,
-		floatControls,
+		constControls: files ? getFloatControls(selected) : undefined,
 		sticky: true
 	};
 
@@ -44,7 +42,7 @@ export default function Files({ files, links, space }: InferGetServerSidePropsTy
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
 			case 1: {
-				if (event.ctrlKey) {
+				if (event.shiftKey) {
 					if (!isSelected) {
 						dispatch(selectFile(file));
 					} else {

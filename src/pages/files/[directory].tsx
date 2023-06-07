@@ -24,24 +24,22 @@ export default function Directory({
 	const { selected, marked, shared, dispatch } = useCloudReducer();
 	const router = useRouter();
 
-	const floatControls = getFloatControls(selected, [Control.SHARE, Control.DOWNLOAD]);
 	const headingOptions = {
 		links,
 		actions: files ? [Control.CREATE] : undefined,
-		constControls: files ? [Control.INFO] : undefined,
-		floatControls: files ? floatControls : undefined,
+		constControls: files ? getFloatControls(selected, [Control.SHARE, Control.DOWNLOAD]) : undefined,
 		sticky: true
 	};
 
 	const contextMenu = files
-		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.DOWNLOAD, Control.NULL, Control.VIEW, Control.INFO]
+		? [Control.CREATE, Control.NULL, Control.UPLOAD, Control.UPLOAD_FOLDER, Control.NULL, Control.SHARE, Control.DOWNLOAD]
 		: undefined;
 	const filesContextMenu = getFilesContextMenu(selected);
 
 	const handleRowClick = async (event: any, file: IFile, isSelected: boolean) => {
 		switch (event.detail) {
 			case 1: {
-				if (event.ctrlKey) {
+				if (event.shiftKey) {
 					if (!isSelected) {
 						dispatch(selectFile(file));
 					} else {
