@@ -62,10 +62,10 @@ export class ItemService {
 				const filePath = path.join(savePath, files[i].originalName);
 
 				if (await this.utilService.isExist(filePath))
-					throw new ConflictException(`Файл c именем ${files[i].originalName} уже существует!`);
+					throw new ConflictException(`Файл c именем ${decodeURIComponent(files[i].originalName)} уже существует!`);
 
 				if (files[i].size > bucket.totalSpace - bucket.usageSpace)
-					throw new ConflictException(`Размер файла ${files[i].originalName} превышает свободное пространство!`);
+					throw new ConflictException(`Размер файла ${decodeURIComponent(files[i].originalName)} превышает свободное пространство!`);
 
 				await this.bucketDbService.add(sqlite, {
 					hash: createHash('md5').update(path.join(filePath, '/')).digest('hex'),
@@ -99,10 +99,10 @@ export class ItemService {
 			const isDelete = await this.bucketDbService.get(sqlite, hash);
 
 			if (isDelete?.isDelete)
-				throw new ConflictException(`Папка c именем ${name} находится в корзине!`);
+				throw new ConflictException(`Папка c именем ${decodeURIComponent(name)} находится в корзине!`);
 
 			if (await this.utilService.isExist(savePath))
-				throw new ConflictException(`Папка c именем ${name} уже существует!`);
+				throw new ConflictException(`Папка c именем ${decodeURIComponent(name)} уже существует!`);
 
 
 			await this.bucketDbService.add(sqlite, {
@@ -162,7 +162,7 @@ export class ItemService {
 				throw new NotFoundException(`Элемента с таким именем не существует!`);
 
 			if (itemFrom.isDelete)
-				throw new ConflictException(`Элемент c именем ${itemFrom.name} находится в корзине!`);
+				throw new ConflictException(`Элемент c именем ${decodeURIComponent(itemFrom.name)} находится в корзине!`);
 
 			const itemTo = await this.bucketDbService.get(sqlite, keyTo);
 
@@ -170,7 +170,7 @@ export class ItemService {
 				throw new NotFoundException(`Папки с таким именем не существует!`);
 
 			if (itemTo?.isDelete)
-				throw new ConflictException(`Папка c именем ${itemTo.name} находится в корзине!`);
+				throw new ConflictException(`Папка c именем ${decodeURIComponent(itemTo.name)} находится в корзине!`);
 
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
 			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', itemFrom.name);
@@ -201,7 +201,7 @@ export class ItemService {
 				throw new NotFoundException(`Элемента с таким именем не существует!`);
 
 			if (itemFrom.isDelete)
-				throw new ConflictException(`Элемент c именем ${itemFrom.name} находится в корзине!`);
+				throw new ConflictException(`Элемент c именем ${decodeURIComponent(itemFrom.name)} находится в корзине!`);
 
 			const itemTo = await this.bucketDbService.get(sqlite, keyTo);
 
@@ -209,7 +209,7 @@ export class ItemService {
 				throw new NotFoundException(`Папки с таким именем не существует!`);
 
 			if (itemTo?.isDelete)
-				throw new ConflictException(`Папка c именем ${itemTo.name} находится в корзине!`);
+				throw new ConflictException(`Папка c именем ${decodeURIComponent(itemTo.name)} находится в корзине!`);
 
 			const fromPath = path.join(bucket.path, 'files', itemFrom.path);
 			let toPath = path.join(bucket.path, 'files', (itemTo) ? itemTo.path : '', '/');
@@ -238,7 +238,7 @@ export class ItemService {
 			throw new NotFoundException(`Папки не существует!`);
 
 		if (folderPath?.isDelete)
-			throw new ConflictException(`Папка c именем ${folderPath?.name} находится в корзине!`);
+			throw new ConflictException(`Папка c именем ${decodeURIComponent(folderPath?.name)} находится в корзине!`);
 		const getPath = (folderPath) ? path.join(bucket.path, 'files', folderPath.path, '/') : path.join(bucket.path, 'files', '/');
 		const properties = await this.bucketDbService.getItems(sqlite, getPath);
 		await sqlite.close();
@@ -253,7 +253,7 @@ export class ItemService {
 			throw new NotFoundException(`Папки или файла не существует!`);
 
 		if (folderPath.isDelete)
-			throw new ConflictException(`Папка или файла c именем ${folderPath?.name} находится в корзине!`);
+			throw new ConflictException(`Папка или файла c именем ${decodeURIComponent(folderPath?.name)} находится в корзине!`);
 
 		let file;
 		const getPath = path.join(bucket.path, 'files', folderPath.path);
@@ -286,7 +286,7 @@ export class ItemService {
 				throw new NotFoundException(`Папки или файла не существует!`);
 
 			if (folderPath.isDelete)
-				throw new ConflictException(`Папка или файла c именем ${folderPath?.name} находится в корзине!`);
+				throw new ConflictException(`Папка или файла c именем ${decodeURIComponent(folderPath?.name)} находится в корзине!`);
 
 			await this.bucketDbService.setDelete(sqlite, key);
 
@@ -364,7 +364,7 @@ export class ItemService {
 				throw new NotFoundException(`Папки или файла не существует!`);
 
 			if (folderPath.isDelete)
-				throw new ConflictException(`Папка или файла c именем ${folderPath?.name} находится в корзине!`);
+				throw new ConflictException(`Папка или файла c именем ${decodeURIComponent(folderPath?.name)} находится в корзине!`);
 
 			await this.bucketDbService.setFavorite(sqlite, key);
 
@@ -410,7 +410,7 @@ export class ItemService {
 				throw new NotFoundException(`Папки или файла не существует!`);
 
 			if (folderPath.isDelete)
-				throw new ConflictException(`Папка или файла c именем ${folderPath?.name} находится в корзине!`);
+				throw new ConflictException(`Папка или файла c именем ${decodeURIComponent(folderPath?.name)} находится в корзине!`);
 
 			const token = await this.bucketDbService.setShare(sqlite, key);
 
@@ -460,7 +460,7 @@ export class ItemService {
 			throw new NotFoundException(`Папки не существует!`);
 
 		if (pathFolder.isDelete)
-			throw new ConflictException(`Папка c именем ${pathFolder.name} находится в корзине!`);
+			throw new ConflictException(`Папка c именем ${decodeURIComponent(pathFolder.name)} находится в корзине!`);
 
 		let concatPath = '';
 		const paths = pathFolder.path.split('/');
