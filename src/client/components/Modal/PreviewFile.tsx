@@ -11,7 +11,6 @@ import { filesAPI } from '../../services/FilesService';
 export const ModalPreviewFile: FC = () => {
 	const { selected, dispatch } = useCloudReducer();
 	const { previewFile: isOpen } = useAppSelector(state => state.modalReducer.modal);
-	// const [previewFile, { data, isLoading, error }] = filesAPI.useDownloadFileMutation();
 	const [previewFile, { data, isLoading, error }] = filesAPI.usePreviewFileMutation();
 	const [isConverted, setIsConverted] = useState(false);
 
@@ -68,7 +67,7 @@ export const ModalPreviewFile: FC = () => {
 								config={{
 									header: { disableHeader: true },
 									pdfVerticalScrollByDefault: true,
-									pdfZoom: { defaultZoom: 0.7, zoomJump: 0.1 },
+									pdfZoom: { defaultZoom: 1, zoomJump: 0.1 },
 									noRenderer: {
 										overrideComponent: () => (
 											<div className={styles.preview__empty}>

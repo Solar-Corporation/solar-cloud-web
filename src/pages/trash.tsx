@@ -80,6 +80,7 @@ export default function Trash({ files, space }: InferGetServerSidePropsType<type
 				empty={<ResultEmptyTrash />}
 				onRowClick={handleRowClick}
 				onRowContextMenu={handleRowContextMenu}
+				showPath
 			/>
 		</CloudLayout>
 	);
