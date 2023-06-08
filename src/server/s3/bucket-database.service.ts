@@ -431,7 +431,7 @@ export class BucketDatabaseService {
                                                   LEFT JOIN (SELECT hash AS share_hash, COUNT(hash) AS count_share
                                                              FROM share_paths
                                                              GROUP BY hash) AS sh ON sh.share_hash = p.hash
-                                         WHERE name LIKE '%' || $name || '%'
+                                         WHERE lower(name) LIKE '%' || lower($name) || '%'
                                            AND is_delete IS NULL;`, {
 			$name: name,
 		});

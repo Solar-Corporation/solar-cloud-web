@@ -59,7 +59,7 @@ export class ItemService {
 				await sqlite.exec('BEGIN');
 
 				// const { size, originalName, mimeType, buffer }: any = file;
-				const filePath = path.join(savePath, files[i].originalName);
+				const filePath = path.join(savePath, decodeURIComponent(files[i].originalName));
 
 				if (await this.utilService.isExist(filePath))
 					throw new ConflictException(`Файл c именем ${decodeURIComponent(files[i].originalName)} уже существует!`);

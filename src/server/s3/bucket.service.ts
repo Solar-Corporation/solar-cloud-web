@@ -64,6 +64,7 @@ export class BucketService {
 
 	async delete(store: Store, uuid: string) {
 		const storePath = path.join(store.path, uuid);
+		console.log(storePath);
 		if (!await this.utilService.isExist(storePath))
 			return;
 
