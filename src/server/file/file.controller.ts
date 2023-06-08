@@ -91,6 +91,7 @@ export class FileController {
 		@Query() { newName }: RenameQueryDto,
 		@Req() { user }: Request,
 	): Promise<void> {
+		console.log(newName);
 		await this.fileService.rename(user as UserDto, hash, newName);
 	}
 
