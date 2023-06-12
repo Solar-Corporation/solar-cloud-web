@@ -139,6 +139,9 @@ export class ItemService {
 			const oldPath = path.join(bucket.path, 'files', item.path);
 			const newPath = await this.utilService.replaceLast(oldPath, item.name, name);
 
+			if (await this.utilService.isExist(newPath))
+				throw new ConflictException(`Файл с таким именем уже существует!`);
+
 			await this.bucketDbService.updatePath(sqlite, oldPath, newPath);
 
 			await fs.rename(oldPath, newPath);
